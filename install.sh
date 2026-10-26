@@ -4,9 +4,16 @@ ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 BACKUP="$HOME/.config/itsuki-debian-niri-backup/$STAMP"
-mkdir -p "$BACKUP" "$HOME/.local/bin" "$CONFIG_HOME/waybar" "$CONFIG_HOME/kitty" "$CONFIG_HOME/fuzzel" "$CONFIG_HOME/dunst" "$CONFIG_HOME/fetch" "$CONFIG_HOME/xdg-desktop-portal" "$CONFIG_HOME/niri"
+mkdir -p "$BACKUP" "$HOME/.local/bin" "$HOME/Pictures/Wallpapers" "$CONFIG_HOME/waybar" "$CONFIG_HOME/kitty" "$CONFIG_HOME/fuzzel" "$CONFIG_HOME/dunst" "$CONFIG_HOME/fetch" "$CONFIG_HOME/xdg-desktop-portal" "$CONFIG_HOME/niri"
 backup() { local path="$1" rel="$2"; if [[ -f "$path" ]]; then mkdir -p "$BACKUP/$(dirname "$rel")"; cp -a "$path" "$BACKUP/$rel"; fi; }
 for rel in niri/config.kdl waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do backup "$CONFIG_HOME/$rel" "$rel"; done
+if [[ -f "$ROOT/wallpaper/itsuki-debian-niri-rice.jpg" ]]; then
+  if [[ -f "$HOME/Pictures/Wallpapers/itsuki.jpg" ]]; then
+    mkdir -p "$BACKUP/wallpaper"
+    cp -a "$HOME/Pictures/Wallpapers/itsuki.jpg" "$BACKUP/wallpaper/itsuki.jpg"
+  fi
+  install -m 0644 "$ROOT/wallpaper/itsuki-debian-niri-rice.jpg" "$HOME/Pictures/Wallpapers/itsuki.jpg"
+fi
 # Install the packaged theme files. Each replaced file has a timestamped backup.
 for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do cp "$ROOT/configs/$rel" "$CONFIG_HOME/$rel"; done
 install -m 755 "$ROOT/scripts/niri-power-menu" "$HOME/.local/bin/niri-power-menu"
@@ -63,7 +70,7 @@ text=re.sub(r'(?m)^\s*spawn-at-startup\s+"waybar"\s*(?:\n|$)','',text)
 # Remove only exact rice-managed launcher lines before adding one of each.
 text=re.sub(r'(?m)^\s*spawn-at-startup\s+"dunst"\s*(?:\n|$)','',text)
 text=re.sub(r'(?m)^\s*spawn-at-startup\s+"swaybg"[^\n]*\n?','',text)
-startup='\n'.join(['spawn-at-startup "dunst"',f'spawn-at-startup "swaybg" "-i" "{home}/Pictures/Wallpapers/itsuki.png" "-m" "fill"'])+'\n'
+startup='\n'.join(['spawn-at-startup "dunst"',f'spawn-at-startup "swaybg" "-i" "{home}/Pictures/Wallpapers/itsuki.jpg" "-m" "fill"'])+'\n'
 m=re.search(r'(?m)^binds\s*\{',text)
 if m: text=text[:m.start()]+startup+'\n'+text[m.start():]
 else: text=startup+'\n'+text
@@ -83,7 +90,10 @@ p.write_text(text)
 PYNIRI
 python3 -m json.tool "$CONFIG_HOME/waybar/config" >/dev/null
 if command -v niri >/dev/null 2>&1; then niri validate; fi
-if command -v systemctl >/dev/null 2>&1; then systemctl --user restart waybar.service 2>/dev/null || true; fi
+if command -v systemctl >/dev/null 2>&1 && systemctl --user cat niri.service >/dev/null 2>&1; then
+  systemctl --user add-wants niri.service waybar.service
+  systemctl --user restart waybar.service 2>/dev/null || true
+fi
 echo "Installed Itsuki Debian Niri Rice. Backups: $BACKUP"
-echo "Wallpaper expected at $HOME/Pictures/Wallpapers/itsuki.png (not bundled)."
+echo "Wallpaper installed to $HOME/Pictures/Wallpapers/itsuki.jpg if present in the package."
 echo "No system display-manager or LightDM settings were changed."
