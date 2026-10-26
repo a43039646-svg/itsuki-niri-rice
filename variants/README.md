@@ -1,14 +1,25 @@
 # Itsuki Niri Rice variants
 
-The same rice can use different branding without creating separate repositories.
+Use the variant that matches the look you want. All variants share the same Niri integration and common power/Wi-Fi menu scripts, but the visual configs and wallpaper can differ.
 
-| Variant | Waybar icon | Installer |
-|---|---|---|
-| Debian | Debian mark | `variants/debian/install.sh` |
-| Arch Linux | Arch mark | `variants/arch/install.sh` |
-| Gentoo | Gentoo mark | `variants/gentoo/install.sh` |
-| Neutral | No icon | `variants/neutral/install.sh` |
+| Variant | Waybar mark | Palette | Config source | Installer |
+|---|---|---|---|---|
+| Debian | Debian mark | Red / rose | `configs/` | `variants/debian/install.sh` |
+| Arch Linux | Arch mark | Navy / blue | `configs/arch/` | `variants/arch/install.sh` |
+| Gentoo | Gentoo mark | Dark plum / violet | `configs/gentoo/` | `variants/gentoo/install.sh` |
+| Neutral | No distro mark | Red / rose | `configs/` | `variants/neutral/install.sh` |
 
-Debian and Neutral use the red/rose base config set. Arch selects `configs/arch/` (blue accents), and Gentoo selects `configs/gentoo/` (violet accents). The separate profiles each contain Waybar, Fuzzel, Kitty, Dunst, Fetch, portal preferences, and a matching color version of the brightness/audio slider. Each installer also selects its matching wallpaper. Neutral has no distro mark and uses a logo-free wallpaper. The Niri patch, Wi-Fi menu and power-menu logic remain shared.
+Arch and Gentoo each have a separate copy of the Waybar config and stylesheet, Fuzzel, Kitty, Dunst, Fetch config, the XDG desktop-portal preference, and the brightness/audio slider. Debian and Neutral use the red/rose base configs. Neutral's wallpaper has no large distro logo or star.
 
-The icons use Unicode/Nerd-Font glyphs. If a distro logo is not available in the selected font, the rest of the rice still works; install a Nerd Font if you want the logo glyphs rendered.
+Run one installer from the repository root:
+
+```bash
+bash variants/debian/install.sh
+bash variants/arch/install.sh
+bash variants/gentoo/install.sh
+bash variants/neutral/install.sh
+```
+
+The installer expects an existing, working `~/.config/niri/config.kdl`. It backs up the current user configs, copies the selected profile, chooses the matching desktop wallpaper, and adds the rice's Niri startup entries and shortcuts. It does not install Niri or system packages.
+
+The distro marks may require a Nerd Font with suitable glyphs. If a logo is missing, the rest of the theme still works.
