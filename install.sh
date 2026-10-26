@@ -8,7 +8,7 @@ case "$DISTRO" in
   debian) DISTRO_ICON=''; DISTRO_LABEL='Debian' ;;
   arch) DISTRO_ICON=''; DISTRO_LABEL='Arch Linux' ;;
   gentoo) DISTRO_ICON=''; DISTRO_LABEL='Gentoo' ;;
-  neutral) DISTRO_ICON='★'; DISTRO_LABEL='Itsuki Niri Rice' ;;
+  neutral) DISTRO_ICON=''; DISTRO_LABEL='Itsuki Niri Rice' ;;
   *) echo "Unknown ITSUKI_DISTRO: $DISTRO (use debian, arch, gentoo or neutral)." >&2; exit 2 ;;
 esac
 BACKUP="$HOME/.config/itsuki-niri-backup/$DISTRO/$STAMP"
@@ -46,8 +46,12 @@ cfg=json.loads(p.read_text())
 left=cfg.setdefault('modules-left',[])
 if 'custom/distro' in left: left.remove('custom/distro')
 if 'custom/debian' in left: left.remove('custom/debian')
-left.insert(0,'custom/distro')
-cfg['custom/distro']={'format':icon,'tooltip':label,'on-click':'fuzzel'}
+cfg.pop('custom/debian', None)
+if icon:
+    left.insert(0,'custom/distro')
+    cfg['custom/distro']={'format':icon,'tooltip':label,'on-click':'fuzzel'}
+else:
+    cfg.pop('custom/distro', None)
 right=cfg.setdefault('modules-right',[])
 if 'tray' not in right: right.append('tray')
 backlight=Path('/sys/class/backlight')
