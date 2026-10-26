@@ -16,11 +16,11 @@ An Itsuki-inspired dark navy / rose-pink desktop rice for Debian 13 using Niri, 
 
 ## Install on Debian 13
 1. Extract the ZIP or clone the repository.
-2. Run `bash install.sh` to install user configuration and the included wallpaper.
+2. If using the full ZIP, the wallpaper is included. If cloning the GitHub source directly, put your image at `wallpaper/itsuki-debian-niri-rice.jpg` before running `bash install.sh`.
 3. Review the printed backup path, then log out and select Niri if needed.
 4. To theme the LightDM GTK greeter too, run `bash install-lightdm.sh` separately and confirm when prompted.
 
-The main installer backs up user configs, installs the bundled wallpaper to `~/Pictures/Wallpapers/itsuki.jpg`, validates Niri after modifying it, and avoids changing system display-manager settings. The separate LightDM script backs up `/etc/lightdm/lightdm-gtk-greeter.conf` and any existing target wallpaper before installing the greeter theme. It does not switch display managers or restart LightDM while a session is running.
+The main installer backs up user configs, copies the bundled wallpaper to `~/Pictures/Wallpapers/itsuki.jpg` when the image is present, validates Niri after modifying it, and avoids changing system display-manager settings. The separate LightDM script backs up `/etc/lightdm/lightdm-gtk-greeter.conf` and any existing target wallpaper before installing the greeter theme. It does not switch display managers or restart LightDM while a session is running.
 
 ## Dependencies
 Typical Debian packages: `waybar fuzzel kitty dunst swaybg swaylock python3 python3-tk brightnessctl network-manager-gnome fonts-font-awesome fonts-fork-awesome fonts-jetbrains-mono`. Niri and `fetch` are installed separately.
@@ -39,7 +39,7 @@ Typical Debian packages: `waybar fuzzel kitty dunst swaybg swaylock python3 pyth
 - Wi-Fi menu requires NetworkManager (`nmcli`).
 - Kitty background opacity depends on compositor support.
 - Install `areofyl/fetch` separately; copy `configs/fetch/config` to `~/.config/fetch/config`.
-- LightDM theming is optional and separate from the main user rice installer. The bundled JPEG wallpaper is included in this repository.
+- LightDM theming is optional and separate from the main user rice installer. The companion ZIP includes the JPEG wallpaper. The GitHub source tree leaves the binary artwork out; provide your own image at the documented path when installing from a clone.
 
 ## Backups
 User config backups are stored under `~/.config/itsuki-debian-niri-backup/<timestamp>/`. LightDM backups are stored under `/etc/lightdm/itsuki-backup-<timestamp>/`.
