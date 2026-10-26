@@ -22,7 +22,7 @@ def current_value():
         info = run(["brightnessctl", "-m", "-c", "backlight", "info"])
         return max(1, min(100, int(float(info.splitlines()[0].split(",")[-1].strip().rstrip("%")))) )
     info = run(["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"])
-    match = re.search(r"Volume:\\s*([0-9.]+)", info)
+    match = re.search(r"Volume:\s*([0-9.]+)", info)
     if not match: raise RuntimeError("Couldn't read audio volume using wpctl.")
     return max(0, min(100, round(float(match.group(1))*100)))
 try:
