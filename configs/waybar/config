@@ -1,0 +1,24 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 36,
+  "spacing": 4,
+  "modules-left": ["custom/debian", "niri/workspaces"],
+  "modules-center": ["clock"],
+  "modules-right": ["network", "pulseaudio", "battery", "tray"],
+  "custom/debian": {
+    "format": "",
+    "tooltip": "Open application launcher",
+    "on-click": "fuzzel"
+  },
+  "niri/workspaces": {
+    "format": "{icon}",
+    "sort-by-id": true,
+    "format-icons": { "focused": "●", "active": "●", "default": "○", "empty": "○", "urgent": "!" }
+  },
+  "clock": { "format": "{:%a %d %b  %H:%M}", "tooltip-format": "{:%A, %d %B %Y}\n{:%H:%M:%S}" },
+  "pulseaudio": { "format": " {volume}%", "format-muted": " muted", "tooltip": true, "scroll-step": 5 },
+  "network": { "format-wifi": " {signalStrength}%", "format-ethernet": " LAN", "format-disconnected": " offline", "tooltip-format": "{essid}: {ipaddr}/{cidr}" },
+  "battery": { "format": " {capacity}%", "format-charging": " {capacity}%", "format-plugged": "AC", "states": {"warning": 30, "critical": 15}, "tooltip": true },
+  "tray": { "icon-size": 18, "spacing": 8, "show-passive-items": true, "tooltip": true }
+}
