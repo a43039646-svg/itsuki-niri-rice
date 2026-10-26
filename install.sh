@@ -3,23 +3,31 @@ set -euo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
-BACKUP="$HOME/.config/itsuki-debian-niri-backup/$STAMP"
+DISTRO="${ITSUKI_DISTRO:-debian}"
+case "$DISTRO" in
+  debian) DISTRO_ICON=''; DISTRO_LABEL='Debian' ;;
+  arch) DISTRO_ICON=''; DISTRO_LABEL='Arch Linux' ;;
+  gentoo) DISTRO_ICON=''; DISTRO_LABEL='Gentoo' ;;
+  neutral) DISTRO_ICON='★'; DISTRO_LABEL='Itsuki Niri Rice' ;;
+  *) echo "Unknown ITSUKI_DISTRO: $DISTRO (use debian, arch, gentoo or neutral)." >&2; exit 2 ;;
+esac
+BACKUP="$HOME/.config/itsuki-niri-backup/$DISTRO/$STAMP"
 mkdir -p "$BACKUP" "$HOME/.local/bin" "$HOME/Pictures/Wallpapers" "$CONFIG_HOME/waybar" "$CONFIG_HOME/kitty" "$CONFIG_HOME/fuzzel" "$CONFIG_HOME/dunst" "$CONFIG_HOME/fetch" "$CONFIG_HOME/xdg-desktop-portal" "$CONFIG_HOME/niri"
 backup() { local path="$1" rel="$2"; if [[ -f "$path" ]]; then mkdir -p "$BACKUP/$(dirname "$rel")"; cp -a "$path" "$BACKUP/$rel"; fi; }
 for rel in niri/config.kdl waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do backup "$CONFIG_HOME/$rel" "$rel"; done
-if [[ -f "$ROOT/wallpaper/itsuki-debian-niri-rice.jpg" ]]; then
+if [[ -f "$ROOT/wallpaper/itsuki-niri-rice.jpg" ]]; then
   if [[ -f "$HOME/Pictures/Wallpapers/itsuki.jpg" ]]; then
     mkdir -p "$BACKUP/wallpaper"
     cp -a "$HOME/Pictures/Wallpapers/itsuki.jpg" "$BACKUP/wallpaper/itsuki.jpg"
   fi
+  install -m 0644 "$ROOT/wallpaper/itsuki-niri-rice.jpg" "$HOME/Pictures/Wallpapers/itsuki.jpg"
+elif [[ -f "$ROOT/wallpaper/itsuki-debian-niri-rice.jpg" ]]; then
   install -m 0644 "$ROOT/wallpaper/itsuki-debian-niri-rice.jpg" "$HOME/Pictures/Wallpapers/itsuki.jpg"
 fi
-# Install the packaged theme files. Each replaced file has a timestamped backup.
 for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do cp "$ROOT/configs/$rel" "$CONFIG_HOME/$rel"; done
 install -m 755 "$ROOT/scripts/niri-power-menu" "$HOME/.local/bin/niri-power-menu"
 install -m 755 "$ROOT/scripts/itsuki-slider.py" "$HOME/.local/bin/itsuki-slider.py"
 install -m 755 "$ROOT/scripts/itsuki-wifi-menu.py" "$HOME/.local/bin/itsuki-wifi-menu.py"
-# Add an interactive-terminal Fetch hook only once, and only for a supported shell.
 SHELL_NAME="$(basename "${SHELL:-bash}")"
 case "$SHELL_NAME" in bash) SHELL_RC="$HOME/.bashrc" ;; zsh) SHELL_RC="$HOME/.zshrc" ;; *) SHELL_RC="" ;; esac
 if [[ -n "$SHELL_RC" ]] && ! grep -q 'ITSUKI_FETCH_AUTOSTART' "$SHELL_RC" 2>/dev/null; then
@@ -30,13 +38,16 @@ if [[ $- == *i* ]] && command -v fetch >/dev/null 2>&1; then
 fi
 FETCHRC
 fi
-python3 - "$CONFIG_HOME/waybar/config" "$HOME/.local/bin" <<'PYWAYBAR'
+python3 - "$CONFIG_HOME/waybar/config" "$HOME/.local/bin" "$DISTRO_ICON" "$DISTRO_LABEL" <<'PYWAYBAR'
 import json,sys
 from pathlib import Path
-p=Path(sys.argv[1]); bin=Path(sys.argv[2]); cfg=json.loads(p.read_text())
+p=Path(sys.argv[1]); bin=Path(sys.argv[2]); icon=sys.argv[3]; label=sys.argv[4]
+cfg=json.loads(p.read_text())
 left=cfg.setdefault('modules-left',[])
-if 'custom/debian' not in left: left.insert(0,'custom/debian')
-cfg['custom/debian']={'format':'','tooltip':'Launch apps','on-click':'fuzzel'}
+if 'custom/distro' in left: left.remove('custom/distro')
+if 'custom/debian' in left: left.remove('custom/debian')
+left.insert(0,'custom/distro')
+cfg['custom/distro']={'format':icon,'tooltip':label,'on-click':'fuzzel'}
 right=cfg.setdefault('modules-right',[])
 if 'tray' not in right: right.append('tray')
 backlight=Path('/sys/class/backlight')
@@ -50,8 +61,8 @@ p.write_text(json.dumps(cfg,indent=2,ensure_ascii=False)+'\n')
 PYWAYBAR
 cat >> "$CONFIG_HOME/waybar/style.css" <<'CSSITSUKI'
 
-/* Itsuki Debian Rice controls */
-#custom-debian { font-family: "ForkAwesome", "FontAwesome"; font-size: 19px; color: #ff477f; padding: 0 12px; margin: 5px 3px 5px 8px; background: rgba(255,71,127,.13); border: 1px solid rgba(255,71,127,.32); border-radius: 9px; }
+/* Itsuki Niri Rice controls */
+#custom-distro { font-family: "JetBrains Mono", "Symbols Nerd Font", sans-serif; font-size: 19px; color: #ff477f; padding: 0 12px; margin: 5px 3px 5px 8px; background: rgba(255,71,127,.13); border: 1px solid rgba(255,71,127,.32); border-radius: 9px; }
 #backlight, #network, #pulseaudio { padding: 0 10px; margin: 5px 3px; background: rgba(17,19,34,.88); border: 1px solid rgba(255,71,127,.22); border-radius: 9px; }
 #backlight { color: #ff9abb; } #network { color: #d7b8ff; } #network.disconnected { color: #ff477f; }
 #pulseaudio { color: #f4b5cd; } #pulseaudio.muted { color: #9b91a7; }
@@ -59,15 +70,12 @@ cat >> "$CONFIG_HOME/waybar/style.css" <<'CSSITSUKI'
 #tray > .passive { opacity: .72; } #tray > .needs-attention { background: rgba(255,71,127,.20); border-radius: 6px; }
 CSSITSUKI
 if [[ ! -f "$CONFIG_HOME/niri/config.kdl" ]]; then echo "Niri config not found: $CONFIG_HOME/niri/config.kdl; stopping before modifying Niri." >&2; exit 1; fi
-# Save a precise second copy before the text patch, then merge only relevant lines.
 cp "$CONFIG_HOME/niri/config.kdl" "$BACKUP/niri-config.pre-patch.kdl"
 python3 - "$CONFIG_HOME/niri/config.kdl" "$HOME" <<'PYNIRI'
 from pathlib import Path
 import re,sys
 p=Path(sys.argv[1]); home=sys.argv[2]; text=p.read_text()
-# Waybar is started through systemd by this pack, not by Niri as well.
 text=re.sub(r'(?m)^\s*spawn-at-startup\s+"waybar"\s*(?:\n|$)','',text)
-# Remove only exact rice-managed launcher lines before adding one of each.
 text=re.sub(r'(?m)^\s*spawn-at-startup\s+"dunst"\s*(?:\n|$)','',text)
 text=re.sub(r'(?m)^\s*spawn-at-startup\s+"swaybg"[^\n]*\n?','',text)
 startup='\n'.join(['spawn-at-startup "dunst"',f'spawn-at-startup "swaybg" "-i" "{home}/Pictures/Wallpapers/itsuki.jpg" "-m" "fill"'])+'\n'
@@ -94,6 +102,6 @@ if command -v systemctl >/dev/null 2>&1 && systemctl --user cat niri.service >/d
   systemctl --user add-wants niri.service waybar.service
   systemctl --user restart waybar.service 2>/dev/null || true
 fi
-echo "Installed Itsuki Debian Niri Rice. Backups: $BACKUP"
+echo "Installed Itsuki Niri Rice ($DISTRO_LABEL variant). Backups: $BACKUP"
 echo "Wallpaper installed to $HOME/Pictures/Wallpapers/itsuki.jpg if present in the package."
 echo "No system display-manager or LightDM settings were changed."
