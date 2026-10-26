@@ -70,4 +70,4 @@ Typical Debian packages: `waybar fuzzel kitty dunst swaybg swaylock python3 pyth
 User config backups are stored under `~/.config/itsuki-niri-backup/<variant>/<timestamp>/`. LightDM backups are stored under `/etc/lightdm/itsuki-backup-<timestamp>/`.
 
 ## License
-Configuration and scripts in this repository are offered under MIT. Third-party applications, fonts, and artwork keep their own licenses.
+Configuration and scripts in this repository are offered under GNU. 
