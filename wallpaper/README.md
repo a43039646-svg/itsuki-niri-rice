@@ -1,5 +1,8 @@
-The full downloadable ZIP includes the compressed 1600x900 Itsuki-themed background `itsuki-debian-niri-rice.jpg`, used by Niri and LightDM.
+# Wallpapers
 
-To keep the GitHub source tree text-only, the binary artwork is not committed here. When cloning from GitHub, put your own wallpaper at `wallpaper/itsuki-debian-niri-rice.jpg`.
+The downloadable full ZIP includes two separate backgrounds:
 
-The main installer copies it to `~/Pictures/Wallpapers/itsuki.jpg`; the optional `install-lightdm.sh` copies it to `/usr/share/backgrounds/itsuki-debian-niri-rice.jpg`.
+- `itsuki-debian-niri-rice.jpg` — the Itsuki wallpaper for the Niri desktop, installed to `~/Pictures/Wallpapers/itsuki.jpg`.
+- `debian-rice.jpg` — the dark Debian-logo wallpaper used by LightDM, installed to `/usr/share/backgrounds/debian-rice.jpg` by the optional LightDM installer.
+
+The GitHub source tree documents the paths but does not commit binary images. When installing from a Git clone, put the matching image files in this directory first.
