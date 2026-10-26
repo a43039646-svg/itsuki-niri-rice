@@ -28,7 +28,7 @@ bash variants/neutral/install.sh
 The distro logos use Nerd-Font/Unicode glyphs. If a logo is missing in your font, install a Nerd Font; the rest of the rice is unaffected.
 
 ## Features
-- Niri integration that preserves most existing settings and creates a dated backup.
+- Niri integration that preserves most existing settings, starts Waybar once from Niri, and creates a dated backup.
 - Waybar with Niri workspaces, clock, network, volume, battery, tray and brightness where supported.
 - Variant-specific Debian, Arch, Gentoo or neutral-star launcher branding.
 - Fuzzel, Dunst and Kitty theme.
@@ -59,6 +59,7 @@ Typical Debian packages: `waybar fuzzel kitty dunst swaybg swaylock python3 pyth
 | `Super+Q` | Close focused window if present in existing Niri config |
 
 ## Notes
+- Waybar is launched with one `spawn-at-startup "waybar"` entry in Niri; the installer removes duplicate entries and cleans up the older systemd startup method. Log out and back in after installing to apply the startup change.
 - The system tray shows only apps that publish compatible tray icons.
 - Brightness control appears only if `/sys/class/backlight` has a device.
 - Wi-Fi menu requires NetworkManager (`nmcli`).
