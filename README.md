@@ -12,7 +12,7 @@ An Itsuki-inspired dark navy / rose-pink desktop rice for Debian 13 using Niri, 
 - `Super+E` opens a Fuzzel power menu (lock, log out, suspend, reboot, power off); `Super+D` launches apps; `Super+Return` opens Kitty.
 - Fetch config without forced recoloring of distro logo.
 - GTK portal preference included for systems where GNOME portal fails under Niri.
-- Optional LightDM GTK Greeter background matching the Itsuki desktop wallpaper.
+- Optional LightDM GTK Greeter theme using the original dark Debian-logo wallpaper, separate from the Itsuki desktop wallpaper.
 
 ## Install on Debian 13
 1. Extract the ZIP or clone the repository.
@@ -39,7 +39,7 @@ Typical Debian packages: `waybar fuzzel kitty dunst swaybg swaylock python3 pyth
 - Wi-Fi menu requires NetworkManager (`nmcli`).
 - Kitty background opacity depends on compositor support.
 - Install `areofyl/fetch` separately; copy `configs/fetch/config` to `~/.config/fetch/config`.
-- LightDM theming is optional and separate from the main user rice installer. The companion ZIP includes the JPEG wallpaper. The GitHub source tree leaves the binary artwork out; provide your own image at the documented path when installing from a clone.
+- LightDM theming is optional and separate from the main user rice installer. The full downloadable ZIP includes both images: the Itsuki desktop wallpaper and the original dark Debian-logo LightDM wallpaper. The GitHub source tree omits binary artwork; provide `wallpaper/debian-rice.jpg` yourself when installing from a Git clone.
 
 ## Backups
 User config backups are stored under `~/.config/itsuki-debian-niri-backup/<timestamp>/`. LightDM backups are stored under `/etc/lightdm/itsuki-backup-<timestamp>/`.
