@@ -7,13 +7,22 @@ BACKUP="$HOME/.config/itsuki-debian-niri-backup/$STAMP"
 mkdir -p "$BACKUP" "$HOME/.local/bin" "$CONFIG_HOME/waybar" "$CONFIG_HOME/kitty" "$CONFIG_HOME/fuzzel" "$CONFIG_HOME/dunst" "$CONFIG_HOME/fetch" "$CONFIG_HOME/xdg-desktop-portal" "$CONFIG_HOME/niri"
 backup() { local path="$1" rel="$2"; if [[ -f "$path" ]]; then mkdir -p "$BACKUP/$(dirname "$rel")"; cp -a "$path" "$BACKUP/$rel"; fi; }
 for rel in niri/config.kdl waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do backup "$CONFIG_HOME/$rel" "$rel"; done
-# Install theme-owned files. Existing Kitty colors/opacity and Dunst/Fuzzel colors are backed up above.
-for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do
-  cp "$ROOT/configs/$rel" "$CONFIG_HOME/$rel"
-done
+# Install the packaged theme files. Each replaced file has a timestamped backup.
+for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do cp "$ROOT/configs/$rel" "$CONFIG_HOME/$rel"; done
 install -m 755 "$ROOT/scripts/niri-power-menu" "$HOME/.local/bin/niri-power-menu"
 install -m 755 "$ROOT/scripts/itsuki-slider.py" "$HOME/.local/bin/itsuki-slider.py"
 install -m 755 "$ROOT/scripts/itsuki-wifi-menu.py" "$HOME/.local/bin/itsuki-wifi-menu.py"
+# Add an interactive-terminal Fetch hook only once, and only for a supported shell.
+SHELL_NAME="$(basename "${SHELL:-bash}")"
+case "$SHELL_NAME" in bash) SHELL_RC="$HOME/.bashrc" ;; zsh) SHELL_RC="$HOME/.zshrc" ;; *) SHELL_RC="" ;; esac
+if [[ -n "$SHELL_RC" ]] && ! grep -q 'ITSUKI_FETCH_AUTOSTART' "$SHELL_RC" 2>/dev/null; then
+  cat >> "$SHELL_RC" <<'FETCHRC'
+# ITSUKI_FETCH_AUTOSTART: show animated system info in interactive terminals.
+if [[ $- == *i* ]] && command -v fetch >/dev/null 2>&1; then
+    fetch
+fi
+FETCHRC
+fi
 python3 - "$CONFIG_HOME/waybar/config" "$HOME/.local/bin" <<'PYWAYBAR'
 import json,sys
 from pathlib import Path
@@ -43,14 +52,17 @@ cat >> "$CONFIG_HOME/waybar/style.css" <<'CSSITSUKI'
 #tray > .passive { opacity: .72; } #tray > .needs-attention { background: rgba(255,71,127,.20); border-radius: 6px; }
 CSSITSUKI
 if [[ ! -f "$CONFIG_HOME/niri/config.kdl" ]]; then echo "Niri config not found: $CONFIG_HOME/niri/config.kdl; stopping before modifying Niri." >&2; exit 1; fi
+# Save a precise second copy before the text patch, then merge only relevant lines.
+cp "$CONFIG_HOME/niri/config.kdl" "$BACKUP/niri-config.pre-patch.kdl"
 python3 - "$CONFIG_HOME/niri/config.kdl" "$HOME" <<'PYNIRI'
 from pathlib import Path
 import re,sys
 p=Path(sys.argv[1]); home=sys.argv[2]; text=p.read_text()
-# Remove direct Waybar starter to avoid double launch (service is its owner).
+# Waybar is started through systemd by this pack, not by Niri as well.
 text=re.sub(r'(?m)^\s*spawn-at-startup\s+"waybar"\s*(?:\n|$)','',text)
-for app in ('dunst','swaybg'):
-    text=re.sub(r'(?m)^\s*spawn-at-startup\s+"'+re.escape(app)+r'"[^\n]*\n?','',text)
+# Remove only exact rice-managed launcher lines before adding one of each.
+text=re.sub(r'(?m)^\s*spawn-at-startup\s+"dunst"\s*(?:\n|$)','',text)
+text=re.sub(r'(?m)^\s*spawn-at-startup\s+"swaybg"[^\n]*\n?','',text)
 startup='\n'.join(['spawn-at-startup "dunst"',f'spawn-at-startup "swaybg" "-i" "{home}/Pictures/Wallpapers/itsuki.png" "-m" "fill"'])+'\n'
 m=re.search(r'(?m)^binds\s*\{',text)
 if m: text=text[:m.start()]+startup+'\n'+text[m.start():]
@@ -62,7 +74,7 @@ for line in lines:
     out.append(line)
 text='\n'.join(out)+'\n'
 m=re.search(r'(?m)^binds\s*\{',text)
-if not m: raise SystemExit('No binds block found; Niri config backup was created, but patch failed.')
+if not m: raise SystemExit('No binds block found; your backup is safe, but Niri shortcuts were not added.')
 ins=('    Mod+D hotkey-overlay-title="Application Launcher: Fuzzel" { spawn "fuzzel"; }\n'
      '    Mod+Return hotkey-overlay-title="Terminal: Kitty" { spawn "kitty"; }\n'
      f'    Super+E hotkey-overlay-title="Itsuki Power Menu" {{ spawn "{home}/.local/bin/niri-power-menu"; }}\n')
@@ -71,17 +83,6 @@ p.write_text(text)
 PYNIRI
 python3 -m json.tool "$CONFIG_HOME/waybar/config" >/dev/null
 if command -v niri >/dev/null 2>&1; then niri validate; fi
-# Enable Fetch autostart in common interactive shells if fetch is installed.
-SHELL_NAME="$(basename "${SHELL:-bash}")"
-case "$SHELL_NAME" in bash) SHELL_RC="$HOME/.bashrc" ;; zsh) SHELL_RC="$HOME/.zshrc" ;; *) SHELL_RC="" ;; esac
-if [[ -n "$SHELL_RC" ]] && ! grep -q 'ITSUKI_FETCH_AUTOSTART' "$SHELL_RC" 2>/dev/null; then
-  cat >> "$SHELL_RC" <<'FETCHRC'
-# ITSUKI_FETCH_AUTOSTART: show animated system info in interactive terminals.
-if [[ $- == *i* ]] && command -v fetch >/dev/null 2>&1; then
-    fetch
-fi
-FETCHRC
-fi
 if command -v systemctl >/dev/null 2>&1; then systemctl --user restart waybar.service 2>/dev/null || true; fi
 echo "Installed Itsuki Debian Niri Rice. Backups: $BACKUP"
 echo "Wallpaper expected at $HOME/Pictures/Wallpapers/itsuki.png (not bundled)."
