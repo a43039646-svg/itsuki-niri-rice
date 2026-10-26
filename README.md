@@ -20,7 +20,7 @@ An Itsuki-inspired dark navy / rose-pink desktop rice for Debian 13 using Niri, 
 3. Review the printed backup path, then log out and select Niri if needed.
 4. To theme the LightDM GTK greeter too, run `bash install-lightdm.sh` separately and confirm when prompted.
 
-The main installer backs up user configs, copies the bundled wallpaper to `~/Pictures/Wallpapers/itsuki.jpg` when the image is present, validates Niri after modifying it, and avoids changing system display-manager settings. The separate LightDM script backs up `/etc/lightdm/lightdm-gtk-greeter.conf` and any existing target wallpaper before installing the greeter theme. It does not switch display managers or restart LightDM while a session is running.
+The main installer backs up user configs and copies the Itsuki wallpaper to `~/Pictures/Wallpapers/itsuki.jpg` for Niri. The optional LightDM script instead installs the separate dark Debian-logo background at `/usr/share/backgrounds/debian-rice.jpg`. It backs up the current greeter config and any existing target wallpaper, does not switch display managers, and does not restart LightDM while a session is running.
 
 ## Dependencies
 Typical Debian packages: `waybar fuzzel kitty dunst swaybg swaylock python3 python3-tk brightnessctl network-manager-gnome fonts-font-awesome fonts-fork-awesome fonts-jetbrains-mono`. Niri and `fetch` are installed separately.
