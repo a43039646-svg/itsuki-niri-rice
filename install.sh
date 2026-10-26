@@ -5,10 +5,10 @@ CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 DISTRO="${ITSUKI_DISTRO:-debian}"
 case "$DISTRO" in
-  debian) DISTRO_ICON=''; DISTRO_LABEL='Debian'; WALLPAPER_FILE='itsuki_debian_wallpaper_v2_1600x900.png' ;;
-  arch) DISTRO_ICON=''; DISTRO_LABEL='Arch Linux'; WALLPAPER_FILE='itsuki-arch.png' ;;
-  gentoo) DISTRO_ICON=''; DISTRO_LABEL='Gentoo'; WALLPAPER_FILE='itsuki-gentoo.png' ;;
-  neutral) DISTRO_ICON=''; DISTRO_LABEL='Itsuki Niri Rice'; WALLPAPER_FILE='itsuki-neutral.png' ;;
+  debian) DISTRO_ICON=''; DISTRO_LABEL='Debian'; WALLPAPER_FILE='itsuki_debian_wallpaper_v2_1600x900.png'; CONFIG_SOURCE="$ROOT/configs" ;;
+  arch) DISTRO_ICON=''; DISTRO_LABEL='Arch Linux'; WALLPAPER_FILE='itsuki-arch.png'; CONFIG_SOURCE="$ROOT/configs/arch" ;;
+  gentoo) DISTRO_ICON=''; DISTRO_LABEL='Gentoo'; WALLPAPER_FILE='itsuki-gentoo.png'; CONFIG_SOURCE="$ROOT/configs/gentoo" ;;
+  neutral) DISTRO_ICON=''; DISTRO_LABEL='Itsuki Niri Rice'; WALLPAPER_FILE='itsuki-neutral.png'; CONFIG_SOURCE="$ROOT/configs" ;;
   *) echo "Unknown ITSUKI_DISTRO: $DISTRO (use debian, arch, gentoo or neutral)." >&2; exit 2 ;;
 esac
 BACKUP="$HOME/.config/itsuki-niri-backup/$DISTRO/$STAMP"
@@ -17,7 +17,7 @@ backup() { local path="$1" rel="$2"; if [[ -f "$path" ]]; then mkdir -p "$BACKUP
 for rel in niri/config.kdl waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do backup "$CONFIG_HOME/$rel" "$rel"; done
 WALLPAPER_SOURCE="$ROOT/wallpaper/$WALLPAPER_FILE"
 if [[ -f "$WALLPAPER_SOURCE" ]]; then
-  for current_wallpaper in "$HOME/Pictures/Wallpapers/itsuki.png" "$HOME/Pictures/Wallpapers/itsuki.png"; do
+  for current_wallpaper in "$HOME/Pictures/Wallpapers/itsuki.png" "$HOME/Pictures/Wallpapers/itsuki.jpg"; do
     if [[ -f "$current_wallpaper" ]]; then
       backup "$current_wallpaper" "wallpaper/$(basename "$current_wallpaper")"
     fi
@@ -27,9 +27,11 @@ else
   echo "Wallpaper for the '$DISTRO' variant was not found: $WALLPAPER_SOURCE" >&2
   echo "No new wallpaper was installed; check that the wallpaper assets are included." >&2
 fi
-for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do cp "$ROOT/configs/$rel" "$CONFIG_HOME/$rel"; done
+for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do cp "$CONFIG_SOURCE/$rel" "$CONFIG_HOME/$rel"; done
 install -m 755 "$ROOT/scripts/niri-power-menu" "$HOME/.local/bin/niri-power-menu"
-install -m 755 "$ROOT/scripts/itsuki-slider.py" "$HOME/.local/bin/itsuki-slider.py"
+SLIDER_SOURCE="$ROOT/scripts/itsuki-slider.py"
+if [[ -f "$CONFIG_SOURCE/scripts/itsuki-slider.py" ]]; then SLIDER_SOURCE="$CONFIG_SOURCE/scripts/itsuki-slider.py"; fi
+install -m 755 "$SLIDER_SOURCE" "$HOME/.local/bin/itsuki-slider.py"
 install -m 755 "$ROOT/scripts/itsuki-wifi-menu.py" "$HOME/.local/bin/itsuki-wifi-menu.py"
 SHELL_NAME="$(basename "${SHELL:-bash}")"
 case "$SHELL_NAME" in bash) SHELL_RC="$HOME/.bashrc" ;; zsh) SHELL_RC="$HOME/.zshrc" ;; *) SHELL_RC="" ;; esac
@@ -66,16 +68,7 @@ sound=cfg.setdefault('pulseaudio',{}); sound.update({'format':' {volume}%','f
 tray=cfg.setdefault('tray',{}); tray.update({'icon-size':18,'spacing':8,'show-passive-items':True,'tooltip':True})
 p.write_text(json.dumps(cfg,indent=2,ensure_ascii=False)+'\n')
 PYWAYBAR
-cat >> "$CONFIG_HOME/waybar/style.css" <<'CSSITSUKI'
 
-/* Itsuki Niri Rice controls */
-#custom-distro { font-family: "JetBrains Mono", "Symbols Nerd Font", sans-serif; font-size: 19px; color: #ff477f; padding: 0 12px; margin: 5px 3px 5px 8px; background: rgba(255,71,127,.13); border: 1px solid rgba(255,71,127,.32); border-radius: 9px; }
-#backlight, #network, #pulseaudio { padding: 0 10px; margin: 5px 3px; background: rgba(17,19,34,.88); border: 1px solid rgba(255,71,127,.22); border-radius: 9px; }
-#backlight { color: #ff9abb; } #network { color: #d7b8ff; } #network.disconnected { color: #ff477f; }
-#pulseaudio { color: #f4b5cd; } #pulseaudio.muted { color: #9b91a7; }
-#tray { padding: 0 8px; margin: 5px 8px 5px 3px; background: rgba(17,19,34,.88); border: 1px solid rgba(255,71,127,.32); border-radius: 9px; }
-#tray > .passive { opacity: .72; } #tray > .needs-attention { background: rgba(255,71,127,.20); border-radius: 6px; }
-CSSITSUKI
 if [[ ! -f "$CONFIG_HOME/niri/config.kdl" ]]; then echo "Niri config not found: $CONFIG_HOME/niri/config.kdl; stopping before modifying Niri." >&2; exit 1; fi
 cp "$CONFIG_HOME/niri/config.kdl" "$BACKUP/niri-config.pre-patch.kdl"
 python3 - "$CONFIG_HOME/niri/config.kdl" "$HOME" <<'PYNIRI'

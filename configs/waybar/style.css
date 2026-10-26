@@ -12,7 +12,7 @@ window#waybar {
     border-bottom: 1px solid rgba(255, 71, 127, 0.32);
 }
 
-#custom-debian {
+#custom-distro {
     font-family: "ForkAwesome", "FontAwesome";
     font-size: 19px;
     color: #ff477f;
@@ -22,7 +22,7 @@ window#waybar {
     border: 1px solid rgba(255, 71, 127, 0.32);
     border-radius: 9px;
 }
-#custom-debian:hover { color: #ffffff; background: rgba(255, 71, 127, 0.28); }
+#custom-distro:hover { color: #ffffff; background: rgba(255, 71, 127, 0.28); }
 
 #workspaces { margin-left: 8px; }
 #workspaces button {

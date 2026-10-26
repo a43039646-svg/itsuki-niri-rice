@@ -9,6 +9,6 @@ The same rice can use different branding without creating separate repositories.
 | Gentoo | Gentoo mark | `variants/gentoo/install.sh` |
 | Neutral | No icon | `variants/neutral/install.sh` |
 
-All four variants use the same Niri, Waybar, Kitty, Fuzzel, Dunst, Fetch and power-menu configuration. Each installer selects its matching desktop wallpaper. Debian, Arch and Gentoo show their respective marks; Neutral has no distro mark and uses a logo-free wallpaper. The backup namespace remains variant-specific.
+Debian and Neutral use the red/rose base config set. Arch selects `configs/arch/` (blue accents), and Gentoo selects `configs/gentoo/` (violet accents). The separate profiles each contain Waybar, Fuzzel, Kitty, Dunst, Fetch, portal preferences, and a matching color version of the brightness/audio slider. Each installer also selects its matching wallpaper. Neutral has no distro mark and uses a logo-free wallpaper. The Niri patch, Wi-Fi menu and power-menu logic remain shared.
 
 The icons use Unicode/Nerd-Font glyphs. If a distro logo is not available in the selected font, the rest of the rice still works; install a Nerd Font if you want the logo glyphs rendered.
