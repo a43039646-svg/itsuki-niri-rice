@@ -1,8 +1,10 @@
-# Wallpapers
+# Desktop wallpapers
 
-The downloadable full ZIP includes two separate backgrounds:
+The main installer automatically chooses the wallpaper for the selected variant and installs it as `~/Pictures/Wallpapers/itsuki.png`.
 
-- `itsuki-debian-niri-rice.jpg` — the Itsuki wallpaper for the Niri desktop, installed to `~/Pictures/Wallpapers/itsuki.jpg`.
-- `debian-rice.jpg` — the dark Debian-logo wallpaper used by LightDM, installed to `/usr/share/backgrounds/debian-rice.jpg` by the optional LightDM installer.
+- `itsuki_debian_wallpaper_v2_1600x900.png` — Debian version, with the original red/pink Debian spiral.
+- `itsuki-arch.png` — Arch version, with blue background and blue-tinted petals.
+- `itsuki-gentoo.png` — Gentoo version, with purple background and purple-tinted petals.
+- `itsuki-neutral.png` — neutral version, without a large distro logo or star.
 
-The GitHub source tree documents the paths but does not commit binary images. When installing from a Git clone, put the matching image files in this directory first.
+The separate `debian-rice.jpg` background for the optional LightDM greeter is not included here. The LightDM installer expects that image to be supplied separately.

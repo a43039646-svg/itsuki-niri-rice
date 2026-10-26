@@ -5,24 +5,27 @@ CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 DISTRO="${ITSUKI_DISTRO:-debian}"
 case "$DISTRO" in
-  debian) DISTRO_ICON=''; DISTRO_LABEL='Debian' ;;
-  arch) DISTRO_ICON=''; DISTRO_LABEL='Arch Linux' ;;
-  gentoo) DISTRO_ICON=''; DISTRO_LABEL='Gentoo' ;;
-  neutral) DISTRO_ICON=''; DISTRO_LABEL='Itsuki Niri Rice' ;;
+  debian) DISTRO_ICON=''; DISTRO_LABEL='Debian'; WALLPAPER_FILE='itsuki_debian_wallpaper_v2_1600x900.png' ;;
+  arch) DISTRO_ICON=''; DISTRO_LABEL='Arch Linux'; WALLPAPER_FILE='itsuki-arch.png' ;;
+  gentoo) DISTRO_ICON=''; DISTRO_LABEL='Gentoo'; WALLPAPER_FILE='itsuki-gentoo.png' ;;
+  neutral) DISTRO_ICON=''; DISTRO_LABEL='Itsuki Niri Rice'; WALLPAPER_FILE='itsuki-neutral.png' ;;
   *) echo "Unknown ITSUKI_DISTRO: $DISTRO (use debian, arch, gentoo or neutral)." >&2; exit 2 ;;
 esac
 BACKUP="$HOME/.config/itsuki-niri-backup/$DISTRO/$STAMP"
 mkdir -p "$BACKUP" "$HOME/.local/bin" "$HOME/Pictures/Wallpapers" "$CONFIG_HOME/waybar" "$CONFIG_HOME/kitty" "$CONFIG_HOME/fuzzel" "$CONFIG_HOME/dunst" "$CONFIG_HOME/fetch" "$CONFIG_HOME/xdg-desktop-portal" "$CONFIG_HOME/niri"
 backup() { local path="$1" rel="$2"; if [[ -f "$path" ]]; then mkdir -p "$BACKUP/$(dirname "$rel")"; cp -a "$path" "$BACKUP/$rel"; fi; }
 for rel in niri/config.kdl waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do backup "$CONFIG_HOME/$rel" "$rel"; done
-if [[ -f "$ROOT/wallpaper/itsuki-niri-rice.jpg" ]]; then
-  if [[ -f "$HOME/Pictures/Wallpapers/itsuki.jpg" ]]; then
-    mkdir -p "$BACKUP/wallpaper"
-    cp -a "$HOME/Pictures/Wallpapers/itsuki.jpg" "$BACKUP/wallpaper/itsuki.jpg"
-  fi
-  install -m 0644 "$ROOT/wallpaper/itsuki-niri-rice.jpg" "$HOME/Pictures/Wallpapers/itsuki.jpg"
-elif [[ -f "$ROOT/wallpaper/itsuki-debian-niri-rice.jpg" ]]; then
-  install -m 0644 "$ROOT/wallpaper/itsuki-debian-niri-rice.jpg" "$HOME/Pictures/Wallpapers/itsuki.jpg"
+WALLPAPER_SOURCE="$ROOT/wallpaper/$WALLPAPER_FILE"
+if [[ -f "$WALLPAPER_SOURCE" ]]; then
+  for current_wallpaper in "$HOME/Pictures/Wallpapers/itsuki.png" "$HOME/Pictures/Wallpapers/itsuki.png"; do
+    if [[ -f "$current_wallpaper" ]]; then
+      backup "$current_wallpaper" "wallpaper/$(basename "$current_wallpaper")"
+    fi
+  done
+  install -m 0644 "$WALLPAPER_SOURCE" "$HOME/Pictures/Wallpapers/itsuki.png"
+else
+  echo "Wallpaper for the '$DISTRO' variant was not found: $WALLPAPER_SOURCE" >&2
+  echo "No new wallpaper was installed; check that the wallpaper assets are included." >&2
 fi
 for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do cp "$ROOT/configs/$rel" "$CONFIG_HOME/$rel"; done
 install -m 755 "$ROOT/scripts/niri-power-menu" "$HOME/.local/bin/niri-power-menu"
@@ -82,7 +85,7 @@ p=Path(sys.argv[1]); home=sys.argv[2]; text=p.read_text()
 text=re.sub(r'(?m)^\s*spawn-at-startup\s+"waybar"[^\n]*(?:\n|$)','',text)
 text=re.sub(r'(?m)^\s*spawn-at-startup\s+"dunst"\s*(?:\n|$)','',text)
 text=re.sub(r'(?m)^\s*spawn-at-startup\s+"swaybg"[^\n]*\n?','',text)
-startup='\n'.join(['spawn-at-startup "dunst"','spawn-at-startup "waybar"',f'spawn-at-startup "swaybg" "-i" "{home}/Pictures/Wallpapers/itsuki.jpg" "-m" "fill"'])+'\n'
+startup='\n'.join(['spawn-at-startup "dunst"','spawn-at-startup "waybar"',f'spawn-at-startup "swaybg" "-i" "{home}/Pictures/Wallpapers/itsuki.png" "-m" "fill"'])+'\n'
 m=re.search(r'(?m)^binds\s*\{',text)
 if m: text=text[:m.start()]+startup+'\n'+text[m.start():]
 else: text=startup+'\n'+text
@@ -117,5 +120,5 @@ if command -v systemctl >/dev/null 2>&1; then
   systemctl --user daemon-reload >/dev/null 2>&1 || true
 fi
 echo "Installed Itsuki Niri Rice ($DISTRO_LABEL variant). Backups: $BACKUP"
-echo "Wallpaper installed to $HOME/Pictures/Wallpapers/itsuki.jpg if present in the package."
+echo "Wallpaper installed to $HOME/Pictures/Wallpapers/itsuki.png if present in the package."
 echo "No system display-manager or LightDM settings were changed."

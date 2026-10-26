@@ -14,7 +14,7 @@ The repository contains four branding variants without needing separate reposito
 | Gentoo | Gentoo logo |
 | Neutral | No distro icon |
 
-The variants share the same rice. Only the left-side branding and backup namespace change. Neutral has no distro mark and reuses whatever wallpaper you choose; there is no separate Neutral wallpaper.
+The variants share the same rice, but each installer selects its matching desktop wallpaper and left-side branding. Neutral has no distro mark and uses a clean wallpaper without a large distro logo or star.
 
 Install a variant with one of these commands from the repository root:
 
@@ -30,7 +30,7 @@ The distro logos use Nerd-Font/Unicode glyphs. If a logo is missing in your font
 ## Features
 - Niri integration that preserves most existing settings, starts Waybar once from Niri, and creates a dated backup.
 - Waybar with Niri workspaces, clock, network, volume, battery, tray and brightness where supported.
-- Variant-specific Debian, Arch and Gentoo branding; Neutral has no distro icon and no dedicated neutral wallpaper.
+- Variant-specific Debian, Arch and Gentoo branding plus matching wallpapers; Neutral has no distro icon and uses its own logo-free wallpaper.
 - Fuzzel, Dunst and Kitty theme.
 - Click brightness/volume for a themed slider; right-click volume toggles mute. Click Wi-Fi to list NetworkManager networks.
 - `Super+E` opens a Fuzzel power menu (lock, log out, suspend, reboot, power off); `Super+D` launches apps; `Super+Return` opens Kitty.
@@ -41,11 +41,11 @@ The distro logos use Nerd-Font/Unicode glyphs. If a logo is missing in your font
 ## Install
 1. Extract the ZIP or clone the repository.
 2. Choose one variant from `variants/`.
-3. If using the full ZIP, the wallpaper is included. If cloning the GitHub source directly, put your image at `wallpaper/itsuki-niri-rice.jpg` before running the selected installer.
+3. The repository includes separate Debian, Arch, Gentoo and Neutral desktop wallpapers in `wallpaper/`; the selected installer chooses the matching image automatically.
 4. Review the printed backup path, then log out and select Niri if needed.
 5. LightDM theming is optional and separate; run `bash install-lightdm.sh` only if you want the Debian-logo login background.
 
-The main installer backs up user configs and copies the Itsuki wallpaper to `~/Pictures/Wallpapers/itsuki.jpg` for Niri. The optional LightDM script installs the separate dark Debian-logo background at `/usr/share/backgrounds/debian-rice.jpg`. It backs up the current greeter config and target wallpaper, does not switch display managers, and does not restart LightDM while a session is running.
+The main installer backs up existing wallpaper files and copies the selected variant wallpaper to `~/Pictures/Wallpapers/itsuki.png` for Niri. The optional LightDM script installs the separate dark Debian-logo background at `/usr/share/backgrounds/debian-rice.jpg`. It backs up the current greeter config and target wallpaper, does not switch display managers, and does not restart LightDM while a session is running.
 
 ## Dependencies
 Typical Debian packages: `waybar fuzzel kitty dunst swaybg swaylock python3 python3-tk brightnessctl network-manager-gnome fonts-font-awesome fonts-fork-awesome fonts-jetbrains-mono`. Niri and `fetch` are installed separately. Other distributions may use different package names.
@@ -65,7 +65,7 @@ Typical Debian packages: `waybar fuzzel kitty dunst swaybg swaylock python3 pyth
 - Wi-Fi menu requires NetworkManager (`nmcli`).
 - Kitty background opacity depends on compositor support.
 - Install `areofyl/fetch` separately; copy `configs/fetch/config` to `~/.config/fetch/config`.
-- LightDM theming is optional and separate from the main user rice installer. The full downloadable ZIP should contain both images: the Itsuki desktop wallpaper and the original dark Debian-logo LightDM wallpaper. The GitHub source tree omits binary artwork; provide `wallpaper/debian-rice.jpg` yourself when installing from a Git clone.
+- LightDM theming is optional and separate from the main user rice installer. The GitHub repository includes the four desktop wallpaper variants. The separate dark Debian-logo LightDM wallpaper (`wallpaper/debian-rice.jpg`) is not included in the source tree; provide it yourself only if you use the optional LightDM installer.
 
 ## Backups
 User config backups are stored under `~/.config/itsuki-niri-backup/<variant>/<timestamp>/`. LightDM backups are stored under `/etc/lightdm/itsuki-backup-<timestamp>/`.
