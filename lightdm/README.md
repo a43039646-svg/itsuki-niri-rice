@@ -1,3 +1,7 @@
-# Optional LightDM theme
+# LightDM GTK Greeter
 
-No custom LightDM theme files were available from the project owner. An earlier system inspection showed GDM active, so this rice intentionally does not alter `/etc/lightdm` or switch the system display manager. Add only theme files you own here if you later decide to publish them.
+The uploaded system archive identifies `/usr/sbin/lightdm` as the active display manager and `lightdm-gtk-greeter` as the configured greeter. The supplied settings were retained: Adwaita-dark theme, Adwaita icons, top panel, clock, language/session/power indicators and centered login layout.
+
+The greeter background uses the bundled `itsuki-debian-niri-rice.jpg`, installed to `/usr/share/backgrounds/itsuki-debian-niri-rice.jpg`.
+
+Run `bash install-lightdm.sh` from the extracted ZIP to install this part separately. It asks for confirmation, backs up the existing greeter config and any existing target wallpaper, and does not switch display managers or restart LightDM in the current session. The theme appears on the next login screen.
