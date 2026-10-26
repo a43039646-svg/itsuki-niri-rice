@@ -12,9 +12,9 @@ The repository contains four branding variants without needing separate reposito
 | Debian | Debian logo |
 | Arch Linux | Arch logo |
 | Gentoo | Gentoo logo |
-| Neutral | ★ Itsuki star |
+| Neutral | No distro icon |
 
-The variants share the same rice. Only the left-side branding and backup namespace change.
+The variants share the same rice. Only the left-side branding and backup namespace change. Neutral has no distro mark and reuses whatever wallpaper you choose; there is no separate Neutral wallpaper.
 
 Install a variant with one of these commands from the repository root:
 
@@ -30,7 +30,7 @@ The distro logos use Nerd-Font/Unicode glyphs. If a logo is missing in your font
 ## Features
 - Niri integration that preserves most existing settings, starts Waybar once from Niri, and creates a dated backup.
 - Waybar with Niri workspaces, clock, network, volume, battery, tray and brightness where supported.
-- Variant-specific Debian, Arch, Gentoo or neutral-star launcher branding.
+- Variant-specific Debian, Arch and Gentoo branding; Neutral has no distro icon and no dedicated neutral wallpaper.
 - Fuzzel, Dunst and Kitty theme.
 - Click brightness/volume for a themed slider; right-click volume toggles mute. Click Wi-Fi to list NetworkManager networks.
 - `Super+E` opens a Fuzzel power menu (lock, log out, suspend, reboot, power off); `Super+D` launches apps; `Super+Return` opens Kitty.
