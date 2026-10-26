@@ -75,10 +75,10 @@ python3 - "$CONFIG_HOME/niri/config.kdl" "$HOME" <<'PYNIRI'
 from pathlib import Path
 import re,sys
 p=Path(sys.argv[1]); home=sys.argv[2]; text=p.read_text()
-text=re.sub(r'(?m)^\s*spawn-at-startup\s+"waybar"\s*(?:\n|$)','',text)
+text=re.sub(r'(?m)^\s*spawn-at-startup\s+"waybar"[^\n]*(?:\n|$)','',text)
 text=re.sub(r'(?m)^\s*spawn-at-startup\s+"dunst"\s*(?:\n|$)','',text)
 text=re.sub(r'(?m)^\s*spawn-at-startup\s+"swaybg"[^\n]*\n?','',text)
-startup='\n'.join(['spawn-at-startup "dunst"',f'spawn-at-startup "swaybg" "-i" "{home}/Pictures/Wallpapers/itsuki.jpg" "-m" "fill"'])+'\n'
+startup='\n'.join(['spawn-at-startup "dunst"','spawn-at-startup "waybar"',f'spawn-at-startup "swaybg" "-i" "{home}/Pictures/Wallpapers/itsuki.jpg" "-m" "fill"'])+'\n'
 m=re.search(r'(?m)^binds\s*\{',text)
 if m: text=text[:m.start()]+startup+'\n'+text[m.start():]
 else: text=startup+'\n'+text
@@ -98,9 +98,19 @@ p.write_text(text)
 PYNIRI
 python3 -m json.tool "$CONFIG_HOME/waybar/config" >/dev/null
 if command -v niri >/dev/null 2>&1; then niri validate; fi
-if command -v systemctl >/dev/null 2>&1 && systemctl --user cat niri.service >/dev/null 2>&1; then
-  systemctl --user add-wants niri.service waybar.service
-  systemctl --user restart waybar.service 2>/dev/null || true
+# Niri is the single source of Waybar startup. Remove the old systemd dependency
+# written by earlier versions of this installer, plus any enabled user Waybar unit.
+if command -v systemctl >/dev/null 2>&1; then
+  SYSTEMD_USER_CONFIG="$CONFIG_HOME/systemd/user"
+  OLD_WAYBAR_WANT="$SYSTEMD_USER_CONFIG/niri.service.wants/waybar.service"
+  if [[ -L "$OLD_WAYBAR_WANT" ]]; then
+    rm -f "$OLD_WAYBAR_WANT"
+    rmdir "$SYSTEMD_USER_CONFIG/niri.service.wants" 2>/dev/null || true
+  fi
+  if systemctl --user cat waybar.service >/dev/null 2>&1; then
+    systemctl --user disable --now waybar.service >/dev/null 2>&1 || true
+  fi
+  systemctl --user daemon-reload >/dev/null 2>&1 || true
 fi
 echo "Installed Itsuki Niri Rice ($DISTRO_LABEL variant). Backups: $BACKUP"
 echo "Wallpaper installed to $HOME/Pictures/Wallpapers/itsuki.jpg if present in the package."
