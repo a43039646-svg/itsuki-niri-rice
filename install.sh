@@ -197,7 +197,7 @@ SLIDER_SOURCE="$ROOT/scripts/itsuki-slider.py"
 if [[ -f "$CONFIG_SOURCE/scripts/itsuki-slider.py" ]]; then SLIDER_SOURCE="$CONFIG_SOURCE/scripts/itsuki-slider.py"; fi
 install -m 755 "$SLIDER_SOURCE" "$HOME/.local/bin/itsuki-slider.py"
 install -m 755 "$ROOT/scripts/itsuki-wifi-menu.py" "$HOME/.local/bin/itsuki-wifi-menu.py"
-SHELL_NAME="$(basename "\${SHELL:-bash}")"
+SHELL_NAME="$(basename "${SHELL:-bash}")"
 case "$SHELL_NAME" in bash) SHELL_RC="$HOME/.bashrc" ;; zsh) SHELL_RC="$HOME/.zshrc" ;; *) SHELL_RC="" ;; esac
 if [[ -n "$SHELL_RC" ]]; then
   # Back up the shell startup file before creating or updating our managed block.
