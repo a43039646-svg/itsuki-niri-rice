@@ -108,7 +108,7 @@ try:
 except OSError as exc:
     print(f"Cannot read Niri config {path}: {exc}; no files were changed.", file=sys.stderr)
     raise SystemExit(1)
-if not re.search(r"(?m)^\\s*binds\\s*\\{", text):
+if not re.search(r"(?m)^\s*binds\s*\{", text):
     print(f"No top-level binds block found in {path}; no files were changed.", file=sys.stderr)
     raise SystemExit(1)
 PREFLIGHT_NIRI
