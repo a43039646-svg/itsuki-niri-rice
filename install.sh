@@ -197,15 +197,44 @@ SLIDER_SOURCE="$ROOT/scripts/itsuki-slider.py"
 if [[ -f "$CONFIG_SOURCE/scripts/itsuki-slider.py" ]]; then SLIDER_SOURCE="$CONFIG_SOURCE/scripts/itsuki-slider.py"; fi
 install -m 755 "$SLIDER_SOURCE" "$HOME/.local/bin/itsuki-slider.py"
 install -m 755 "$ROOT/scripts/itsuki-wifi-menu.py" "$HOME/.local/bin/itsuki-wifi-menu.py"
-SHELL_NAME="$(basename "${SHELL:-bash}")"
+SHELL_NAME="$(basename "\${SHELL:-bash}")"
 case "$SHELL_NAME" in bash) SHELL_RC="$HOME/.bashrc" ;; zsh) SHELL_RC="$HOME/.zshrc" ;; *) SHELL_RC="" ;; esac
-if [[ -n "$SHELL_RC" ]] && ! grep -q 'ITSUKI_FETCH_AUTOSTART' "$SHELL_RC" 2>/dev/null; then
-  cat >> "$SHELL_RC" <<'FETCHRC'
-# ITSUKI_FETCH_AUTOSTART: show animated system info in interactive terminals.
+if [[ -n "$SHELL_RC" ]]; then
+  # Back up the shell startup file before creating or updating our managed block.
+  backup "$SHELL_RC" "$(basename "$SHELL_RC")"
+  python3 - "$SHELL_RC" <<'PYFETCHRC'
+from pathlib import Path
+import re
+import sys
+
+path = Path(sys.argv[1])
+marker = "# ITSUKI_FETCH_AUTOSTART:"
+block = """# ITSUKI_FETCH_AUTOSTART: show animated system info in interactive terminals.
 if [[ $- == *i* ]] && command -v fetch >/dev/null 2>&1; then
-    fetch
-fi
-FETCHRC
+    fetch --box --shading-mode sextants
+fi"""
+try:
+    text = path.read_text() if path.exists() else ""
+except OSError as exc:
+    print(f"Could not read {path}: {exc}", file=sys.stderr)
+    raise SystemExit(1)
+
+pattern = re.compile(r"(?ms)^# ITSUKI_FETCH_AUTOSTART:[^\n]*\n.*?^fi[ \t]*(?:\n|$)")
+if marker in text:
+    match = pattern.search(text)
+    if match is None:
+        print(f"Found {marker} in {path}, but could not safely update its block.", file=sys.stderr)
+        raise SystemExit(1)
+    text = text[:match.start()] + block + "\n" + text[match.end():]
+else:
+    if text and not text.endswith("\n"):
+        text += "\n"
+    if text and not text.endswith("\n\n"):
+        text += "\n"
+    text += block + "\n"
+
+path.write_text(text)
+PYFETCHRC
 fi
 python3 - "$CONFIG_HOME/waybar/config" "$HOME/.local/bin" "$DISTRO_ICON" "$DISTRO_LABEL" <<'PYWAYBAR'
 import json,sys
