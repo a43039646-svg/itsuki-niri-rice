@@ -88,15 +88,61 @@ if [[ ! -f "$WALLPAPER_SOURCE" ]]; then
   exit 1
 fi
 
-BACKUP="$HOME/.config/itsuki-niri-backup/$DISTRO/$STAMP"
+# Verify the existing Niri config before touching any installed files.
+# The rice patches this file rather than replacing the user's whole Niri setup.
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "Python 3 is required by the installer. No changes were made." >&2
+  exit 1
+fi
+if ! python3 - "$CONFIG_HOME/niri/config.kdl" <<'PREFLIGHT_NIRI'
+from pathlib import Path
+import re
+import sys
+
+path = Path(sys.argv[1])
+if not path.is_file():
+    print(f"Niri config not found: {path}; no files were changed.", file=sys.stderr)
+    raise SystemExit(1)
+try:
+    text = path.read_text()
+except OSError as exc:
+    print(f"Cannot read Niri config {path}: {exc}; no files were changed.", file=sys.stderr)
+    raise SystemExit(1)
+if not re.search(r"(?m)^\\s*binds\\s*\\{", text):
+    print(f"No top-level binds block found in {path}; no files were changed.", file=sys.stderr)
+    raise SystemExit(1)
+PREFLIGHT_NIRI
+then
+  exit 1
+fi
+
+BACKUP="$CONFIG_HOME/itsuki-niri-backup/$DISTRO/$STAMP"
 mkdir -p "$BACKUP" "$HOME/.local/bin" "$HOME/Pictures/Wallpapers" "$CONFIG_HOME/waybar" "$CONFIG_HOME/kitty" "$CONFIG_HOME/fuzzel" "$CONFIG_HOME/dunst" "$CONFIG_HOME/fetch" "$CONFIG_HOME/xdg-desktop-portal" "$CONFIG_HOME/niri"
-backup() { local path="$1" rel="$2"; if [[ -f "$path" ]]; then mkdir -p "$BACKUP/$(dirname "$rel")"; cp -a "$path" "$BACKUP/$rel"; fi; }
-for rel in niri/config.kdl waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do backup "$CONFIG_HOME/$rel" "$rel"; done
+backup() {
+  local path="$1" rel="$2"
+  if [[ -f "$path" || -L "$path" ]]; then
+    mkdir -p "$BACKUP/$(dirname "$rel")"
+    cp -a "$path" "$BACKUP/$rel"
+  fi
+}
+for rel in niri/config.kdl waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do
+  backup "$CONFIG_HOME/$rel" "$rel"
+done
+
+# Waybar can use config.json/config.jsonc instead of config. Back them up too,
+# then remove only those known competing filenames so the selected config wins.
+for rel in waybar/config.json waybar/config.jsonc; do
+  backup "$CONFIG_HOME/$rel" "$rel"
+done
+
 for current_wallpaper in "$HOME/Pictures/Wallpapers/itsuki.png" "$HOME/Pictures/Wallpapers/itsuki.jpg"; do
   if [[ -f "$current_wallpaper" ]]; then
     backup "$current_wallpaper" "wallpaper/$(basename "$current_wallpaper")"
   fi
 done
+
+# Remove competing Waybar config aliases only after they have been backed up.
+rm -f "$CONFIG_HOME/waybar/config.json" "$CONFIG_HOME/waybar/config.jsonc"
 install -m 0644 "$WALLPAPER_SOURCE" "$HOME/Pictures/Wallpapers/itsuki.png"
 for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do cp "$CONFIG_SOURCE/$rel" "$CONFIG_HOME/$rel"; done
 install -m 755 "$ROOT/scripts/niri-power-menu" "$HOME/.local/bin/niri-power-menu"
@@ -140,7 +186,6 @@ tray=cfg.setdefault('tray',{}); tray.update({'icon-size':18,'spacing':8,'show-pa
 p.write_text(json.dumps(cfg,indent=2,ensure_ascii=False)+'\n')
 PYWAYBAR
 
-if [[ ! -f "$CONFIG_HOME/niri/config.kdl" ]]; then echo "Niri config not found: $CONFIG_HOME/niri/config.kdl; stopping before modifying Niri." >&2; exit 1; fi
 cp "$CONFIG_HOME/niri/config.kdl" "$BACKUP/niri-config.pre-patch.kdl"
 python3 - "$CONFIG_HOME/niri/config.kdl" "$HOME" <<'PYNIRI'
 from pathlib import Path
