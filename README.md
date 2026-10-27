@@ -1,104 +1,182 @@
 # Itsuki Niri Rice
 
-A themed desktop configuration pack for **Niri on Wayland**, inspired by Itsuki. It includes Waybar, Fuzzel, Kitty, Dunst, Fetch settings, quick controls for brightness/audio/Wi-Fi, and matching wallpapers.
+A themed desktop setup for the [Niri](https://github.com/niri-wm/niri) Wayland compositor. It includes coordinated Waybar, Kitty, Fuzzel, Dunst and Fetch settings, an Itsuki wallpaper, and small helper scripts.
 
-> This is a configuration pack, not a Linux distribution. It does not install Niri or system packages for you.
+**Important:** This repository configures an existing Niri installation. It does not install Niri or system packages for you. Install Niri first, log into a Niri session at least once, and then install this rice.
 
-## Themes
+![Itsuki Niri Rice wallpaper preview](wallpaper/itsuki-neutral2.png)
 
-| Variant | Colors | Waybar mark | Wallpaper | Config source |
-|---|---|---|---|---|
-| Debian | Red / rose | Debian | [View wallpaper](wallpaper/itsuki_debian_wallpaper_v2_1600x900.png) | `configs/` |
-| Arch Linux | Navy / blue | Arch | [View wallpaper](wallpaper/itsuki-arch.png) | `configs/arch/` |
-| Gentoo | Dark plum / violet | Gentoo | [View wallpaper](wallpaper/itsuki-gentoo.png) | `configs/gentoo/` |
-| Neutral | Red / rose | No distro mark | [View wallpaper](wallpaper/itsuki-neutral.png) | `configs/` |
+## Theme profiles
 
-Arch and Gentoo have their own themed copies of Waybar, Fuzzel, Kitty, Dunst, Fetch, the XDG desktop-portal preference, and the brightness/audio slider. Each of Arch, Gentoo, and Neutral has two wallpaper files: the filename with a trailing `2` includes Itsuki; the filename without `2` is the clean version.
+| Installer choice | Accent | Waybar distro logo |
+| --- | --- | --- |
+| Neutral — Itsuki only | Rose | None |
+| Arch Linux | Blue | Arch Linux |
+| Debian | Rose | Debian |
+| Gentoo | Violet | Gentoo |
 
-## Installation
+Neutral and Debian intentionally share the rose color palette. The installer also asks whether to use a wallpaper with Itsuki or a clean wallpaper without the character. A dedicated clean Debian wallpaper is not included yet, so that choice uses the neutral background.
 
-**Requirements:** a working Niri session and an existing `~/.config/niri/config.kdl`. Install the dependencies for your distribution before running the installer; package names vary.
+## 1. Install Niri
 
-Clone or download the repository, open a terminal in the repository directory, and run the main installer:
+Use the installation method recommended for your distribution. The upstream project keeps current instructions in the [Niri Getting Started guide](https://github.com/niri-wm/niri/wiki/Getting-Started).
+
+### Debian 13 (Trixie)
+
+First check whether your configured Debian repositories provide Niri:
 
 ```bash
+apt-cache policy niri
+```
+
+If the output shows a real version under `Candidate`, install it with `sudo apt install niri` and skip the Pacstall steps below. If the candidate is `(none)`, a community-maintained option is Pacstall. Pacstall is a third-party package manager, not part of Debian; its Niri package builds Niri from source and can take a while. Check the [Niri package recipe](https://github.com/pacstall/pacstall-programs/blob/master/packages/niri/niri.pacscript) and [Pacstall's Debian compatibility note](https://github.com/pacstall/pacstall/wiki/FAQ) before using it.
+
+```bash
+sudo apt update
+sudo apt install curl wget ca-certificates
+sudo bash -c "$(curl -fsSL https://pacstall.dev/q/install || wget -q https://pacstall.dev/q/install -O -)"
+sudo pacstall -I niri
+```
+
+If Pacstall or the package build fails, stop and read the error rather than trying random dependency commands. Check the upstream Niri guide for other installation/build methods.
+
+### Arch Linux
+
+Niri is available as a distribution package. Install it with:
+
+```bash
+sudo pacman -Syu niri
+```
+
+### Gentoo and other distributions
+
+Package availability and build steps vary. Use the [upstream Niri installation guide](https://github.com/niri-wm/niri/wiki/Getting-Started) and check the current package/overlay status for your distribution. Selecting the Gentoo theme in this repository changes the rice configuration; it does not install Niri or add a Gentoo overlay.
+
+## 2. Install the rice dependencies
+
+The rice installer does not install Waybar, Kitty, Fuzzel, Dunst, swaybg, fonts, or audio/brightness tools. Install the packages you do not already have using your distribution's package manager.
+
+On Debian 13, the following covers the main desktop components:
+
+```bash
+sudo apt update
+sudo apt install git waybar fuzzel kitty dunst swaybg brightnessctl python3 python3-tk xdg-desktop-portal-gtk pipewire-pulse wireplumber fonts-font-awesome fonts-fork-awesome fonts-jetbrains-mono
+```
+
+Some systems may already use a different audio stack; keep your working audio setup rather than replacing it just for this rice. The optional Wi-Fi helper needs NetworkManager (`nmcli`), Kitty and Fuzzel. The main Waybar network indicator does not launch a second network-manager window.
+
+### Optional: fix missing distro-logo glyphs
+
+The Arch, Debian and Gentoo logos use Nerd Font symbols. Font Awesome by itself, and regular JetBrains Mono by itself, may not contain those glyphs. You can install JetBrainsMono Nerd Font for your user from the [official Nerd Fonts releases](https://github.com/ryanoasis/nerd-fonts/releases):
+
+```bash
+mkdir -p ~/.local/share/fonts/JetBrainsMonoNerdFont
+curl -fL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz -o /tmp/JetBrainsMonoNerdFont.tar.xz
+tar -xf /tmp/JetBrainsMonoNerdFont.tar.xz -C ~/.local/share/fonts/JetBrainsMonoNerdFont
+fc-cache -f ~/.local/share/fonts
+```
+
+After installing a font, log out and back in (or reboot) so Waybar can reload the font cache.
+
+## 3. Start Niri once before installing the rice
+
+Log out of your current desktop, choose **Niri** from your login screen's session menu, and log in. This first launch lets Niri create its user configuration at `~/.config/niri/config.kdl`. The rice installer expects that file to exist and contain a top-level `binds` block. If Niri is already installed and you have logged into it before, you can skip this step.
+
+## 4. Download and install Itsuki Niri Rice
+
+Open a terminal and run:
+
+```bash
+git clone https://github.com/a43039646-svg/itsuki-niri-rice.git
+cd itsuki-niri-rice
 bash install.sh
 ```
 
-The installer asks you to choose a theme:
+Choose the profile that matches the look you want:
 
-1. **Itsuki only** — neutral theme with no distro logo.
-2. **Itsuki + Arch Linux** — blue profile and Arch wallpaper.
-3. **Itsuki + Debian** — red/rose profile and Debian wallpaper.
-4. **Itsuki + Gentoo** — violet profile and Gentoo wallpaper.
+1. **Neutral** — rose theme, no distro logo.
+2. **Arch Linux** — blue theme and Arch logo.
+3. **Debian** — rose theme and Debian logo.
+4. **Gentoo** — violet theme and Gentoo logo.
 
-Enter `1`, `2`, `3`, or `4` to select the profile, then choose a wallpaper style: **with Itsuki** (filename includes `2`) or **without Itsuki** (filename does not include `2`). The installer validates the selected files, backs up existing configs, and applies the matching wallpaper and profile. For direct installation without the profile menu, the individual scripts in `variants/` remain available; they use the Itsuki wallpaper by default. For scripted use, set `ITSUKI_DISTRO=arch|debian|gentoo|neutral` and optionally `ITSUKI_WALLPAPER_STYLE=character|clean`.
+Then choose a wallpaper with Itsuki or the clean wallpaper without the character. Review the prompts before confirming anything. If LightDM is detected, the installer may offer to configure its GTK greeter; this is optional and only applies if you use LightDM GTK Greeter.
 
-The installer:
-- Creates a dated backup under `~/.config/itsuki-niri-backup/<variant>/<timestamp>/`.
-- Copies the selected color profile into `~/.config/`.
-- Installs the matching wallpaper as `~/Pictures/Wallpapers/itsuki.png`.
-- Adds the rice's Niri startup entries and shortcuts while preserving the rest of the existing Niri config as much as possible.
-- Installs the shared power-menu, optional Wi-Fi-menu, and slider scripts under `~/.local/bin/`. The Wi-Fi helper is not bound to the Waybar network indicator by default, so it does not duplicate an existing network-manager UI.
-- Adds or updates a managed Fetch autostart block in interactive Bash/Zsh shells, running `fetch --box --shading-mode sextants` when the `fetch` command is installed. Existing shell startup files are backed up before the managed block is changed.
+The installer backs up existing rice configuration files before replacing them. Backups are stored under `~/.config/itsuki-niri-backup/<profile>/<timestamp>/`. It also saves the original Niri config before patching it and backs up the shell startup file before updating the managed Fetch block.
 
-After installation, log out and log back into Niri so the startup changes and wallpaper take effect. Review the backup path printed by the installer if you need to restore a previous config.
+## 5. Reboot after installation
 
-### Validate the repository
-
-Before applying an updated rice, run the read-only profile and syntax checks from the repository root:
+**When the installer finishes, reboot your computer.** This ensures Niri starts with the updated configuration, Waybar, Dunst and wallpaper commands.
 
 ```bash
-bash scripts/validate-profiles.sh
+sudo reboot
 ```
 
-The script checks the Neutral, Debian, Arch, and Gentoo configuration files, Waybar JSON/module lists, Kitty palettes, Dunst/Fuzzel settings, installer shell syntax, Python helper syntax, and the bundled LightDM GTK theme mappings. It does not change your installed desktop configuration. GitHub Actions also runs these checks on pushes and pull requests.
-
-### Important
-
-The installer expects the existing Niri config at `~/.config/niri/config.kdl` (or under `$XDG_CONFIG_HOME/niri/config.kdl`). It does **not** install Niri, Waybar, Fuzzel, Kitty, Dunst, Fetch, or system packages. Install `areofyl/fetch` separately if you want the terminal animation.
-
-Typical Debian package names for the UI dependencies are:
-
-```bash
-sudo apt install waybar fuzzel kitty dunst swaybg swaylock python3 python3-tk brightnessctl fonts-font-awesome fonts-fork-awesome fonts-jetbrains-mono
-```
-
-The distro-logo glyphs may require a Nerd Font with Linux symbols (for example, Symbols Nerd Font Mono or JetBrainsMono Nerd Font); the regular JetBrains Mono package does not guarantee those glyphs. The CSS also includes FontAwesome/ForkAwesome fallbacks for supported icons. Niri and Fetch are separate prerequisites. On Arch and Gentoo, use the corresponding package manager and package names for your installation.
+At the login screen, select **Niri** as the desktop session and log in. If you use a display manager with a session selector, it is usually shown by a gear or session menu near the password field.
 
 ## Features and shortcuts
 
-- Waybar workspaces and clock, audio/network/battery indicators, system tray, and brightness where hardware supports it.
-- Click the brightness or volume module to open the themed slider; right-click volume to mute/unmute.
-- The network module is a status indicator by default; it does not launch a second network manager. The optional Wi-Fi helper remains available at `~/.local/bin/itsuki-wifi-menu.py` if you choose to launch it manually.
-- `Super+D` — open the Fuzzel application launcher.
-- `Super+Return` — open Kitty.
-- `Super+E` — open the power menu (lock, log out of Niri, suspend, reboot, or power off).
-- Fetch runs as `fetch --box --shading-mode sextants` in new interactive Bash/Zsh terminals when installed and enabled by the installer.
+- Waybar with workspaces, clock, network, audio, battery, system tray and backlight controls when supported by the hardware.
+- Click the distro logo at the left of Waybar to open Fuzzel. The Neutral profile intentionally has no distro logo.
+- `Super + D` — open Fuzzel.
+- `Super + Enter` — open Kitty.
+- `Super + E` — open the Itsuki power menu.
+- Dunst notifications and a wallpaper loaded through `swaybg`.
+- Fetch runs in new interactive Bash/Zsh terminals as `fetch --box --shading-mode sextants` when the `fetch` command is installed.
+- Profile-specific Fuzzel, Kitty, Dunst and Waybar colors.
 
-Waybar's system tray only shows applications that expose compatible tray icons. The brightness module only appears when `/sys/class/backlight` contains a backlight device. The optional Wi-Fi helper requires NetworkManager's `nmcli`, Kitty, and Fuzzel; install the `network-manager` package only if NetworkManager is not already present.
+Fetch is a separate application and is not downloaded by this repository. See the [Fetch project](https://github.com/areofyl/fetch) if you want the terminal animation.
 
-## Optional LightDM greeter
+## Optional LightDM greeter theme
 
-After installing the desktop rice, the main installer detects `/etc/lightdm` and optionally asks whether to configure the LightDM GTK Greeter with the same profile and wallpaper style. It does not touch LightDM unless you accept that prompt.
-
-To configure LightDM later, run the separate installer:
+The main installer offers the LightDM setup if `/etc/lightdm` exists. You can also run the separate installer:
 
 ```bash
 bash install-lightdm.sh
 ```
 
-It lets you choose Debian, Arch Linux, Gentoo, or Neutral and then a background with or without Itsuki. It installs the matching GTK accent theme (rose for Debian/Neutral, blue for Arch, violet for Gentoo), including entry-field styling. The script backs up the current greeter config, any existing target image, and any existing bundled-theme files under `/etc/lightdm/itsuki-backup-<timestamp>/`, asks for confirmation before writing system files, and does not switch display managers or restart LightDM. The selected appearance is used at the next login screen.
+This only themes LightDM GTK Greeter after confirmation. It does not install LightDM, switch display managers, enable services or restart LightDM. More detail is in [`lightdm/README.md`](lightdm/README.md).
+
+## Updating and validation
+
+To download the latest repository changes and reapply the profile:
+
+```bash
+cd itsuki-niri-rice
+git pull
+bash install.sh
+```
+
+Review the installer prompts and keep the backup directory until you have confirmed everything looks right. To run the repository's read-only checks before installing, from the repository root use:
+
+```bash
+bash scripts/validate-profiles.sh
+```
+
+The checks cover the Neutral, Debian, Arch and Gentoo configuration files, Waybar JSON/module lists, Kitty palettes, Fuzzel and Dunst settings, shell syntax, Python helper syntax, and LightDM GTK theme mappings. These static checks do not replace testing the rice in a live Niri session.
+
+## Troubleshooting
+
+- **The distro logo appears as a box or numbers:** install a Nerd Font as described above, then restart the session.
+- **Colors do not match the selected profile:** rerun `bash install.sh` from the latest repository and choose the intended profile.
+- **Waybar starts twice:** reboot after installing and check that you have not separately added another Waybar autostart command to your Niri config or desktop startup.
+- **The installer says the Niri config is missing:** log into Niri once, then run the installer again.
+- **A change causes trouble:** use the backup path printed by the installer to restore your previous files.
 
 ## Repository layout
 
-- `configs/` — red/rose base profile for Debian and Neutral.
-- `configs/arch/` — blue Arch profile.
-- `configs/gentoo/` — violet Gentoo profile.
-- `variants/<name>/install.sh` — small entry point for each variant.
-- `wallpaper/` — desktop wallpaper images and their notes.
-- `scripts/` — shared power, Wi-Fi, and control scripts.
+- `configs/` — rose base profile used by Debian and Neutral.
+- `configs/arch/` — Arch blue profile.
+- `configs/gentoo/` — Gentoo violet profile.
+- `configs/lightdm/` and `lightdm/themes/` — optional LightDM GTK Greeter profiles and themes.
+- `wallpaper/` — included wallpapers.
+- `scripts/` — power menu and optional Wi-Fi helper.
+- `variants/` — convenience installer entry points for each theme.
+- `scripts/validate-profiles.sh` — read-only profile and syntax checks.
 
-## License
+## Links
 
-See [LICENSE](LICENSE).
+- [Niri project](https://github.com/niri-wm/niri)
+- [Niri installation guide](https://github.com/niri-wm/niri/wiki/Getting-Started)
+- [Pacstall](https://github.com/pacstall/pacstall)
+- [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts)
+- [Itsuki Niri Rice repository](https://github.com/a43039646-svg/itsuki-niri-rice)
