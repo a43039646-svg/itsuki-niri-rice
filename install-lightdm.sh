@@ -222,10 +222,11 @@ if [[ -e "$GTK_THEME_INDEX_DEST" || -L "$GTK_THEME_INDEX_DEST" ]]; then
   as_root cp -a "$GTK_THEME_INDEX_DEST" "$BACKUP_DIR/themes/$GTK_THEME_NAME/index.theme"
 fi
 
-as_root install -D -m 0644 "$TEMP_CONFIG" "$CONFIG_DEST"
-as_root install -D -m 0644 "$WALLPAPER_SRC" "$WALLPAPER_DEST"
+# Install the theme assets first; only then point LightDM at the new theme.
 as_root install -D -m 0644 "$GTK_THEME_CSS_SRC" "$GTK_THEME_CSS_DEST"
 as_root install -D -m 0644 "$GTK_THEME_INDEX_SRC" "$GTK_THEME_INDEX_DEST"
+as_root install -D -m 0644 "$WALLPAPER_SRC" "$WALLPAPER_DEST"
+as_root install -D -m 0644 "$TEMP_CONFIG" "$CONFIG_DEST"
 
 echo "LightDM greeter profile installed: $PROFILE_LABEL."
 echo "Config: $CONFIG_DEST"
