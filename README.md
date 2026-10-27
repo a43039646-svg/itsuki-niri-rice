@@ -19,17 +19,20 @@ Arch and Gentoo have their own themed copies of Waybar, Fuzzel, Kitty, Dunst, Fe
 
 **Requirements:** a working Niri session and an existing `~/.config/niri/config.kdl`. Install the dependencies for your distribution before running the installer; package names vary.
 
-Clone or download the repository, open a terminal in the repository directory, and run exactly one variant installer:
+Clone or download the repository, open a terminal in the repository directory, and run the main installer:
 
 ```bash
-bash variants/debian/install.sh
-# or
-bash variants/arch/install.sh
-# or
-bash variants/gentoo/install.sh
-# or
-bash variants/neutral/install.sh
+bash install.sh
 ```
+
+The installer asks you to choose a theme:
+
+1. **Itsuki only** — neutral theme with no distro logo.
+2. **Itsuki + Arch Linux** — blue profile and Arch wallpaper.
+3. **Itsuki + Debian** — red/rose profile and Debian wallpaper.
+4. **Itsuki + Gentoo** — violet profile and Gentoo wallpaper.
+
+Enter `1`, `2`, `3`, or `4`; the installer validates the selected files, backs up existing configs, and applies the matching wallpaper and profile. For direct installation without the menu, the individual scripts in `variants/` remain available.
 
 The installer:
 - Creates a dated backup under `~/.config/itsuki-niri-backup/<variant>/<timestamp>/`.
@@ -69,7 +72,7 @@ Waybar's system tray only shows applications that expose compatible tray icons. 
 
 The repository includes a LightDM GTK greeter config for the separate dark Debian-logo login wallpaper. This is independent of the desktop wallpaper variants and is **not installed by the main rice installer**.
 
-The optional `install-lightdm.sh` expects LightDM to be installed and the file `wallpaper/debian-rice.jpg` to be present. That LightDM background is not currently included in the source tree; provide your own matching image at that path before running the script. The script asks for confirmation, backs up the current greeter config/background, and does not switch display managers or restart LightDM.
+The optional `install-lightdm.sh` expects LightDM to be installed; its background image `wallpaper/debian-rice.jpg` is included in the repository. The script asks for confirmation, backs up the current greeter config/background, and does not switch display managers or restart LightDM.
 
 ## Repository layout
 

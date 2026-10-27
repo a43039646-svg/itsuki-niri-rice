@@ -11,14 +11,13 @@ Use the variant that matches the look you want. All variants share the same Niri
 
 Arch and Gentoo each have a separate copy of the Waybar config and stylesheet, Fuzzel, Kitty, Dunst, Fetch config, the XDG desktop-portal preference, and the brightness/audio slider. Debian and Neutral use the red/rose base configs. Neutral's wallpaper has no large distro logo or star.
 
-Run one installer from the repository root:
+For the interactive theme selector, run this from the repository root:
 
 ```bash
-bash variants/debian/install.sh
-bash variants/arch/install.sh
-bash variants/gentoo/install.sh
-bash variants/neutral/install.sh
+bash install.sh
 ```
+
+Choose **1** for Itsuki/Neutral, **2** for Itsuki + Arch, **3** for Itsuki + Debian, or **4** for Itsuki + Gentoo. The scripts under `variants/` still install a specific profile directly without showing the menu.
 
 The installer expects an existing, working `~/.config/niri/config.kdl`. It backs up the current user configs, copies the selected profile, chooses the matching desktop wallpaper, and adds the rice's Niri startup entries and shortcuts. It does not install Niri or system packages.
 

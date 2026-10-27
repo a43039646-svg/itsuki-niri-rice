@@ -8,5 +8,6 @@ The main installer selects the wallpaper matching the chosen variant and install
 | `itsuki-arch.png` | Arch Linux | Blue background and blue-tinted petals |
 | `itsuki-gentoo.png` | Gentoo | Purple background and purple-tinted petals |
 | `itsuki-neutral.png` | Neutral | Red/pink background, without a large distro logo or star |
+| `debian-rice.jpg` | LightDM | Dark Debian-logo background for the login greeter |
 
-The optional LightDM GTK greeter script expects another file, `debian-rice.jpg`, at this location. That login-screen background is separate from the desktop wallpapers and is not included in the current source tree.
+The LightDM background is separate from the desktop wallpapers and is used only by the optional `install-lightdm.sh` script.
