@@ -39,7 +39,7 @@ The installer:
 - Copies the selected color profile into `~/.config/`.
 - Installs the matching wallpaper as `~/Pictures/Wallpapers/itsuki.png`.
 - Adds the rice's Niri startup entries and shortcuts while preserving the rest of the existing Niri config as much as possible.
-- Installs the shared power-menu, Wi-Fi-menu, and slider scripts under `~/.local/bin/`.
+- Installs the shared power-menu, optional Wi-Fi-menu, and slider scripts under `~/.local/bin/`. The Wi-Fi helper is not bound to the Waybar network indicator by default, so it does not duplicate an existing network-manager UI.
 - Adds Fetch to interactive Bash/Zsh shells if the `fetch` command is installed.
 
 After installation, log out and log back into Niri so the startup changes and wallpaper take effect. Review the backup path printed by the installer if you need to restore a previous config.
@@ -51,7 +51,7 @@ The installer expects the existing Niri config at `~/.config/niri/config.kdl` (o
 Typical Debian package names for the UI dependencies are:
 
 ```bash
-sudo apt install waybar fuzzel kitty dunst swaybg swaylock python3 python3-tk brightnessctl network-manager-gnome fonts-font-awesome fonts-fork-awesome fonts-jetbrains-mono
+sudo apt install waybar fuzzel kitty dunst swaybg swaylock python3 python3-tk brightnessctl fonts-font-awesome fonts-fork-awesome fonts-jetbrains-mono
 ```
 
 Niri and Fetch are separate prerequisites. On Arch and Gentoo, use the corresponding package manager and package names for your installation.
@@ -60,13 +60,13 @@ Niri and Fetch are separate prerequisites. On Arch and Gentoo, use the correspon
 
 - Waybar workspaces and clock, audio/network/battery indicators, system tray, and brightness where hardware supports it.
 - Click the brightness or volume module to open the themed slider; right-click volume to mute/unmute.
-- Click the network module to choose a Wi-Fi network through NetworkManager.
+- The network module is a status indicator by default; it does not launch a second network manager. The optional Wi-Fi helper remains available at `~/.local/bin/itsuki-wifi-menu.py` if you choose to launch it manually.
 - `Super+D` — open the Fuzzel application launcher.
 - `Super+Return` — open Kitty.
 - `Super+E` — open the power menu (lock, log out of Niri, suspend, reboot, or power off).
 - Fetch runs in new interactive Bash/Zsh terminals when installed and enabled by the installer.
 
-Waybar's system tray only shows applications that expose compatible tray icons. The brightness module only appears when `/sys/class/backlight` contains a backlight device. Wi-Fi selection requires NetworkManager's `nmcli`.
+Waybar's system tray only shows applications that expose compatible tray icons. The brightness module only appears when `/sys/class/backlight` contains a backlight device. The optional Wi-Fi helper requires NetworkManager's `nmcli`, Kitty, and Fuzzel; install the `network-manager` package only if NetworkManager is not already present.
 
 ## Optional LightDM greeter
 
@@ -78,7 +78,7 @@ To configure LightDM later, run the separate installer:
 bash install-lightdm.sh
 ```
 
-It lets you choose Debian, Arch Linux, Gentoo, or Neutral and then a background with or without Itsuki. The script backs up the current greeter config and any existing target image under `/etc/lightdm/itsuki-backup-<timestamp>/`, asks for confirmation before writing system files, and does not switch display managers or restart LightDM. The selected appearance is used at the next login screen.
+It lets you choose Debian, Arch Linux, Gentoo, or Neutral and then a background with or without Itsuki. It installs the matching GTK accent theme (rose for Debian/Neutral, blue for Arch, violet for Gentoo), including entry-field styling. The script backs up the current greeter config, any existing target image, and any existing bundled-theme files under `/etc/lightdm/itsuki-backup-<timestamp>/`, asks for confirmation before writing system files, and does not switch display managers or restart LightDM. The selected appearance is used at the next login screen.
 
 ## Repository layout
 
