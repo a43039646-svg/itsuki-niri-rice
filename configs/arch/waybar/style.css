@@ -13,7 +13,7 @@ window#waybar {
 }
 
 #custom-distro {
-    font-family: "ForkAwesome", "FontAwesome";
+    font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", "Symbols Nerd Font", "Symbols Nerd Font Mono", "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif;
     font-size: 19px;
     color: #5caeff;
     padding: 0 12px;
