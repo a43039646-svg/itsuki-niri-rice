@@ -224,10 +224,10 @@ else:
 right=cfg.setdefault('modules-right',[])
 if 'tray' not in right: right.append('tray')
 backlight=Path('/sys/class/backlight')
-if any(backlight.iterdir()):
+if backlight.is_dir() and any(backlight.iterdir()):
     if 'backlight' not in right: right.insert(0,'backlight')
     cfg['backlight']={'format':' {percent}%','tooltip':True,'on-click':f'python3 {bin / "itsuki-slider.py"} brightness','on-scroll-up':'brightnessctl -c backlight set +5%','on-scroll-down':'brightnessctl -c backlight set 5%-'}
-network=cfg.setdefault('network',{}); network.update({'format-wifi':' {signalStrength}%','format-ethernet':' LAN','format-disconnected':' offline','on-click':f'python3 {bin / "itsuki-wifi-menu.py"}'})
+network=cfg.setdefault('network',{}); network.update({'format-wifi':' {signalStrength}%','format-ethernet':' LAN','format-disconnected':' offline'})
 sound=cfg.setdefault('pulseaudio',{}); sound.update({'format':' {volume}%','format-muted':' muted','on-click':f'python3 {bin / "itsuki-slider.py"} volume','on-click-right':'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle','scroll-step':5})
 tray=cfg.setdefault('tray',{}); tray.update({'icon-size':18,'spacing':8,'show-passive-items':True,'tooltip':True})
 p.write_text(json.dumps(cfg,indent=2,ensure_ascii=False)+'\n')
