@@ -275,6 +275,32 @@ if command -v systemctl >/dev/null 2>&1; then
   fi
   systemctl --user daemon-reload >/dev/null 2>&1 || true
 fi
+
+# LightDM is optional. If it is present, offer the matching greeter setup after
+# the desktop rice is installed; the dedicated script handles backups/consent.
+if [[ -d /etc/lightdm ]]; then
+  printf '\nLightDM GTK Greeter was detected.\n'
+  if [[ -r /dev/tty && -w /dev/tty ]]; then
+    read -r -p "Also configure the LightDM login screen with this theme? [y/N] " configure_lightdm </dev/tty || configure_lightdm=""
+    case "$configure_lightdm" in
+      y|Y|yes|YES)
+        if [[ -f "$ROOT/install-lightdm.sh" ]]; then
+          ITSUKI_LIGHTDM_PROFILE="$DISTRO" \
+          ITSUKI_LIGHTDM_WALLPAPER="$WALLPAPER_STYLE" \
+            bash "$ROOT/install-lightdm.sh"
+        else
+          echo "install-lightdm.sh was not found; skipping LightDM setup." >&2
+        fi
+        ;;
+      *) echo "Skipping optional LightDM setup." ;;
+    esac
+  else
+    echo "No interactive terminal; skipping optional LightDM setup."
+  fi
+else
+  echo "LightDM config directory /etc/lightdm was not found; skipping optional greeter setup."
+fi
+
 echo "Installed Itsuki Niri Rice ($DISTRO_LABEL variant). Backups: $BACKUP"
 echo "Wallpaper installed to $HOME/Pictures/Wallpapers/itsuki.png if present in the package."
-echo "No system display-manager or LightDM settings were changed."
+echo "LightDM was left unchanged unless you explicitly accepted its separate setup prompt."
