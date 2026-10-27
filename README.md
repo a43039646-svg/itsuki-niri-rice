@@ -60,7 +60,7 @@ On Debian 13, the following covers the main desktop components:
 
 ```bash
 sudo apt update
-sudo apt install git waybar fuzzel kitty dunst swaybg brightnessctl python3 python3-tk xdg-desktop-portal-gtk pipewire-pulse wireplumber fonts-font-awesome fonts-fork-awesome fonts-jetbrains-mono
+sudo apt install git curl waybar fuzzel kitty dunst swaybg brightnessctl python3 python3-tk xdg-desktop-portal-gtk pipewire-pulse wireplumber fonts-font-awesome fonts-fork-awesome fonts-jetbrains-mono
 ```
 
 Some systems may already use a different audio stack; keep your working audio setup rather than replacing it just for this rice. The optional Wi-Fi helper needs NetworkManager (`nmcli`), Kitty and Fuzzel. The main Waybar network indicator does not launch a second network-manager window.
