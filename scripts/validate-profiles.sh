@@ -81,7 +81,16 @@ for name in sys.argv[1:]:
 PY
 echo 'OK'
 
-printf '[LightDM] checking all profile files... '
+printf '[LightDM] checking profile configs and GTK themes... '
+grep -Fxq 'theme-name=Itsuki-Rose' "$ROOT/configs/lightdm/lightdm-gtk-greeter.conf"
+grep -Fxq 'theme-name=Itsuki-Rose' "$ROOT/configs/lightdm/lightdm-gtk-greeter-neutral.conf"
+grep -Fxq 'theme-name=Itsuki-Arch' "$ROOT/configs/lightdm/lightdm-gtk-greeter-arch.conf"
+grep -Fxq 'theme-name=Itsuki-Gentoo' "$ROOT/configs/lightdm/lightdm-gtk-greeter-gentoo.conf"
+for theme in Itsuki-Rose Itsuki-Arch Itsuki-Gentoo; do
+    [[ -f "$ROOT/lightdm/themes/$theme/gtk-3.0/gtk.css" ]]
+    [[ -f "$ROOT/lightdm/themes/$theme/index.theme" ]]
+    grep -q 'entry:focus' "$ROOT/lightdm/themes/$theme/gtk-3.0/gtk.css"
+done
 for conf in "$ROOT/configs/lightdm/lightdm-gtk-greeter.conf" "$ROOT/configs/lightdm/lightdm-gtk-greeter-arch.conf" "$ROOT/configs/lightdm/lightdm-gtk-greeter-gentoo.conf" "$ROOT/configs/lightdm/lightdm-gtk-greeter-neutral.conf"; do
     grep -q '^background=' "$conf"
     grep -q '^theme-name=' "$conf"
@@ -89,7 +98,4 @@ done
 echo 'OK'
 
 echo
-echo 'Static checks passed for Neutral, Debian, Arch, and Gentoo.'
-if [[ "$(grep -h '^theme-name=' "$ROOT"/configs/lightdm/lightdm-gtk-greeter*.conf | sort -u | wc -l)" -eq 1 ]]; then
-    echo 'NOTE: LightDM profiles currently use the same GTK theme; their password-field colors are not profile-specific.'
-fi
+echo 'Static checks passed for Neutral, Debian, Arch, Gentoo, and the LightDM GTK themes.'
