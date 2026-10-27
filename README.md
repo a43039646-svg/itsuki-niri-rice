@@ -40,7 +40,7 @@ The installer:
 - Installs the matching wallpaper as `~/Pictures/Wallpapers/itsuki.png`.
 - Adds the rice's Niri startup entries and shortcuts while preserving the rest of the existing Niri config as much as possible.
 - Installs the shared power-menu, optional Wi-Fi-menu, and slider scripts under `~/.local/bin/`. The Wi-Fi helper is not bound to the Waybar network indicator by default, so it does not duplicate an existing network-manager UI.
-- Adds Fetch to interactive Bash/Zsh shells if the `fetch` command is installed.
+- Adds or updates a managed Fetch autostart block in interactive Bash/Zsh shells, running `fetch --box --shading-mode sextants` when the `fetch` command is installed. Existing shell startup files are backed up before the managed block is changed.
 
 After installation, log out and log back into Niri so the startup changes and wallpaper take effect. Review the backup path printed by the installer if you need to restore a previous config.
 
@@ -74,7 +74,7 @@ The distro-logo glyphs may require a Nerd Font with Linux symbols (for example, 
 - `Super+D` — open the Fuzzel application launcher.
 - `Super+Return` — open Kitty.
 - `Super+E` — open the power menu (lock, log out of Niri, suspend, reboot, or power off).
-- Fetch runs in new interactive Bash/Zsh terminals when installed and enabled by the installer.
+- Fetch runs as `fetch --box --shading-mode sextants` in new interactive Bash/Zsh terminals when installed and enabled by the installer.
 
 Waybar's system tray only shows applications that expose compatible tray icons. The brightness module only appears when `/sys/class/backlight` contains a backlight device. The optional Wi-Fi helper requires NetworkManager's `nmcli`, Kitty, and Fuzzel; install the `network-manager` package only if NetworkManager is not already present.
 
