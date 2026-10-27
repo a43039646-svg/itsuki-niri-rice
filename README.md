@@ -13,7 +13,7 @@ A themed desktop configuration pack for **Niri on Wayland**, inspired by Itsuki.
 | Gentoo | Dark plum / violet | Gentoo | [View wallpaper](wallpaper/itsuki-gentoo.png) | `configs/gentoo/` |
 | Neutral | Red / rose | No distro mark | [View wallpaper](wallpaper/itsuki-neutral.png) | `configs/` |
 
-Arch and Gentoo have their own themed copies of Waybar, Fuzzel, Kitty, Dunst, Fetch, the XDG desktop-portal preference, and the brightness/audio slider. Debian and Neutral use the red/rose base theme; Neutral has no large distro logo or star on its wallpaper.
+Arch and Gentoo have their own themed copies of Waybar, Fuzzel, Kitty, Dunst, Fetch, the XDG desktop-portal preference, and the brightness/audio slider. The Arch, Gentoo, and Neutral wallpapers intentionally omit the anime character; Neutral also has no distro logo. Debian keeps the original red/rose Debian artwork.
 
 ## Installation
 
