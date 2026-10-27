@@ -70,9 +70,13 @@ Waybar's system tray only shows applications that expose compatible tray icons. 
 
 ## Optional LightDM greeter
 
-The repository includes a LightDM GTK greeter config for the separate dark Debian-logo login wallpaper. This is independent of the desktop wallpaper variants and is **not installed by the main rice installer**.
+LightDM has a separate installer; it is **not run by the main rice installer**. If LightDM and LightDM GTK Greeter are installed, run:
 
-The optional `install-lightdm.sh` expects LightDM to be installed; its background image `wallpaper/debian-rice.jpg` is included in the repository. The script asks for confirmation, backs up the current greeter config/background, and does not switch display managers or restart LightDM.
+```bash
+bash install-lightdm.sh
+```
+
+Choose Debian, Arch Linux, Gentoo, or Neutral, then choose a background with or without Itsuki. The script uses a matching profile and wallpaper, backs up the current greeter config and any existing target image under `/etc/lightdm/itsuki-backup-<timestamp>/`, and asks for confirmation before writing system files. It does not switch display managers or restart LightDM. The selected appearance is used at the next login screen.
 
 ## Repository layout
 

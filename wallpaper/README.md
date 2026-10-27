@@ -16,3 +16,7 @@ The main installer selects the matching wallpaper and installs it as `~/Pictures
 The filename convention for Arch, Gentoo, and Neutral is intentional: a trailing `2` marks the version with Itsuki, and the version without `2` is character-free. Since no separate Debian-specific character-free wallpaper is present, choosing the clean style for the Debian profile uses `itsuki-neutral.png`.
 
 The LightDM background is separate from the desktop wallpaper and is used only by the optional `install-lightdm.sh` script.
+
+## LightDM backgrounds
+
+`install-lightdm.sh` uses the selected profile's wallpaper for the login greeter too. Debian's clean greeter uses `debian-rice.jpg`; Arch, Gentoo, and Neutral use their matching `itsuki-*.png` image. Choosing a filename variant with a trailing `2` selects the matching version with Itsuki for Arch, Gentoo, and Neutral.

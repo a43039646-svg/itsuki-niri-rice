@@ -1,7 +1,15 @@
 # LightDM GTK Greeter
 
-The uploaded system archive identifies `/usr/sbin/lightdm` as the active display manager and `lightdm-gtk-greeter` as the configured greeter. The original config used `/usr/share/backgrounds/debian-rice.png`; the full rice ZIP contains the provided dark Debian-logo wallpaper as `wallpaper/debian-rice.jpg`, and the themed config points to `/usr/share/backgrounds/debian-rice.jpg`.
+This optional part configures the **LightDM GTK Greeter** with the same four visual profiles as the desktop rice: Debian, Arch Linux, Gentoo, and Neutral. It is separate from the main Niri installer.
 
-The original settings were retained: Adwaita-dark theme, Adwaita icons, top panel, clock, language/session/power indicators and centered login layout. The desktop itself keeps the separate Itsuki wallpaper.
+Run this from the full repository checkout:
 
-Run `bash install-lightdm.sh` from the full ZIP to install this part separately. If using a Git clone, provide `wallpaper/debian-rice.jpg` first. The script asks for confirmation, backs up the existing greeter config and any existing target JPEG, and does not switch display managers or restart LightDM in the current session. The theme appears on the next login screen.
+```bash
+bash install-lightdm.sh
+```
+
+The installer asks for a profile and then a background style (with or without Itsuki). It uses the matching config under `configs/lightdm/` and the corresponding image under `wallpaper/`. The Debian clean background uses `wallpaper/debian-rice.jpg`; the Arch, Gentoo, and Neutral profiles use their matching wallpapers.
+
+The installer backs up the existing `/etc/lightdm/lightdm-gtk-greeter.conf` and any existing target background to `/etc/lightdm/itsuki-backup-<timestamp>/` before replacing anything. It asks for confirmation and does not install LightDM, switch display managers, enable services, or restart LightDM. Changes appear the next time the greeter is shown.
+
+For non-interactive use, set both `ITSUKI_LIGHTDM_PROFILE` (`debian`, `arch`, `gentoo`, or `neutral`) and `ITSUKI_LIGHTDM_WALLPAPER` (`character` or `clean`). The installer still asks for confirmation before changing system files.
