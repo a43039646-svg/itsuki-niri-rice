@@ -163,11 +163,19 @@ printf 'Background image: %s\n' "$WALLPAPER_SRC"
 printf '\nThis will update %s and install the selected background.\n' "$CONFIG_DEST"
 printf 'It will not switch display managers or restart LightDM.\n'
 
-read -r -p "Continue? [y/N] " answer </dev/tty
-case "$answer" in
-  y|Y|yes|YES) ;;
-  *) echo "Cancelled."; exit 0 ;;
-esac
+if [[ -r /dev/tty && -w /dev/tty ]]; then
+  read -r -p "Continue? [y/N] " answer </dev/tty
+  case "$answer" in
+    y|Y|yes|YES) ;;
+    *) echo "Cancelled."; exit 0 ;;
+  esac
+elif [[ "${ITSUKI_LIGHTDM_CONFIRM:-}" == "yes" ]]; then
+  echo "ITSUKI_LIGHTDM_CONFIRM=yes: proceeding with the requested system config change."
+else
+  echo "No interactive terminal available; no changes were made." >&2
+  echo "For deliberate automated installation, also set ITSUKI_LIGHTDM_CONFIRM=yes." >&2
+  exit 2
+fi
 
 as_root() {
   if [[ "$EUID" -eq 0 ]]; then

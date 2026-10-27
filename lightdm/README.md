@@ -12,4 +12,4 @@ The installer asks for a profile and then a background style (with or without It
 
 The installer backs up the existing `/etc/lightdm/lightdm-gtk-greeter.conf` and any existing target background to `/etc/lightdm/itsuki-backup-<timestamp>/` before replacing anything. It asks for confirmation and does not install LightDM, switch display managers, enable services, or restart LightDM. Changes appear the next time the greeter is shown.
 
-For non-interactive use, set both `ITSUKI_LIGHTDM_PROFILE` (`debian`, `arch`, `gentoo`, or `neutral`) and `ITSUKI_LIGHTDM_WALLPAPER` (`character` or `clean`). The installer still asks for confirmation before changing system files.
+For automated use, set `ITSUKI_LIGHTDM_PROFILE` (`debian`, `arch`, `gentoo`, or `neutral`), `ITSUKI_LIGHTDM_WALLPAPER` (`character` or `clean`), and explicitly set `ITSUKI_LIGHTDM_CONFIRM=yes`. Without that confirmation flag or an interactive terminal confirmation, it makes no system changes.
