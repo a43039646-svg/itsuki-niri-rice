@@ -155,7 +155,7 @@ try:
 except OSError as exc:
     print(f"Cannot read Niri config {path}: {exc}; no files were changed.", file=sys.stderr)
     raise SystemExit(1)
-if not re.search(r"(?m)^\s*binds\s*\{", text):
+if not re.search(r"(?m)^[ \t]*binds\s*\{", text):
     print(f"No top-level binds block found in {path}; no files were changed.", file=sys.stderr)
     raise SystemExit(1)
 PREFLIGHT_NIRI
@@ -238,11 +238,11 @@ python3 - "$CONFIG_HOME/niri/config.kdl" "$HOME" <<'PYNIRI'
 from pathlib import Path
 import re,sys
 p=Path(sys.argv[1]); home=sys.argv[2]; text=p.read_text()
-text=re.sub(r'(?m)^\s*spawn-at-startup\s+"waybar"[^\n]*(?:\n|$)','',text)
-text=re.sub(r'(?m)^\s*spawn-at-startup\s+"dunst"\s*(?:\n|$)','',text)
-text=re.sub(r'(?m)^\s*spawn-at-startup\s+"swaybg"[^\n]*\n?','',text)
+text=re.sub(r'(?m)^[ \t]*spawn-at-startup\s+"waybar"[^\n]*(?:\n|$)','',text)
+text=re.sub(r'(?m)^[ \t]*spawn-at-startup\s+"dunst"\s*(?:\n|$)','',text)
+text=re.sub(r'(?m)^[ \t]*spawn-at-startup\s+"swaybg"[^\n]*\n?','',text)
 startup='\n'.join(['spawn-at-startup "dunst"','spawn-at-startup "waybar"',f'spawn-at-startup "swaybg" "-i" "{home}/Pictures/Wallpapers/itsuki.png" "-m" "fill"'])+'\n'
-m=re.search(r'(?m)^binds\s*\{',text)
+m=re.search(r'(?m)^[ \t]*binds\s*\{',text)
 if m: text=text[:m.start()]+startup+'\n'+text[m.start():]
 else: text=startup+'\n'+text
 lines=text.splitlines(); out=[]
@@ -251,7 +251,7 @@ for line in lines:
     if re.match(r'^(?:Mod|Super)\+D\b',s) or re.match(r'^Mod\+Return\b',s) or re.match(r'^Super\+E\b',s): continue
     out.append(line)
 text='\n'.join(out)+'\n'
-m=re.search(r'(?m)^binds\s*\{',text)
+m=re.search(r'(?m)^[ \t]*binds\s*\{',text)
 if not m: raise SystemExit('No binds block found; your backup is safe, but Niri shortcuts were not added.')
 ins=('    Mod+D hotkey-overlay-title="Application Launcher: Fuzzel" { spawn "fuzzel"; }\n'
      '    Mod+Return hotkey-overlay-title="Terminal: Kitty" { spawn "kitty"; }\n'
