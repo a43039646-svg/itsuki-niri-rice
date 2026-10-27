@@ -39,6 +39,9 @@ if cfg["modules-right"].count("tray") != 1:
     raise SystemExit(f"{waybar_path}: tray must occur exactly once")
 if len(modules) != len(set(modules)):
     raise SystemExit(f"{waybar_path}: a module is assigned to more than one position")
+network = cfg.get("network", {})
+if "itsuki-wifi-menu.py" in str(network.get("on-click", "")):
+    raise SystemExit(f"{waybar_path}: network indicator should not launch a duplicate Wi-Fi manager by default")
 
 # Make sure every Waybar custom module referenced by the lists has a definition.
 for module in modules:
@@ -65,7 +68,14 @@ PY
     echo 'OK'
 done
 
-printf '\n[Installer] checking shell syntax... '
+printf '\n[Waybar] checking icon font fallbacks... '
+for style in "$ROOT/configs/waybar/style.css" "$ROOT/configs/arch/waybar/style.css" "$ROOT/configs/gentoo/waybar/style.css"; do
+    grep -q 'ForkAwesome' "$style"
+    grep -q 'Symbols Nerd Font' "$style"
+done
+echo 'OK'
+
+printf '[Installer] checking shell syntax... '
 for script in "$ROOT/install.sh" "$ROOT/install-lightdm.sh" "$ROOT/variants/neutral/install.sh" "$ROOT/variants/debian/install.sh" "$ROOT/variants/arch/install.sh" "$ROOT/variants/gentoo/install.sh"; do
     bash -n "$script"
 done
