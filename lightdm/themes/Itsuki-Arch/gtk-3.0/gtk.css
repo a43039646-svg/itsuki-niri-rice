@@ -73,3 +73,69 @@ button.suggested-action:focus {
     background-color: #a5d8ff;
     border-color: #a5d8ff;
 }
+
+/* LightDM-specific selectors ensure the login fields use the chosen accent. */
+.lightdm-gtk-greeter {
+    color: #edf5ff;
+}
+
+#panel_window {
+    color: #edf5ff;
+    background-color: rgba(8, 10, 24, 0.86);
+}
+
+#login_window,
+#shutdown_dialog,
+#restart_dialog {
+    color: #edf5ff;
+    background-color: #0c1529;
+    background-image: none;
+    border: 1px solid #315b83;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
+}
+
+#login_window .entry {
+    color: #edf5ff;
+    caret-color: #5caeff;
+    background-color: #081226;
+    background-image: none;
+    border: 1px solid #315b83;
+    border-radius: 7px;
+    box-shadow: none;
+    padding: 7px 10px;
+}
+
+#login_window .entry:focus,
+#login_window .entry:hover {
+    color: #edf5ff;
+    background-color: #081226;
+    background-image: none;
+    border-color: #5caeff;
+    box-shadow: 0 0 0 1px #5caeff;
+}
+
+#login_window .button,
+#shutdown_dialog .button,
+#restart_dialog .button {
+    color: #edf5ff;
+    background-color: #15233b;
+    background-image: none;
+    border: 1px solid #315b83;
+    border-radius: 8px;
+}
+
+#login_window .button:hover,
+#shutdown_dialog .button:hover,
+#restart_dialog .button:hover,
+#login_window .button:focus,
+#shutdown_dialog .button:focus,
+#restart_dialog .button:focus {
+    color: #edf5ff;
+    background-color: #1b3453;
+    border-color: #5caeff;
+}
+
+#login_window #user_combobox {
+    color: #edf5ff;
+}
