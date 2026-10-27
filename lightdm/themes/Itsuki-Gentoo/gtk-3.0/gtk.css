@@ -1,0 +1,75 @@
+/* Dark violet GTK theme for the Itsuki LightDM greeter. */
+@import url("resource:///org/gtk/libgtk/theme/Adwaita/gtk-contained-dark.css");
+
+@define-color theme_bg_color #100b21;
+@define-color theme_fg_color #f5efff;
+@define-color theme_base_color #1a1230;
+@define-color theme_text_color #f5efff;
+@define-color theme_selected_bg_color #382450;
+@define-color theme_selected_fg_color #ffffff;
+@define-color theme_unfocused_bg_color #100b21;
+@define-color theme_unfocused_fg_color #f5efff;
+@define-color theme_unfocused_base_color #1a1230;
+@define-color theme_unfocused_text_color #f5efff;
+
+entry,
+spinbutton,
+combobox > box > button,
+combobox entry {
+    color: @theme_text_color;
+    background-color: #1a1230;
+    background-image: none;
+    border: 1px solid #65458b;
+    border-radius: 7px;
+    box-shadow: none;
+    padding: 7px 10px;
+    caret-color: #b58aff;
+}
+
+entry:focus,
+spinbutton:focus,
+combobox entry:focus {
+    border-color: #b58aff;
+    box-shadow: 0 0 0 1px #b58aff;
+}
+
+entry selection,
+textview text selection {
+    background-color: #382450;
+    color: #ffffff;
+}
+
+button {
+    color: #f5efff;
+    background-color: #211532;
+    background-image: none;
+    border: 1px solid #65458b;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+button:hover,
+button:focus {
+    background-color: #332048;
+    border-color: #b58aff;
+}
+
+button:active,
+button:checked {
+    color: #ffffff;
+    background-color: #382450;
+    border-color: #b58aff;
+}
+
+button.suggested-action {
+    color: #100b21;
+    background-color: #b58aff;
+    border-color: #b58aff;
+}
+
+button.suggested-action:hover,
+button.suggested-action:focus {
+    color: #100b21;
+    background-color: #d8bcff;
+    border-color: #d8bcff;
+}
