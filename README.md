@@ -44,6 +44,16 @@ The installer:
 
 After installation, log out and log back into Niri so the startup changes and wallpaper take effect. Review the backup path printed by the installer if you need to restore a previous config.
 
+### Validate the repository
+
+Before applying an updated rice, run the read-only profile and syntax checks from the repository root:
+
+```bash
+bash scripts/validate-profiles.sh
+```
+
+The script checks the Neutral, Debian, Arch, and Gentoo configuration files, Waybar JSON/module lists, Kitty palettes, Dunst/Fuzzel settings, installer shell syntax, Python helper syntax, and the bundled LightDM GTK theme mappings. It does not change your installed desktop configuration. GitHub Actions also runs these checks on pushes and pull requests.
+
 ### Important
 
 The installer expects the existing Niri config at `~/.config/niri/config.kdl` (or under `$XDG_CONFIG_HOME/niri/config.kdl`). It does **not** install Niri, Waybar, Fuzzel, Kitty, Dunst, Fetch, or system packages. Install `areofyl/fetch` separately if you want the terminal animation.
