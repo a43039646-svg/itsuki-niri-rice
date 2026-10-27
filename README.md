@@ -54,7 +54,7 @@ Typical Debian package names for the UI dependencies are:
 sudo apt install waybar fuzzel kitty dunst swaybg swaylock python3 python3-tk brightnessctl fonts-font-awesome fonts-fork-awesome fonts-jetbrains-mono
 ```
 
-Niri and Fetch are separate prerequisites. On Arch and Gentoo, use the corresponding package manager and package names for your installation.
+The distro-logo glyphs may require a Nerd Font with Linux symbols (for example, Symbols Nerd Font Mono or JetBrainsMono Nerd Font); the regular JetBrains Mono package does not guarantee those glyphs. The CSS also includes FontAwesome/ForkAwesome fallbacks for supported icons. Niri and Fetch are separate prerequisites. On Arch and Gentoo, use the corresponding package manager and package names for your installation.
 
 ## Features and shortcuts
 
