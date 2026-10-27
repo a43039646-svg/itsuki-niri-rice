@@ -61,11 +61,58 @@ else
     esac
   done
 fi
+
+# Main installer offers a choice of the same theme with or without the character.
+# Filenames ending in "2" are the character versions; filenames without "2" are clean.
+if [[ -n "${ITSUKI_WALLPAPER_STYLE:-}" ]]; then
+  WALLPAPER_STYLE="$ITSUKI_WALLPAPER_STYLE"
+elif [[ -n "${ITSUKI_DISTRO:-}" ]]; then
+  # Direct variant entry points keep their familiar default: include Itsuki.
+  WALLPAPER_STYLE="character"
+else
+  printf '\nWallpaper style\n'
+  printf '  1) With Itsuki (wallpaper filename includes 2)\n'
+  printf '  2) Without Itsuki (clean wallpaper, no 2 in filename)\n\n'
+
+  while true; do
+    if ! IFS= read -r -p "Choose wallpaper style [1-2]: " wallpaper_choice </dev/tty; then
+      echo "No wallpaper style received; installation cancelled." >&2
+      exit 2
+    fi
+    case "$wallpaper_choice" in
+      1) WALLPAPER_STYLE="character"; break ;;
+      2) WALLPAPER_STYLE="clean"; break ;;
+      *) echo "Invalid choice. Enter 1 or 2." >&2 ;;
+    esac
+  done
+fi
+case "$WALLPAPER_STYLE" in
+  character|clean) ;;
+  *) echo "Unknown ITSUKI_WALLPAPER_STYLE: $WALLPAPER_STYLE (use character or clean)." >&2; exit 2 ;;
+esac
+
 case "$DISTRO" in
-  debian) DISTRO_ICON=''; DISTRO_LABEL='Debian'; WALLPAPER_FILE='itsuki_debian_wallpaper_v2_1600x900.png'; CONFIG_SOURCE="$ROOT/configs" ;;
-  arch) DISTRO_ICON=''; DISTRO_LABEL='Arch Linux'; WALLPAPER_FILE='itsuki-arch.png'; CONFIG_SOURCE="$ROOT/configs/arch" ;;
-  gentoo) DISTRO_ICON=''; DISTRO_LABEL='Gentoo'; WALLPAPER_FILE='itsuki-gentoo.png'; CONFIG_SOURCE="$ROOT/configs/gentoo" ;;
-  neutral) DISTRO_ICON=''; DISTRO_LABEL='Itsuki Niri Rice'; WALLPAPER_FILE='itsuki-neutral.png'; CONFIG_SOURCE="$ROOT/configs" ;;
+  debian)
+    DISTRO_ICON=''; DISTRO_LABEL='Debian'; CONFIG_SOURCE="$ROOT/configs"
+    if [[ "$WALLPAPER_STYLE" == "character" ]]; then
+      WALLPAPER_FILE='itsuki_debian_wallpaper_v2_1600x900.png'
+    else
+      # There is no Debian-specific clean wallpaper yet; use the matching red neutral background.
+      WALLPAPER_FILE='itsuki-neutral.png'
+    fi
+    ;;
+  arch)
+    DISTRO_ICON=''; DISTRO_LABEL='Arch Linux'; CONFIG_SOURCE="$ROOT/configs/arch"
+    if [[ "$WALLPAPER_STYLE" == "character" ]]; then WALLPAPER_FILE='itsuki-arch2.png'; else WALLPAPER_FILE='itsuki-arch.png'; fi
+    ;;
+  gentoo)
+    DISTRO_ICON=''; DISTRO_LABEL='Gentoo'; CONFIG_SOURCE="$ROOT/configs/gentoo"
+    if [[ "$WALLPAPER_STYLE" == "character" ]]; then WALLPAPER_FILE='itsuki-gentoo2.png'; else WALLPAPER_FILE='itsuki-gentoo.png'; fi
+    ;;
+  neutral)
+    DISTRO_ICON=''; DISTRO_LABEL='Itsuki Niri Rice'; CONFIG_SOURCE="$ROOT/configs"
+    if [[ "$WALLPAPER_STYLE" == "character" ]]; then WALLPAPER_FILE='itsuki-neutral2.png'; else WALLPAPER_FILE='itsuki-neutral.png'; fi
+    ;;
   *) echo "Unknown ITSUKI_DISTRO: $DISTRO (use debian, arch, gentoo or neutral)." >&2; exit 2 ;;
 esac
 

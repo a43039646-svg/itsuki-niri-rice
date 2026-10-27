@@ -13,7 +13,7 @@ A themed desktop configuration pack for **Niri on Wayland**, inspired by Itsuki.
 | Gentoo | Dark plum / violet | Gentoo | [View wallpaper](wallpaper/itsuki-gentoo.png) | `configs/gentoo/` |
 | Neutral | Red / rose | No distro mark | [View wallpaper](wallpaper/itsuki-neutral.png) | `configs/` |
 
-Arch and Gentoo have their own themed copies of Waybar, Fuzzel, Kitty, Dunst, Fetch, the XDG desktop-portal preference, and the brightness/audio slider. The Arch, Gentoo, and Neutral wallpapers intentionally omit the anime character; Neutral also has no distro logo. Debian keeps the original red/rose Debian artwork.
+Arch and Gentoo have their own themed copies of Waybar, Fuzzel, Kitty, Dunst, Fetch, the XDG desktop-portal preference, and the brightness/audio slider. Each of Arch, Gentoo, and Neutral has two wallpaper files: the filename with a trailing `2` includes Itsuki; the filename without `2` is the clean version.
 
 ## Installation
 
@@ -32,7 +32,7 @@ The installer asks you to choose a theme:
 3. **Itsuki + Debian** — red/rose profile and Debian wallpaper.
 4. **Itsuki + Gentoo** — violet profile and Gentoo wallpaper.
 
-Enter `1`, `2`, `3`, or `4`; the installer validates the selected files, backs up existing configs, and applies the matching wallpaper and profile. For direct installation without the menu, the individual scripts in `variants/` remain available.
+Enter `1`, `2`, `3`, or `4` to select the profile, then choose a wallpaper style: **with Itsuki** (filename includes `2`) or **without Itsuki** (filename does not include `2`). The installer validates the selected files, backs up existing configs, and applies the matching wallpaper and profile. For direct installation without the profile menu, the individual scripts in `variants/` remain available; they use the Itsuki wallpaper by default. For scripted use, set `ITSUKI_DISTRO=arch|debian|gentoo|neutral` and optionally `ITSUKI_WALLPAPER_STYLE=character|clean`.
 
 The installer:
 - Creates a dated backup under `~/.config/itsuki-niri-backup/<variant>/<timestamp>/`.

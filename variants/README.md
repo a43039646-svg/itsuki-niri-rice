@@ -17,7 +17,7 @@ For the interactive theme selector, run this from the repository root:
 bash install.sh
 ```
 
-Choose **1** for Itsuki/Neutral, **2** for Itsuki + Arch, **3** for Itsuki + Debian, or **4** for Itsuki + Gentoo. The scripts under `variants/` still install a specific profile directly without showing the menu.
+Choose **1** for Itsuki/Neutral, **2** for Itsuki + Arch, **3** for Itsuki + Debian, or **4** for Itsuki + Gentoo. The scripts under `variants/` still install a specific profile directly without the profile menu; they use the Itsuki wallpaper by default. The main installer also offers a second choice for the wallpaper: with Itsuki (filename includes `2`) or clean without Itsuki (filename does not include `2`).
 
 The installer expects an existing, working `~/.config/niri/config.kdl`. It backs up the current user configs, copies the selected profile, chooses the matching desktop wallpaper, and adds the rice's Niri startup entries and shortcuts. It does not install Niri or system packages.
 
