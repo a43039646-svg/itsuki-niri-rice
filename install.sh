@@ -267,9 +267,14 @@ python3 - "$CONFIG_HOME/niri/config.kdl" "$HOME" <<'PYNIRI'
 from pathlib import Path
 import re,sys
 p=Path(sys.argv[1]); home=sys.argv[2]; text=p.read_text()
-text=re.sub(r'(?m)^[ \t]*spawn-at-startup\s+"waybar"[^\n]*(?:\n|$)','',text)
-text=re.sub(r'(?m)^[ \t]*spawn-at-startup\s+"dunst"\s*(?:\n|$)','',text)
-text=re.sub(r'(?m)^[ \t]*spawn-at-startup\s+"swaybg"[^\n]*\n?','',text)
+# Remove previous Niri startup entries for rice-managed apps, including legacy
+# shell wrappers that launch Waybar. Otherwise a stale wrapper can race with
+# the single Waybar instance added below.
+text=re.sub(
+    r'(?m)^[ \t]*(?:spawn-at-startup|spawn-sh-at-startup)\b[^\n]*\b(?:waybar|dunst|swaybg)\b[^\n]*(?:\n|$)',
+    '',
+    text,
+)
 startup='\n'.join(['spawn-at-startup "dunst"','spawn-at-startup "waybar"',f'spawn-at-startup "swaybg" "-i" "{home}/Pictures/Wallpapers/itsuki.png" "-m" "fill"'])+'\n'
 m=re.search(r'(?m)^[ \t]*binds\s*\{',text)
 if m: text=text[:m.start()]+startup+'\n'+text[m.start():]
