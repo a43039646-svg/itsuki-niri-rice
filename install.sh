@@ -123,7 +123,7 @@ for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dun
     exit 1
   fi
 done
-for rel in scripts/niri-power-menu scripts/itsuki-wifi-menu.py; do
+for rel in scripts/niri-power-menu scripts/itsuki-wifi-menu.py scripts/itsuki-reload-rice; do
   if [[ ! -f "$ROOT/$rel" ]]; then
     echo "Required shared script is missing: $ROOT/$rel" >&2
     exit 1
@@ -193,6 +193,7 @@ rm -f "$CONFIG_HOME/waybar/config.json" "$CONFIG_HOME/waybar/config.jsonc"
 install -m 0644 "$WALLPAPER_SOURCE" "$HOME/Pictures/Wallpapers/itsuki.png"
 for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do cp "$CONFIG_SOURCE/$rel" "$CONFIG_HOME/$rel"; done
 install -m 755 "$ROOT/scripts/niri-power-menu" "$HOME/.local/bin/niri-power-menu"
+install -m 755 "$ROOT/scripts/itsuki-reload-rice" "$HOME/.local/bin/itsuki-reload-rice"
 SLIDER_SOURCE="$ROOT/scripts/itsuki-slider.py"
 if [[ -f "$CONFIG_SOURCE/scripts/itsuki-slider.py" ]]; then SLIDER_SOURCE="$CONFIG_SOURCE/scripts/itsuki-slider.py"; fi
 install -m 755 "$SLIDER_SOURCE" "$HOME/.local/bin/itsuki-slider.py"
@@ -291,11 +292,10 @@ for line in lines:
 text='\n'.join(out)+'\n'
 m=re.search(r'(?m)^[ \t]*binds\s*\{',text)
 if not m: raise SystemExit('No binds block found; your backup is safe, but Niri shortcuts were not added.')
-config_path=str(p).replace("\\", "\\\\").replace('"', '\\"')
 ins=('    Mod+D hotkey-overlay-title="Application Launcher: Fuzzel" { spawn "fuzzel"; }\n'
      '    Mod+Return hotkey-overlay-title="Terminal: Kitty" { spawn "kitty"; }\n'
      f'    Super+E hotkey-overlay-title="Itsuki Power Menu" {{ spawn "{home}/.local/bin/niri-power-menu"; }}\n'
-     f'    Super+Shift+B hotkey-overlay-title="Reload Niri configuration" {{ spawn "niri" "msg" "action" "load-config-file" "--path" "{config_path}"; }}\n')
+     f'    Super+Shift+B hotkey-overlay-title="Reload Niri and restart Itsuki rice services" {{ spawn "{home}/.local/bin/itsuki-reload-rice"; }}\n')
 text=text[:m.end()]+'\n'+ins+text[m.end():]
 p.write_text(text)
 PYNIRI
