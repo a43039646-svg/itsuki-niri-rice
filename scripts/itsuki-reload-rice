@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+CONFIG="${NIRI_CONFIG:-$CONFIG_HOME/niri/config.kdl}"
+WALLPAPER="$HOME/Pictures/Wallpapers/itsuki.png"
+LOG_DIR="$CACHE_HOME/itsuki-niri-rice"
+LOG_FILE="$LOG_DIR/reload.log"
+
+mkdir -p "$LOG_DIR"
+touch "$LOG_FILE"
+
+if [[ ! -r "$CONFIG" ]]; then
+  echo "Niri config not readable: $CONFIG" >&2
+  exit 1
+fi
+
+# Load the current Niri configuration first. If it fails, do not restart the
+# desktop services, so the currently working panel/wallpaper stay in place.
+if ! niri msg action load-config-file --path "$CONFIG" >>"$LOG_FILE" 2>&1; then
+  echo "Could not reload Niri config. See $LOG_FILE" >&2
+  exit 1
+fi
+
+restart_service() {
+  local process="$1"
+  shift
+  pkill -x "$process" >/dev/null 2>&1 || true
+  sleep 0.2
+  "$@" >>"$LOG_FILE" 2>&1 &
+}
+
+restart_service waybar waybar
+restart_service dunst dunst
+
+# swaybg is a separate process; restart it with this rice's installed wallpaper.
+pkill -x swaybg >/dev/null 2>&1 || true
+sleep 0.2
+if [[ -r "$WALLPAPER" ]]; then
+  swaybg -i "$WALLPAPER" -m fill >>"$LOG_FILE" 2>&1 &
+else
+  echo "Wallpaper not found: $WALLPAPER" >>"$LOG_FILE"
+fi
+
+# Fuzzel is launched on demand; its config is read next time it opens.
+# Kitty watches its config file for changes by default, so avoid closing terminals.
+sleep 0.5
+if command -v notify-send >/dev/null 2>&1; then
+  notify-send "Itsuki Niri Rice" "Niri config reloaded; Waybar, Dunst and wallpaper restarted." >>"$LOG_FILE" 2>&1 || true
+fi
