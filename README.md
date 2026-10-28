@@ -127,6 +127,22 @@ At the login screen, select **Niri** as the desktop session and log in. If you u
 
 Fetch is a separate application and is not downloaded by this repository. See the [Fetch project](https://github.com/areofyl/fetch) if you want the terminal animation.
 
+## Kitty transparency and Niri blur
+
+On Niri **26.04 or newer**, the installer configures Kitty with a translucent background and enables Niri's background blur for Kitty. It also adds the global blur tuning block and `prefer-no-csd`, which helps avoid tinted focus borders behind transparent windows.
+
+The default Kitty background opacity is `0.68`. Increase it toward `1.0` for a darker, less transparent terminal; lower values reveal more of the wallpaper. This setting affects Kitty's terminal background while keeping terminal text normally rendered.
+
+The helper can also be run on its own from the repository root:
+
+```bash
+python3 scripts/enable-kitty-blur.py
+```
+
+It creates timestamped backups of `~/.config/niri/config.kdl` and `~/.config/kitty/kitty.conf`. After applying `prefer-no-csd`, restart Kitty; restarting the Niri session is recommended for the decoration preference to apply consistently. The helper skips Niri blur rules when the installed Niri version is older than 26.04 or cannot be detected, but still configures Kitty transparency.
+
+The relevant Niri features are documented in the upstream [Window Effects guide](https://github.com/niri-wm/niri/wiki/Window-Effects), [window-rule reference](https://github.com/niri-wm/niri/wiki/Configuration%3A-Window-Rules), and [`prefer-no-csd` documentation](https://github.com/niri-wm/niri/wiki/Configuration%3A-Miscellaneous#prefer-no-csd).
+
 ## Optional LightDM greeter theme
 
 The main installer offers the LightDM setup if `/etc/lightdm` exists. You can also run the separate installer:
