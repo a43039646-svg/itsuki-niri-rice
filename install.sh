@@ -123,7 +123,7 @@ for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dun
     exit 1
   fi
 done
-for rel in scripts/niri-power-menu scripts/itsuki-wifi-menu.py scripts/itsuki-reload-rice; do
+for rel in scripts/niri-power-menu scripts/itsuki-wifi-menu.py scripts/itsuki-reload-rice scripts/enable-kitty-blur.py; do
   if [[ ! -f "$ROOT/$rel" ]]; then
     echo "Required shared script is missing: $ROOT/$rel" >&2
     exit 1
@@ -299,6 +299,8 @@ ins=('    Mod+D hotkey-overlay-title="Application Launcher: Fuzzel" { spawn "fuz
 text=text[:m.end()]+'\n'+ins+text[m.end():]
 p.write_text(text)
 PYNIRI
+# Apply the optional Kitty transparency and Niri 26.04+ blur profile.
+python3 "$ROOT/scripts/enable-kitty-blur.py" "$CONFIG_HOME/niri/config.kdl" "$CONFIG_HOME/kitty/kitty.conf"
 python3 -m json.tool "$CONFIG_HOME/waybar/config" >/dev/null
 if command -v niri >/dev/null 2>&1; then niri validate; fi
 # Niri is the single source of Waybar startup. Remove the old systemd dependency
