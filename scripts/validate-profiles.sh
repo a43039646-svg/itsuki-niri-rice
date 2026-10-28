@@ -52,7 +52,7 @@ kitty = kitty_path.read_text()
 ansi = re.findall(r"(?m)^color(?:[0-9]|1[0-5])\s+#?[0-9a-fA-F]{6}\s*$", kitty)
 if len(ansi) != 16:
     raise SystemExit(f"{kitty_path}: expected all 16 ANSI colors, found {len(ansi)}")
-if not re.search(r"(?m)^background_opacity\\s+0\\.68\\s*$", kitty):
+if not re.search(r"(?m)^background_opacity\s+0\.68\s*$", kitty):
     raise SystemExit(f"{kitty_path}: expected background_opacity 0.68 for the Niri blur profile")
 
 fuzzel = fuzzel_path.read_text()
