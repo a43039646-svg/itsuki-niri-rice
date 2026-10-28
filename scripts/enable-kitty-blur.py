@@ -6,10 +6,11 @@ from datetime import datetime
 from pathlib import Path
 import re
 import shutil
+import os
 import subprocess
 import sys
 
-CONFIG_HOME = Path.home() / ".config"
+CONFIG_HOME = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))).expanduser()
 NIRI_CONFIG = Path(sys.argv[1]).expanduser() if len(sys.argv) > 1 else CONFIG_HOME / "niri/config.kdl"
 KITTY_CONFIG = Path(sys.argv[2]).expanduser() if len(sys.argv) > 2 else CONFIG_HOME / "kitty/kitty.conf"
 STAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
