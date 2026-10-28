@@ -282,14 +282,20 @@ else: text=startup+'\n'+text
 lines=text.splitlines(); out=[]
 for line in lines:
     s=line.strip()
-    if re.match(r'^(?:Mod|Super)\+D\b',s) or re.match(r'^Mod\+Return\b',s) or re.match(r'^Super\+E\b',s): continue
+    if (re.match(r'^(?:Mod|Super)\+D\b',s)
+            or re.match(r'^Mod\+Return\b',s)
+            or re.match(r'^Super\+E\b',s)
+            or re.match(r'^(?:Mod|Super)\+Shift\+B\b',s)):
+        continue
     out.append(line)
 text='\n'.join(out)+'\n'
 m=re.search(r'(?m)^[ \t]*binds\s*\{',text)
 if not m: raise SystemExit('No binds block found; your backup is safe, but Niri shortcuts were not added.')
+config_path=str(p).replace("\\", "\\\\").replace('"', '\\"')
 ins=('    Mod+D hotkey-overlay-title="Application Launcher: Fuzzel" { spawn "fuzzel"; }\n'
      '    Mod+Return hotkey-overlay-title="Terminal: Kitty" { spawn "kitty"; }\n'
-     f'    Super+E hotkey-overlay-title="Itsuki Power Menu" {{ spawn "{home}/.local/bin/niri-power-menu"; }}\n')
+     f'    Super+E hotkey-overlay-title="Itsuki Power Menu" {{ spawn "{home}/.local/bin/niri-power-menu"; }}\n'
+     f'    Super+Shift+B hotkey-overlay-title="Reload Niri configuration" {{ spawn "niri" "msg" "action" "load-config-file" "--path" "{config_path}"; }}\n')
 text=text[:m.end()]+'\n'+ins+text[m.end():]
 p.write_text(text)
 PYNIRI
