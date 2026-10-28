@@ -155,6 +155,16 @@ bash scripts/validate-profiles.sh
 
 The checks cover the Neutral, Debian, Arch and Gentoo configuration files, Waybar JSON/module lists, Kitty palettes, Fuzzel and Dunst settings, shell syntax, Python helper syntax, and LightDM GTK theme mappings. These static checks do not replace testing the rice in a live Niri session.
 
+## Update only the reload shortcut
+
+If you only want to fix `Super + Shift + B` without rerunning the full rice installer, run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/a43039646-svg/itsuki-niri-rice/main/scripts/install-reload-shortcut.sh | bash
+```
+
+This makes a timestamped backup of `~/.config/niri/config.kdl`, installs the reload helper, replaces only the `Mod/Super + Shift + B` binding, and validates the Niri config. The shortcut reloads Niri's configuration and restarts Waybar, Dunst and swaybg. It does not close Kitty terminals or restart the entire compositor session.
+
 ## Troubleshooting
 
 - **The distro logo appears as a box or numbers:** install a Nerd Font as described above, then restart the session.
