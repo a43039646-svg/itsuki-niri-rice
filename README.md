@@ -120,7 +120,7 @@ At the login screen, select **Niri** as the desktop session and log in. If you u
 - `Super + D` — open Fuzzel.
 - `Super + Enter` — open Kitty.
 - `Super + E` — open the Itsuki power menu.
-- `Super + Shift + B` — manually reload the current Niri config; Niri also live-reloads it when you save the file.
+- `Super + Shift + B` — reload Niri's config and restart the rice-managed Waybar, Dunst and wallpaper processes. Fuzzel uses its config the next time it opens; Kitty is not closed.
 - Dunst notifications and a wallpaper loaded through `swaybg`.
 - Fetch runs in new interactive Bash/Zsh terminals as `fetch --box --shading-mode sextants` when the `fetch` command is installed.
 - Profile-specific Fuzzel, Kitty, Dunst and Waybar colors.
