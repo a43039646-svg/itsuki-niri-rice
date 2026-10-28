@@ -52,6 +52,8 @@ kitty = kitty_path.read_text()
 ansi = re.findall(r"(?m)^color(?:[0-9]|1[0-5])\s+#?[0-9a-fA-F]{6}\s*$", kitty)
 if len(ansi) != 16:
     raise SystemExit(f"{kitty_path}: expected all 16 ANSI colors, found {len(ansi)}")
+if not re.search(r"(?m)^background_opacity\\s+0\\.68\\s*$", kitty):
+    raise SystemExit(f"{kitty_path}: expected background_opacity 0.68 for the Niri blur profile")
 
 fuzzel = fuzzel_path.read_text()
 for setting in ("background=", "text=", "match=", "selection=", "selection-text=", "selection-match=", "border="):
@@ -82,7 +84,7 @@ done
 echo 'OK'
 
 printf '[Python helpers] checking syntax... '
-python3 - "$ROOT/scripts/itsuki-wifi-menu.py" "$ROOT/scripts/itsuki-slider.py" "$ROOT/configs/arch/scripts/itsuki-slider.py" "$ROOT/configs/gentoo/scripts/itsuki-slider.py" <<'PY'
+python3 - "$ROOT/scripts/itsuki-wifi-menu.py" "$ROOT/scripts/itsuki-slider.py" "$ROOT/scripts/enable-kitty-blur.py" "$ROOT/configs/arch/scripts/itsuki-slider.py" "$ROOT/configs/gentoo/scripts/itsuki-slider.py" <<'PY'
 import sys
 from pathlib import Path
 for name in sys.argv[1:]:
