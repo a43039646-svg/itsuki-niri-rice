@@ -110,6 +110,7 @@ for rel in niri/config.kdl waybar/config waybar/style.css kitty/kitty.conf fuzze
   backup "$CONFIG_HOME/$rel" "$rel"
 done
 backup "$WALLPAPER_DEST" "wallpapers/itsuki.png"
+backup "$HOME/.local/bin/miku-reload-rice" "local-bin/miku-reload-rice"
 
 # Waybar can use config.json/config.jsonc instead of config. Back them up too,
 # then remove only those known competing filenames so the selected config wins.
@@ -124,6 +125,8 @@ install -m 0644 "$WALLPAPER_SOURCE" "$WALLPAPER_DEST"
 for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do cp "$CONFIG_SOURCE/$rel" "$CONFIG_HOME/$rel"; done
 install -m 755 "$ROOT/scripts/niri-power-menu" "$HOME/.local/bin/niri-power-menu"
 install -m 755 "$ROOT/scripts/itsuki-reload-rice" "$HOME/.local/bin/itsuki-reload-rice"
+# Retire the stale Miku reload helper after backing it up; its old shortcut reset miku.png.
+rm -f "$HOME/.local/bin/miku-reload-rice"
 SLIDER_SOURCE="$ROOT/scripts/itsuki-slider.py"
 if [[ -f "$CONFIG_SOURCE/scripts/itsuki-slider.py" ]]; then SLIDER_SOURCE="$CONFIG_SOURCE/scripts/itsuki-slider.py"; fi
 install -m 755 "$SLIDER_SOURCE" "$HOME/.local/bin/itsuki-slider.py"
