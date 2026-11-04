@@ -1,94 +1,126 @@
-/* Itsuki Floating HUD — rose / cream profile */
+/* Itsuki Minimal Rail — rose / cream profile */
 * {
     border: none;
     border-radius: 0;
     font-family: "JetBrains Mono", monospace;
     font-size: 12px;
+    font-weight: 500;
     min-height: 0;
 }
 
 window#waybar {
     background: transparent;
     color: #F2E5D5;
+    border-bottom: 1px solid rgba(185, 75, 85, 0.66);
 }
 
-#custom-distro, #custom-debian {
+#custom-distro,
+#custom-debian {
     font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", "Symbols Nerd Font", "Symbols Nerd Font Mono", "ForkAwesome", "FontAwesome", sans-serif;
-    font-size: 17px;
-    color: #D9A6A8;
-    padding: 0 14px;
-    margin: 8px 3px 0 12px;
-    background: rgba(53, 27, 37, 0.94);
-    border: 1px solid rgba(185, 75, 85, 0.62);
-    border-left: 2px solid #B94B55;
+    font-size: 16px;
+    color: #B94B55;
+    padding: 0 8px 0 0;
+    margin: 0 5px 0 0;
 }
 
-#custom-distro:hover, #custom-debian:hover {
-    color: #FFF4E8;
-    background: rgba(116, 55, 71, 0.96);
+#custom-distro:hover,
+#custom-debian:hover {
+    color: #F2E5D5;
 }
 
 #workspaces {
-    padding: 0 8px;
-    margin: 8px 3px 0 3px;
-    background: rgba(53, 27, 37, 0.94);
-    border: 1px solid rgba(185, 75, 85, 0.48);
+    padding: 0 4px;
+    margin: 0 5px;
+    background: transparent;
 }
 
 #workspaces button {
-    padding: 0 9px;
-    margin: 5px 2px;
+    padding: 0 7px;
+    margin: 0 2px;
     color: #BFA9A2;
     background: transparent;
     border-bottom: 2px solid transparent;
 }
+
 #workspaces button:hover {
-    color: #FFF4E8;
-    background: rgba(185, 75, 85, 0.16);
-}
-#workspaces button.focused, #workspaces button.active {
     color: #F2E5D5;
-    background: rgba(185, 75, 85, 0.20);
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+    color: #F2E5D5;
     border-bottom: 2px solid #B94B55;
 }
+
 #workspaces button.urgent {
-    color: #ffffff;
-    background: rgba(185, 75, 85, 0.38);
+    color: #E77B83;
+    border-bottom: 2px solid #E77B83;
 }
 
 #clock {
-    min-width: 190px;
-    padding: 0 20px;
-    margin: 8px 3px 0 3px;
     color: #F2E5D5;
-    background: rgba(53, 27, 37, 0.97);
-    border: 1px solid rgba(217, 166, 168, 0.62);
-    border-top: 2px solid #B94B55;
     font-size: 13px;
-    font-weight: bold;
+    font-weight: 700;
+    padding: 0 8px;
+    margin: 0 8px;
 }
 
-#network, #pulseaudio, #battery, #backlight, #tray {
-    padding: 0 11px;
-    margin: 8px 3px 0 3px;
+#network,
+#pulseaudio,
+#battery,
+#backlight,
+#tray {
+    padding: 0 6px;
+    margin: 0 4px;
+    background: transparent;
     color: #F2E5D5;
-    background: rgba(53, 27, 37, 0.94);
-    border: 1px solid rgba(185, 75, 85, 0.48);
 }
-#network { color: #D9A6A8; }
-#network.disconnected { color: #E77B83; }
-#pulseaudio { color: #E8C2B9; }
-#pulseaudio.muted { color: #9B8585; }
-#backlight { color: #E8C2B9; }
-#battery.warning { color: #E7C58C; }
-#battery.critical:not(.charging) { color: #F06B78; }
-#tray { padding: 0 9px; margin-right: 12px; }
-#tray > .passive { opacity: 0.72; }
-#tray > .active { opacity: 1; }
-#tray > .needs-attention { background: rgba(185, 75, 85, 0.22); }
+
+#network,
+#backlight {
+    color: #D9A6A8;
+}
+
+#network.disconnected {
+    color: #E77B83;
+}
+
+#pulseaudio {
+    color: #F2E5D5;
+}
+
+#pulseaudio.muted {
+    color: #BFA9A2;
+}
+
+#battery.warning {
+    color: #E7C58C;
+}
+
+#battery.critical:not(.charging) {
+    color: #E77B83;
+}
+
+#tray {
+    padding-right: 0;
+    margin-right: 0;
+}
+
+#tray > .passive {
+    opacity: 0.72;
+}
+
+#tray > .active {
+    opacity: 1;
+}
+
+#tray > .needs-attention {
+    color: #B94B55;
+}
 
 tooltip {
-    background: rgba(35, 17, 25, 0.98);
+    background: #231119;
     color: #F2E5D5;
     border: 1px solid #743747;
+    border-top: 2px solid #B94B55;
 }
