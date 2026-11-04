@@ -42,9 +42,7 @@ window#waybar {
     border-bottom: 2px solid transparent;
 }
 
-#workspaces button:hover {
-    color: #F2EAF5;
-}
+#workspaces button:hover { color: #F2EAF5; }
 
 #workspaces button.focused,
 #workspaces button.active {
@@ -77,46 +75,24 @@ window#waybar {
 }
 
 #network,
-#backlight {
-    color: #D8BCFF;
-}
+#backlight { color: #D8BCFF; }
 
-#network.disconnected {
-    color: #FF5478;
-}
+#network.disconnected { color: #FF5478; }
 
-#pulseaudio {
-    color: #F2EAF5;
-}
+#pulseaudio { color: #F2EAF5; }
+#pulseaudio.muted { color: #AAA0B9; }
 
-#pulseaudio.muted {
-    color: #AAA0B9;
-}
-
-#battery.warning {
-    color: #E7C58C;
-}
-
-#battery.critical:not(.charging) {
-    color: #FF5478;
-}
+#battery.warning { color: #E7C58C; }
+#battery.critical:not(.charging) { color: #FF5478; }
 
 #tray {
     padding-right: 0;
     margin-right: 0;
 }
 
-#tray > .passive {
-    opacity: 0.72;
-}
-
-#tray > .active {
-    opacity: 1;
-}
-
-#tray > .needs-attention {
-    color: #B58AFF;
-}
+#tray > .passive { opacity: 0.72; }
+#tray > .active { opacity: 1; }
+#tray > .needs-attention { color: #B58AFF; }
 
 tooltip {
     background: #0E081F;
