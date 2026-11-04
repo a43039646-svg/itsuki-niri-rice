@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""Small dark-pink slider window for brightness or PipeWire volume."""
+"""Small Itsuki-colored slider window for brightness or PipeWire volume."""
 import re
 import subprocess
 import sys
 import tkinter as tk
 from tkinter import messagebox
 
-BG = "#111322"
-PANEL = "#191629"
-PINK = "#ff477f"
-PINK_LIGHT = "#ff9abb"
-TEXT = "#f5edf6"
-TRACK = "#392137"
+BG = "#0D2430"
+PANEL = "#173B4C"
+ACCENT = "#D95F58"
+ACCENT_LIGHT = "#78BFD0"
+TEXT = "#F4EBDD"
+TRACK = "#315565"
 mode = sys.argv[1] if len(sys.argv) > 1 else "volume"
 if mode not in {"brightness", "volume"}:
     raise SystemExit("Usage: itsuki-slider.py brightness|volume")
@@ -35,9 +35,9 @@ icon = "☼" if mode == "brightness" else "♫"
 root.title(f"Itsuki · {title}"); root.configure(bg=BG); root.resizable(False, False); root.attributes("-topmost", True)
 frame=tk.Frame(root,bg=BG,padx=18,pady=14); frame.pack(fill="both",expand=True)
 header=tk.Frame(frame,bg=BG); header.pack(fill="x")
-tk.Label(header,text=f"{icon}  {title.upper()}",bg=BG,fg=PINK_LIGHT,font=("JetBrains Mono",11,"bold")).pack(side="left")
+tk.Label(header,text=f"{icon}  {title.upper()}",bg=BG,fg=ACCENT_LIGHT,font=("JetBrains Mono",11,"bold")).pack(side="left")
 value_label=tk.Label(header,text=f"{initial}%",bg=BG,fg=TEXT,font=("JetBrains Mono",11,"bold")); value_label.pack(side="right")
-scale=tk.Scale(frame,from_=1 if mode=="brightness" else 0,to=100,orient="horizontal",resolution=1,showvalue=False,length=350,width=14,sliderlength=20,bg=BG,fg=TEXT,troughcolor=TRACK,activebackground=PINK,highlightthickness=0,bd=0,relief="flat",sliderrelief="flat")
+scale=tk.Scale(frame,from_=1 if mode=="brightness" else 0,to=100,orient="horizontal",resolution=1,showvalue=False,length=350,width=14,sliderlength=20,bg=BG,fg=TEXT,troughcolor=TRACK,activebackground=ACCENT,highlightthickness=0,bd=0,relief="flat",sliderrelief="flat")
 scale.set(initial); scale.pack(fill="x",pady=(10,9)); pending=None
 def apply_value(value):
     global pending; pending=None
@@ -54,8 +54,8 @@ scale.configure(command=changed)
 buttons=tk.Frame(frame,bg=BG); buttons.pack(fill="x",pady=(1,0))
 if mode=="volume":
     def toggle_mute(): subprocess.run(["wpctl","set-mute","@DEFAULT_AUDIO_SINK@","toggle"],check=False)
-    tk.Button(buttons,text="Mute / unmute",command=toggle_mute,bg=PANEL,fg=PINK_LIGHT,activebackground="#392137",activeforeground=TEXT,relief="flat",bd=0,padx=12,pady=5,cursor="hand2",font=("JetBrains Mono",9)).pack(side="left")
-tk.Button(buttons,text="Done",command=root.destroy,bg=PINK,fg="#ffffff",activebackground="#ff6994",activeforeground="#ffffff",relief="flat",bd=0,padx=18,pady=5,cursor="hand2",font=("JetBrains Mono",9,"bold")).pack(side="right")
+    tk.Button(buttons,text="Mute / unmute",command=toggle_mute,bg=PANEL,fg=ACCENT_LIGHT,activebackground="#244F60",activeforeground=TEXT,relief="flat",bd=0,padx=12,pady=5,cursor="hand2",font=("JetBrains Mono",9)).pack(side="left")
+tk.Button(buttons,text="Done",command=root.destroy,bg=ACCENT,fg="#FFFFFF",activebackground="#E7786E",activeforeground="#ffffff",relief="flat",bd=0,padx=18,pady=5,cursor="hand2",font=("JetBrains Mono",9,"bold")).pack(side="right")
 root.bind("<Escape>",lambda _event:root.destroy()); root.bind("<Return>",lambda _event:root.destroy()); root.update_idletasks()
 width,height=410,(155 if mode=="volume" else 125); root.geometry(f"{width}x{height}+{max(0,(root.winfo_screenwidth()-width)//2)}+{max(0,(root.winfo_screenheight()-height)//2)}")
 root.mainloop()
