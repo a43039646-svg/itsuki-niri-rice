@@ -225,11 +225,24 @@ startup = (
     f"spawn-at-startup {kdl_string(sys.argv[3])} \"-i\" {kdl_string(sys.argv[4])} \"-m\" \"fill\"\n"
     "// END ITSUKI RICE STARTUP\n"
 )
+# Replace any Miku/previous rice Meta+Shift+B binding with the Itsuki reload helper.
+# The old Miku helper explicitly restored ~/Pictures/Wallpapers/miku.png.
+text = re.sub(
+    r'(?m)^[ \t]*(?:Mod|Super)\+Shift\+B\b[^\n]*(?:\n|$)',
+    '',
+    text,
+)
+
 match = re.search(r"(?m)^[ \t]*binds\s*\{", text)
-if match:
-    text = text[:match.start()] + startup + "\n" + text[match.start():]
-else:
-    text = startup + "\n" + text
+if not match:
+    raise SystemExit("No top-level binds block found; existing config was not written.")
+text = text[:match.start()] + startup + "\n" + text[match.start():]
+match = re.search(r"(?m)^[ \t]*binds\s*\{", text)
+reload_binding = (
+    f'    Super+Shift+B hotkey-overlay-title="Reload Niri and Itsuki Rice services" '
+    f'{{ spawn "{home}/.local/bin/itsuki-reload-rice"; }}\n'
+)
+text = text[:match.end()] + "\n" + reload_binding + text[match.end():]
 
 p.write_text(text)
 PYNIRI
