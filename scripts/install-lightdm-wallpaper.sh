@@ -174,7 +174,7 @@ set_section_value("background", wallpaper)
 # LightDM GTK Greeter supports centering the login window with position.
 # Keep the selected Itsuki background instead of using per-user wallpapers.
 if section_name == "greeter":
-    set_section_value("position", "50% 50%")
+    set_section_value("position", "50%,center 50%,center")
     set_section_value("user-background", "false")
 
 target.write_text("\n".join(lines).rstrip() + "\n")
