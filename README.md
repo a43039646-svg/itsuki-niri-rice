@@ -2,17 +2,17 @@
 
 A lightweight, universal Niri desktop rice with a rose-and-cream palette and the **Minimal Rail** Waybar layout.
 
-This repository contains **one shared configuration** for every distribution. It does not bundle wallpapers or distro-specific editions. The installer leaves your existing wallpaper setup untouched.
+This repository contains one shared configuration for every distribution and installs the bundled Itsuki wallpaper automatically. There are no distro or wallpaper selection prompts.
 
 ## Requirements
 
-Install Niri first and log into a Niri session once. The rice configures applications; it does not install packages.
+Install Niri first and log into a Niri session once. The rice configures applications; it does not install packages. The installer requires `swaybg` to display the bundled wallpaper.
 
 On Debian 13, the main dependencies can be installed with:
 
 ```bash
 sudo apt update
-sudo apt install git curl waybar fuzzel kitty dunst brightnessctl python3 python3-tk xdg-desktop-portal-gtk pipewire-pulse wireplumber fonts-font-awesome fonts-fork-awesome fonts-jetbrains-mono
+sudo apt install git curl waybar fuzzel kitty dunst swaybg brightnessctl python3 python3-tk xdg-desktop-portal-gtk pipewire-pulse wireplumber fonts-font-awesome fonts-fork-awesome fonts-jetbrains-mono
 ```
 
 Keep your existing audio stack if it already works. The optional Wi-Fi helper uses NetworkManager (`nmcli`).
@@ -25,10 +25,13 @@ cd itsuki-niri-rice
 bash install.sh
 ```
 
-There are no distro or wallpaper selection prompts. The installer backs up the existing rice files under `~/.config/itsuki-niri-backup/<timestamp>/`, patches your existing `~/.config/niri/config.kdl`, and installs the shared rose profile. It does not replace your full Niri config or change your wallpaper.
+The installer has no interactive choices. It backs up the existing rice files under `~/.config/itsuki-niri-backup/<timestamp>/`, patches your existing `~/.config/niri/config.kdl`, and installs the shared rose profile. It does not replace your full Niri config.
+
+The wallpaper `wallpapers/itsuki.png` is copied to `~/.local/share/itsuki-niri-rice/wallpapers/itsuki.png` and started automatically with `swaybg` in fill mode every time Niri starts. The installer replaces older Niri startup lines for Waybar, Dunst, and common wallpaper tools that it manages, and keeps one marked startup block so running the installer again does not duplicate entries. The separate `lightdm-itsuki.png` image is not installed or applied.
 
 ## Included
 
+- **Wallpaper:** bundled Itsuki background, automatically installed and started by Niri.
 - **Waybar Minimal Rail:** transparent top rail, thin rose underline, underlined active workspace, centered clock, and unboxed system indicators.
 - **Kitty:** coordinated colors, JetBrains Mono, translucent background, and Niri blur integration on Niri 26.04 or newer.
 - **Fuzzel:** matching application launcher and menus.
@@ -64,11 +67,12 @@ bash scripts/validate-profiles.sh
 bash install.sh
 ```
 
-The validation script checks the shared Waybar JSON, required files, and helper syntax. It does not replace testing in a live Niri session.
+The validation script checks the shared Waybar JSON, wallpaper asset, required files, and helper syntax. It does not replace testing in a live Niri session.
 
 ## Repository layout
 
 - `configs/` — the single universal rose profile.
-- `wallpapers/` — place your own backgrounds here; the installer leaves wallpaper selection to your Niri config.
+- `wallpapers/itsuki.png` — default desktop wallpaper installed by the installer.
+- `wallpapers/lightdm-itsuki.png` — separate image, currently not configured by this installer.
 - `scripts/` — power, Wi-Fi, slider, reload, and blur helpers.
-- `install.sh` — universal installer; it leaves wallpaper management to the user.
+- `install.sh` — universal installer with no interactive selection.
