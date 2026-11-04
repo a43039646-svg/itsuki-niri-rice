@@ -1,7 +1,6 @@
-# Personal wallpapers
+# Itsuki wallpapers
 
-Place your own wallpaper images in this folder.
+- `itsuki.png` is the default Niri desktop wallpaper. The installer copies it into `~/.local/share/itsuki-niri-rice/wallpapers/` and starts it automatically with `swaybg`.
+- `lightdm-itsuki.png` is kept as a separate image and is not applied by the Niri installer.
 
-The rice installer does not install or select these images automatically. Configure your preferred image in your Niri setup (for example, with `swaybg`).
-
-No wallpapers are bundled with this repository.
+Replace `itsuki.png` with your preferred image using the same filename to change the default wallpaper.
