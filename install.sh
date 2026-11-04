@@ -231,6 +231,7 @@ if match:
 else:
     text = startup + "\n" + text
 
+p.write_text(text)
 PYNIRI
 # Apply the optional Kitty transparency and Niri 26.04+ blur profile.
 python3 "$ROOT/scripts/enable-kitty-blur.py" "$CONFIG_HOME/niri/config.kdl" "$CONFIG_HOME/kitty/kitty.conf"
