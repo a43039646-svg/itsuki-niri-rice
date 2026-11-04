@@ -191,53 +191,41 @@ PYWAYBAR
 cp "$CONFIG_HOME/niri/config.kdl" "$BACKUP/niri-config.pre-patch.kdl"
 python3 - "$CONFIG_HOME/niri/config.kdl" "$HOME" "$SWAYBG_BIN" "$WALLPAPER_DEST" <<'PYNIRI'
 from pathlib import Path
-import re,sys
-p=Path(sys.argv[1]); home=sys.argv[2]; text=p.read_text()
+import json,re,sys
+
+p = Path(sys.argv[1])
+home = sys.argv[2]
+text = p.read_text()
+
 # Replace the rice-managed startup block on every run so installs stay idempotent.
 text = re.sub(
-    r"(?ms)^// BEGIN ITSUKI RICE STARTUP\\n.*?^// END ITSUKI RICE STARTUP[ \\t]*(?:\\n|$)",
+    r"(?ms)^// BEGIN ITSUKI RICE STARTUP\n.*?^// END ITSUKI RICE STARTUP[ \t]*(?:\n|$)",
     "",
     text,
 )
-# Remove legacy panel and wallpaper autostart entries that this rice now owns.
+# Remove old panel/background startup lines that this rice now manages itself.
 text = re.sub(
-    r'(?m)^[ \\t]*(?:spawn-at-startup|spawn-sh-at-startup)\\b[^\\n]*(?:\\bwaybar\\b|\\bdunst\\b|\\bswaybg\\b|\\bswww\\b|\\bawww\\b|\\bmpvpaper\\b|\\bhyprpaper\\b)[^\\n]*(?:\\n|$)',
+    r'(?m)^[ \t]*(?:spawn-at-startup|spawn-sh-at-startup)\b[^\n]*(?:\bwaybar\b|\bdunst\b|\bswaybg\b|\bswww\b|\bawww\b|\bmpvpaper\b|\bhyprpaper\b)[^\n]*(?:\n|$)',
     "",
     text,
 )
+
 def kdl_string(value):
     return json.dumps(str(value), ensure_ascii=False)
 
 startup = (
-    "// BEGIN ITSUKI RICE STARTUP\\n"
-    f"spawn-at-startup {kdl_string('dunst')}\\n"
-    f"spawn-at-startup {kdl_string('waybar')}\\n"
-    f"spawn-at-startup {kdl_string(sys.argv[3])} \"-i\" {kdl_string(sys.argv[4])} \"-m\" \"fill\"\\n"
-    "// END ITSUKI RICE STARTUP\\n"
+    "// BEGIN ITSUKI RICE STARTUP\n"
+    f"spawn-at-startup {kdl_string('dunst')}\n"
+    f"spawn-at-startup {kdl_string('waybar')}\n"
+    f"spawn-at-startup {kdl_string(sys.argv[3])} \"-i\" {kdl_string(sys.argv[4])} \"-m\" \"fill\"\n"
+    "// END ITSUKI RICE STARTUP\n"
 )
-m = re.search(r"(?m)^[ \\t]*binds\\s*\\{", text)
-if m:
-    text = text[:m.start()] + startup + "\\n" + text[m.start():]
+match = re.search(r"(?m)^[ \t]*binds\s*\{", text)
+if match:
+    text = text[:match.start()] + startup + "\n" + text[match.start():]
 else:
-    text = startup + "\\n" + text
-lines=text.splitlines(); out=[]
-for line in lines:
-    s=line.strip()
-    if (re.match(r'^(?:Mod|Super)\+D\b',s)
-            or re.match(r'^Mod\+Return\b',s)
-            or re.match(r'^Super\+E\b',s)
-            or re.match(r'^(?:Mod|Super)\+Shift\+B\b',s)):
-        continue
-    out.append(line)
-text='\n'.join(out)+'\n'
-m=re.search(r'(?m)^[ \t]*binds\s*\{',text)
-if not m: raise SystemExit('No binds block found; your backup is safe, but Niri shortcuts were not added.')
-ins=('    Mod+D hotkey-overlay-title="Application Launcher: Fuzzel" { spawn "fuzzel"; }\n'
-     '    Mod+Return hotkey-overlay-title="Terminal: Kitty" { spawn "kitty"; }\n'
-     f'    Super+E hotkey-overlay-title="Itsuki Power Menu" {{ spawn "{home}/.local/bin/niri-power-menu"; }}\n'
-     f'    Super+Shift+B hotkey-overlay-title="Reload Niri and restart Itsuki rice services" {{ spawn "{home}/.local/bin/itsuki-reload-rice"; }}\n')
-text=text[:m.end()]+'\n'+ins+text[m.end():]
-p.write_text(text)
+    text = startup + "\n" + text
+
 PYNIRI
 # Apply the optional Kitty transparency and Niri 26.04+ blur profile.
 python3 "$ROOT/scripts/enable-kitty-blur.py" "$CONFIG_HOME/niri/config.kdl" "$CONFIG_HOME/kitty/kitty.conf"
