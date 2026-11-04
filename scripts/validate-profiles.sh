@@ -9,6 +9,8 @@ for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dun
   [[ -f "$CONFIG/$rel" ]] || { echo "MISSING: $CONFIG/$rel"; exit 1; }
 done
 [[ -f "$ROOT/wallpapers/itsuki.png" ]] || { echo "MISSING: $ROOT/wallpapers/itsuki.png"; exit 1; }
+[[ -f "$ROOT/wallpapers/lightdm-itsuki.png" ]] || { echo "MISSING: $ROOT/wallpapers/lightdm-itsuki.png"; exit 1; }
+[[ -f "$ROOT/scripts/install-lightdm-wallpaper.sh" ]] || { echo "MISSING: LightDM wallpaper helper"; exit 1; }
 echo OK
 
 printf '[Waybar] checking JSON and module layout... '
@@ -40,12 +42,13 @@ print("OK")
 PY
 
 printf '[Shell] checking installer and helper syntax... '
-for script in "$ROOT/install.sh" "$ROOT/scripts/itsuki-reload-rice" "$ROOT/scripts/niri-power-menu"; do
+for script in "$ROOT/install.sh" "$ROOT/scripts/itsuki-reload-rice" "$ROOT/scripts/niri-power-menu" "$ROOT/scripts/install-lightdm-wallpaper.sh"; do
   bash -n "$script"
 done
 grep -q 'WALLPAPER_SOURCE="$ROOT/wallpapers/itsuki.png"' "$ROOT/install.sh"
 grep -q 'swaybg is required to set the Niri wallpaper' "$ROOT/install.sh"
 grep -q 'BEGIN ITSUKI RICE STARTUP' "$ROOT/install.sh"
+grep -q 'install-lightdm-wallpaper.sh' "$ROOT/install.sh"
 echo OK
 
 printf '[Python] checking helper syntax... '
