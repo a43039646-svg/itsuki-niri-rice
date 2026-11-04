@@ -115,7 +115,7 @@ At the login screen, select **Niri** as the desktop session and log in. If you u
 
 ## Features and shortcuts
 
-- Itsuki Floating HUD Waybar: a transparent top-level HUD with rose/cream accents, angular dark panels, workspaces on the left, a screen-centered clock, and system indicators on the right.
+- Itsuki Minimal Rail Waybar: a transparent top-level HUD with rose/cream accents, angular dark panels, workspaces on the left, a screen-centered clock, and system indicators on the right.
 - Click the distro logo at the left of Waybar to open Fuzzel. The Neutral profile intentionally has no distro logo.
 - `Super + D` — open Fuzzel.
 - `Super + Enter` — open Kitty.
