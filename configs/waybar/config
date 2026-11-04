@@ -4,7 +4,6 @@
   "height": 34,
   "spacing": 10,
   "modules-left": [
-    "custom/debian",
     "niri/workspaces"
   ],
   "modules-center": [
@@ -16,11 +15,6 @@
     "battery",
     "tray"
   ],
-  "custom/debian": {
-    "format": "",
-    "tooltip": "Open application launcher",
-    "on-click": "fuzzel"
-  },
   "niri/workspaces": {
     "format": "{icon}",
     "sort-by-id": true,
