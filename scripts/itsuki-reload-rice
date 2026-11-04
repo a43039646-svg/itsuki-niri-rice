@@ -33,15 +33,6 @@ restart_service() {
 restart_service waybar waybar
 restart_service dunst dunst
 
-# swaybg is a separate process; restart it with this rice's installed wallpaper.
-pkill -x swaybg >/dev/null 2>&1 || true
-sleep 0.2
-if [[ -r "$WALLPAPER" ]]; then
-  swaybg -i "$WALLPAPER" -m fill >>"$LOG_FILE" 2>&1 &
-else
-  echo "Wallpaper not found: $WALLPAPER" >>"$LOG_FILE"
-fi
-
 # Fuzzel is launched on demand; its config is read next time it opens.
 # Kitty watches its config file for changes by default, so avoid closing terminals.
 sleep 0.5
