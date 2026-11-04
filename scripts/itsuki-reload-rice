@@ -33,6 +33,16 @@ restart_service() {
 restart_service waybar waybar
 restart_service dunst dunst
 
+# Always restore the wallpaper shipped by Itsuki. This also removes any
+# stale Miku swaybg process left by an older Niri rice installation.
+WALLPAPER="$HOME/.local/share/itsuki-niri-rice/wallpapers/itsuki.png"
+pkill -x swaybg >/dev/null 2>&1 || true
+if [[ -r "$WALLPAPER" ]] && command -v swaybg >/dev/null 2>&1; then
+  swaybg -i "$WALLPAPER" -m fill >>"$LOG_FILE" 2>&1 &
+else
+  echo "Itsuki wallpaper not found or swaybg unavailable: $WALLPAPER" >>"$LOG_FILE"
+fi
+
 # Fuzzel is launched on demand; its config is read next time it opens.
 # Kitty watches its config file for changes by default, so avoid closing terminals.
 sleep 0.5
