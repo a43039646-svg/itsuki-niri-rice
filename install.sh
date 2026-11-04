@@ -173,7 +173,20 @@ active_text = "\n".join(
     line for line in text.splitlines()
     if not line.lstrip().startswith("#")
 )
-if re.search(r"\b(?:fastfetch|fetch)\b", active_text, re.IGNORECASE):
+has_fetch_autostart = False
+for line in active_text.splitlines():
+    # A presence check alone is not an autostart invocation.
+    invocation = re.sub(
+        r"\b(?:command\s+-v|which)\s+(?:fastfetch|fetch)\b",
+        "",
+        line,
+        flags=re.IGNORECASE,
+    )
+    if re.search(r"\b(?:fastfetch|fetch)\b", invocation, re.IGNORECASE):
+        has_fetch_autostart = True
+        break
+
+if has_fetch_autostart:
     print("Existing Fetch/Fastfetch autostart detected; not adding another one.")
     raise SystemExit(0)
 
