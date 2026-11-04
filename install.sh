@@ -277,6 +277,119 @@ text = text[:match.end()] + "\n" + reload_binding + text[match.end():]
 p.write_text(text)
 PYNIRI
 
+# Set matching Itsuki window borders while preserving the rest of the user's layout.
+python3 - "$CONFIG_HOME/niri/config.kdl" <<'PYCOLORS'
+from pathlib import Path
+import re
+import sys
+
+path = Path(sys.argv[1])
+text = path.read_text()
+
+def matching_brace(source, opening):
+    depth = 0
+    quoted = False
+    escaped = False
+    line_comment = False
+    i = opening
+    while i < len(source):
+        ch = source[i]
+        if line_comment:
+            if ch == "\n":
+                line_comment = False
+        elif quoted:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == '"':
+                quoted = False
+        elif ch == "/" and source[i:i + 2] == "//":
+            line_comment = True
+            i += 1
+        elif ch == '"':
+            quoted = True
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return i
+        i += 1
+    raise SystemExit("Unclosed Niri config block; no color changes were written.")
+
+def update_flag(block, flag):
+    opening = block.find("{")
+    body = block[opening + 1:-1]
+    body = re.sub(r"(?m)^[ \t]*(?:on|off)[ \t]*(?:\n|$)", "", body)
+    return block[:opening + 1] + "\n        " + flag + "\n" + body.lstrip("\n") + "}"
+
+def update_value(block, name, value):
+    pattern = re.compile(r"(?m)^([ \t]*)" + re.escape(name) + r"(?:[ \t]+[^\n]*)?[ \t]*$")
+    matches = list(pattern.finditer(block))
+    if matches:
+        first = matches[0]
+        block = block[:first.start()] + first.group(1) + name + " " + value + block[first.end():]
+        for match in reversed(matches[1:]):
+            block = block[:match.start()] + block[match.end():]
+    else:
+        close = block.rfind("}")
+        block = block[:close] + "        " + name + " " + value + "\n    " + block[close:]
+    return block
+
+def update_section(layout_body, name, flag, settings):
+    match = re.search(r"(?m)^([ \t]*)" + re.escape(name) + r"[ \t]*\{", layout_body)
+    if match:
+        opening = layout_body.find("{", match.start())
+        closing = matching_brace(layout_body, opening)
+        block = layout_body[match.start():closing + 1]
+        block = update_flag(block, flag)
+        for key, value in settings.items():
+            block = update_value(block, key, value)
+        return layout_body[:match.start()] + block + layout_body[closing + 1:]
+    lines = [f"    {name} {{", f"        {flag}"]
+    lines.extend(f"        {key} {value}" for key, value in settings.items())
+    lines.append("    }")
+    return layout_body.rstrip() + "\n\n" + "\n".join(lines) + "\n"
+
+layout_match = re.search(r"(?m)^layout[ \t]*\{", text)
+if layout_match:
+    layout_open = text.find("{", layout_match.start())
+    layout_close = matching_brace(text, layout_open)
+    body = text[layout_open + 1:layout_close]
+else:
+    layout_open = layout_close = -1
+    body = ""
+
+body = update_value(body, "background-color", '"#0D2430"')
+body = update_section(
+    body,
+    "focus-ring",
+    "off",
+    {},
+)
+body = update_section(
+    body,
+    "border",
+    "on",
+    {
+        "width": "2",
+        "active-color": '"#D95F58"',
+        "inactive-color": '"#426B7A"',
+        "urgent-color": '"#F07868"',
+    },
+)
+
+if layout_open >= 0:
+    text = text[:layout_open + 1] + body + text[layout_close:]
+else:
+    marker = re.search(r"(?m)^binds[ \t]*\{", text)
+    new_block = "layout {\n" + body + "}\n\n"
+    text = text[:marker.start()] + new_block + text[marker.start():] if marker else new_block + text
+
+path.write_text(text)
+PYCOLORS
+
 # Apply the desktop wallpaper immediately when installing from the active Niri session.
 # The startup entry above keeps the same wallpaper after future logins.
 if [[ -n "${NIRI_SOCKET:-}" && -n "${WAYLAND_DISPLAY:-}" ]]; then
