@@ -51,7 +51,7 @@ for rel in scripts/niri-power-menu scripts/itsuki-wifi-menu.py scripts/itsuki-re
   fi
 done
 
-# Verify the existing Niri config# Verify the existing Niri config before touching any installed files.
+# Verify the existing Niri config before touching any installed files.
 # The rice patches this file rather than replacing the user's whole Niri setup.
 if ! command -v python3 >/dev/null 2>&1; then
   echo "Python 3 is required by the installer. No changes were made." >&2
