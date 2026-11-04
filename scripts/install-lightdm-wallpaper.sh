@@ -7,25 +7,40 @@ if [[ -z "$WALLPAPER_SOURCE" || ! -f "$WALLPAPER_SOURCE" ]]; then
   exit 1
 fi
 
+find_command() {
+  local name="$1" path
+  path="$(command -v "$name" 2>/dev/null || true)"
+  if [[ -n "$path" ]]; then
+    printf '%s\n' "$path"
+    return 0
+  fi
+  for path in "/usr/sbin/$name" "/usr/bin/$name" "/usr/local/sbin/$name" \
+              "/usr/lib/lightdm/$name" "/usr/lib/slick-greeter/$name"; do
+    if [[ -x "$path" ]]; then
+      printf '%s\n' "$path"
+      return 0
+    fi
+  done
+  return 1
+}
+
+LIGHTDM_BIN="$(find_command lightdm || true)"
 LIGHTDM_DIR="/etc/lightdm"
-if [[ ! -d "$LIGHTDM_DIR" ]] || ! command -v lightdm >/dev/null 2>&1; then
+if [[ ! -d "$LIGHTDM_DIR" || -z "$LIGHTDM_BIN" ]]; then
   echo "LightDM is not installed; skipping its login-screen wallpaper."
   exit 0
 fi
 
 # Ask LightDM for its merged configuration first. Fall back to reading the
 # standard config locations for installations where --show-config is absent.
-GREETER_SESSION=""
-if command -v lightdm >/dev/null 2>&1; then
-  GREETER_SESSION="$(lightdm --show-config 2>/dev/null | awk -F= '
-    /^[[:space:]]*greeter-session[[:space:]]*=/ {
-      value=$2
-      sub(/^[[:space:]]+/, "", value)
-      sub(/[[:space:]]+$/, "", value)
-    }
-    END { print value }
-  ' || true)"
-fi
+GREETER_SESSION="$("$LIGHTDM_BIN" --show-config 2>/dev/null | awk -F= '
+  /^[[:space:]]*greeter-session[[:space:]]*=/ {
+    value=$2
+    sub(/^[[:space:]]+/, "", value)
+    sub(/[[:space:]]+$/, "", value)
+  }
+  END { print value }
+' || true)"
 
 if [[ -z "$GREETER_SESSION" ]]; then
   for config in /usr/share/lightdm/lightdm.conf.d/*.conf \
@@ -58,11 +73,13 @@ case "$GREETER_SESSION" in
     ;;
   *)
     # If no explicit session was found, use an installed supported greeter.
-    if command -v lightdm-gtk-greeter >/dev/null 2>&1; then
+    GTK_GREETER_BIN="$(find_command lightdm-gtk-greeter || true)"
+    SLICK_GREETER_BIN="$(find_command slick-greeter || true)"
+    if [[ -n "$GTK_GREETER_BIN" ]]; then
       GREETER_CONFIG="$LIGHTDM_DIR/lightdm-gtk-greeter.conf"
       GREETER_SECTION="greeter"
       GREETER_LABEL="LightDM GTK Greeter"
-    elif command -v slick-greeter >/dev/null 2>&1; then
+    elif [[ -n "$SLICK_GREETER_BIN" ]]; then
       GREETER_CONFIG="$LIGHTDM_DIR/slick-greeter.conf"
       GREETER_SECTION="Greeter"
       GREETER_LABEL="Slick Greeter"
@@ -151,7 +168,7 @@ else:
 target.write_text("\n".join(lines).rstrip() + "\n")
 PYLIGHTDM
 
-as_root install -d -m 0755 "$BACKUP_DIR"
+as_root install -d -m 0700 "$BACKUP_DIR"
 if [[ -e "$GREETER_CONFIG" || -L "$GREETER_CONFIG" ]]; then
   as_root cp -a "$GREETER_CONFIG" "$BACKUP_DIR/$(basename "$GREETER_CONFIG")"
 fi
