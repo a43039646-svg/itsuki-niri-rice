@@ -103,7 +103,7 @@ If LightDM is not installed, or its greeter is not supported, the login-screen w
 
 ## Included
 
-- **Waybar Minimal Rail:** dark ocean panel with a coral-red outline, coral active-workspace underline, centered clock and sky-blue indicators.
+- **Waybar Minimal Rail:** dark ocean panel with a coral-red outline, coral active-workspace underline, centered clock, sky-blue indicators and a SwayNC bell (left-click opens the control center; right-click toggles Do Not Disturb).
 - **Niri window borders:** coral focused border, muted blue inactive border and coral urgent border.
 - **Kitty:** matching colors, JetBrains Mono, translucent background and Niri blur integration on Niri 26.04 or newer.
 - **Fuzzel:** matching dark-blue launcher with coral selection and outline.
@@ -121,7 +121,7 @@ If LightDM is not installed, or its greeter is not supported, the login-screen w
 | `Super+E` | Open the Itsuki power menu |
 | `Super+Shift+B` | Reload Niri, Waybar, SwayNC and the Itsuki wallpaper |
 
-SwayNC's notification panel can also be controlled with `swaync-client`; see `swaync-client --help` for the available actions.
+The SwayNC bell in Waybar opens the notification center with a left-click and toggles Do Not Disturb with a right-click. SwayNC can also be controlled with `swaync-client`; see `swaync-client --help` for available actions.
 
 ## Kitty transparency and Niri blur
 
