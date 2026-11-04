@@ -1,27 +1,126 @@
-/* Itsuki Floating HUD — Gentoo violet profile */
+/* Itsuki Minimal Rail — Gentoo violet profile */
 * {
     border: none;
     border-radius: 0;
     font-family: "JetBrains Mono", monospace;
     font-size: 12px;
+    font-weight: 500;
     min-height: 0;
 }
-window#waybar { background: transparent; color: #F2EAF5; }
-#custom-distro, #custom-debian {
-    font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", "Symbols Nerd Font", "Symbols Nerd Font Mono", "ForkAwesome", "FontAwesome", sans-serif;
-    font-size: 17px; color: #D8BCFF; padding: 0 14px; margin: 8px 3px 0 12px;
-    background: rgba(24, 15, 42, 0.95); border: 1px solid rgba(181, 138, 255, 0.62); border-left: 2px solid #B58AFF;
+
+window#waybar {
+    background: transparent;
+    color: #F2EAF5;
+    border-bottom: 1px solid rgba(181, 138, 255, 0.66);
 }
-#custom-distro:hover, #custom-debian:hover { color: #FFFFFF; background: rgba(54, 32, 82, 0.98); }
-#workspaces { padding: 0 8px; margin: 8px 3px 0; background: rgba(24, 15, 42, 0.95); border: 1px solid rgba(181, 138, 255, 0.48); }
-#workspaces button { padding: 0 9px; margin: 5px 2px; color: #AAA0B9; background: transparent; border-bottom: 2px solid transparent; }
-#workspaces button:hover { color: #FFFFFF; background: rgba(181, 138, 255, 0.16); }
-#workspaces button.focused, #workspaces button.active { color: #F2EAF5; background: rgba(181, 138, 255, 0.20); border-bottom: 2px solid #B58AFF; }
-#workspaces button.urgent { color: #FFFFFF; background: rgba(255, 35, 80, 0.38); }
-#clock { min-width: 190px; padding: 0 20px; margin: 8px 3px 0; color: #EDE2FF; background: rgba(24, 15, 42, 0.98); border: 1px solid rgba(216, 188, 255, 0.62); border-top: 2px solid #B58AFF; font-size: 13px; font-weight: bold; }
-#network, #pulseaudio, #battery, #backlight, #tray { padding: 0 11px; margin: 8px 3px 0; color: #F2EAF5; background: rgba(24, 15, 42, 0.95); border: 1px solid rgba(181, 138, 255, 0.48); }
-#network { color: #C4A0FF; } #network.disconnected { color: #B58AFF; }
-#pulseaudio { color: #CFB2FF; } #pulseaudio.muted { color: #9B91A7; }
-#backlight { color: #D8BCFF; } #battery.warning { color: #FFD27F; } #battery.critical:not(.charging) { color: #FF5478; }
-#tray { padding: 0 9px; margin-right: 12px; } #tray > .passive { opacity: 0.72; } #tray > .active { opacity: 1; }
-tooltip { background: rgba(14, 8, 31, 0.98); color: #F2EAF5; border: 1px solid #63408C; }
+
+#custom-distro,
+#custom-debian {
+    font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", "Symbols Nerd Font", "Symbols Nerd Font Mono", "ForkAwesome", "FontAwesome", sans-serif;
+    font-size: 16px;
+    color: #B58AFF;
+    padding: 0 8px 0 0;
+    margin: 0 5px 0 0;
+}
+
+#custom-distro:hover,
+#custom-debian:hover {
+    color: #F2EAF5;
+}
+
+#workspaces {
+    padding: 0 4px;
+    margin: 0 5px;
+    background: transparent;
+}
+
+#workspaces button {
+    padding: 0 7px;
+    margin: 0 2px;
+    color: #AAA0B9;
+    background: transparent;
+    border-bottom: 2px solid transparent;
+}
+
+#workspaces button:hover {
+    color: #F2EAF5;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+    color: #F2EAF5;
+    border-bottom: 2px solid #B58AFF;
+}
+
+#workspaces button.urgent {
+    color: #FF5478;
+    border-bottom: 2px solid #FF5478;
+}
+
+#clock {
+    color: #F2EAF5;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 0 8px;
+    margin: 0 8px;
+}
+
+#network,
+#pulseaudio,
+#battery,
+#backlight,
+#tray {
+    padding: 0 6px;
+    margin: 0 4px;
+    background: transparent;
+    color: #F2EAF5;
+}
+
+#network,
+#backlight {
+    color: #D8BCFF;
+}
+
+#network.disconnected {
+    color: #FF5478;
+}
+
+#pulseaudio {
+    color: #F2EAF5;
+}
+
+#pulseaudio.muted {
+    color: #AAA0B9;
+}
+
+#battery.warning {
+    color: #E7C58C;
+}
+
+#battery.critical:not(.charging) {
+    color: #FF5478;
+}
+
+#tray {
+    padding-right: 0;
+    margin-right: 0;
+}
+
+#tray > .passive {
+    opacity: 0.72;
+}
+
+#tray > .active {
+    opacity: 1;
+}
+
+#tray > .needs-attention {
+    color: #B58AFF;
+}
+
+tooltip {
+    background: #0E081F;
+    color: #F2EAF5;
+    border: 1px solid #63408C;
+    border-top: 2px solid #B58AFF;
+}
