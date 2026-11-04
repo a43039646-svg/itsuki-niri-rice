@@ -5,7 +5,7 @@ ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG="$ROOT/configs"
 
 printf '[Files] checking the universal Itsuki profile and wallpaper... '
-for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do
+for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini swaync/config.json swaync/style.css fetch/config xdg-desktop-portal/niri-portals.conf; do
   [[ -f "$CONFIG/$rel" ]] || { echo "MISSING: $CONFIG/$rel"; exit 1; }
 done
 [[ -f "$ROOT/wallpapers/itsuki.png" ]] || { echo "MISSING: $ROOT/wallpapers/itsuki.png"; exit 1; }
@@ -61,6 +61,13 @@ for filename in sys.argv[1:]:
 PY
 echo OK
 
-grep -q 'border-bottom: 1px solid' "$CONFIG/waybar/style.css"
+grep -q 'border-bottom: 2px solid #D95F58' "$CONFIG/waybar/style.css"
+grep -q 'background: #102B38' "$CONFIG/waybar/style.css"
+grep -q 'D95F58' "$CONFIG/fuzzel/fuzzel.ini"
 grep -q 'Itsuki Minimal Rail' "$CONFIG/waybar/style.css"
+python3 -m json.tool "$CONFIG/swaync/config.json" >/dev/null
+grep -q 'D95F58' "$CONFIG/swaync/style.css"
+grep -q 'swaync' "$ROOT/install.sh"
+grep -q 'Existing Fetch/Fastfetch autostart detected' "$ROOT/install.sh"
+grep -q 'active-color.*D95F58' "$ROOT/install.sh"
 echo "All universal Itsuki Niri Rice checks passed."
