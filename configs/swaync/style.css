@@ -120,8 +120,19 @@ blankwindow {
   color: #102B38;
 }
 
+.widget-dnd switch {
+  background: #244A5B;
+  border: 1px solid #78BFD0;
+  border-radius: 10px;
+}
+
 .widget-dnd switch:checked {
   background: #D95F58;
+}
+
+.widget-dnd switch slider {
+  background: #F4EBDD;
+  border-radius: 10px;
 }
 
 progressbar > trough {
