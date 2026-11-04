@@ -158,24 +158,30 @@ import sys
 path = Path(sys.argv[1])
 command = sys.argv[2]
 marker = "# ITSUKI_FETCH_AUTOSTART:"
+managed_pattern = re.compile(
+    r"(?ms)^# ITSUKI_FETCH_AUTOSTART:[^\n]*\n.*?^fi[ \t]*(?:\n|$)"
+)
 
 try:
-    text = path.read_text() if path.exists() else ""
+    original = path.read_text() if path.exists() else ""
 except OSError as exc:
     print(f"Could not read {path}: {exc}", file=sys.stderr)
     raise SystemExit(1)
 
-if marker in text:
-    print("Itsuki Fetch autostart already exists; leaving it unchanged.")
+managed_matches = list(managed_pattern.finditer(original))
+if marker in original and not managed_matches:
+    print(f"Found an incomplete Itsuki Fetch marker in {path}; leaving it unchanged.", file=sys.stderr)
     raise SystemExit(0)
 
-active_text = "\n".join(
+# Strip only our own previous block while checking for a user's existing command.
+text = managed_pattern.sub("", original)
+active_lines = [
     line for line in text.splitlines()
     if not line.lstrip().startswith("#")
-)
+]
 has_fetch_autostart = False
-for line in active_text.splitlines():
-    # A presence check alone is not an autostart invocation.
+for line in active_lines:
+    # Ignore command-presence probes; only a real fetch/fastfetch invocation counts.
     invocation = re.sub(
         r"\b(?:command\s+-v|which)\s+(?:fastfetch|fetch)\b",
         "",
@@ -187,10 +193,16 @@ for line in active_text.splitlines():
         break
 
 if has_fetch_autostart:
-    print("Existing Fetch/Fastfetch autostart detected; not adding another one.")
+    if managed_matches:
+        path.write_text(text)
+        print("Found an existing Fetch/Fastfetch autostart; removed the duplicate Itsuki block.")
+    else:
+        print("Existing Fetch/Fastfetch autostart detected; not adding another one.")
     raise SystemExit(0)
 
 if not command:
+    if managed_matches:
+        path.write_text(text)
     print("Neither fastfetch nor fetch is installed; no terminal autostart was added.")
     raise SystemExit(0)
 
@@ -206,7 +218,7 @@ if text and not text.endswith("\n"):
 if text and not text.endswith("\n\n"):
     text += "\n"
 path.write_text(text + block + "\n")
-print(f"Added terminal autostart for {command}.")
+print(f"Configured one terminal autostart for {command}.")
 PYFETCHRC
 fi
 
