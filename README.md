@@ -69,5 +69,6 @@ The validation script checks the shared Waybar JSON, required files, and helper 
 ## Repository layout
 
 - `configs/` — the single universal rose profile.
+- `wallpapers/` — place your own backgrounds here; the installer leaves wallpaper selection to your Niri config.
 - `scripts/` — power, Wi-Fi, slider, reload, and blur helpers.
 - `install.sh` — universal installer; it leaves wallpaper management to the user.
