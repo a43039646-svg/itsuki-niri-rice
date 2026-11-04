@@ -16,7 +16,7 @@ The repository provides one shared configuration for all distributions, an Itsuk
 
 The installer copies `wallpapers/itsuki.png` to `~/.local/share/itsuki-niri-rice/wallpapers/itsuki.png` and starts it with `swaybg` in fill mode whenever Niri starts.
 
-When LightDM with **LightDM GTK Greeter** or **Slick Greeter** is already installed, the same installer also installs `wallpapers/lightdm-itsuki.png` under `/usr/share/backgrounds/itsuki-lightdm/` and updates only the active greeter's background setting. It backs up the previous greeter configuration and wallpaper first. It does not install or switch display managers, and it does not restart LightDM.
+When LightDM with **LightDM GTK Greeter** or **Slick Greeter** is already installed, the same installer also installs `wallpapers/lightdm-itsuki.png` under `/usr/share/backgrounds/itsuki-lightdm/` and updates only the active greeter's background setting. With LightDM GTK Greeter, the login form is explicitly centered (`position=50% 50%`) and per-user backgrounds are disabled so the Itsuki image stays selected. It backs up the previous greeter configuration and wallpaper first. It does not install or switch display managers, and it does not restart LightDM. Slick Greeter keeps its own layout defaults.
 
 ## Requirements
 
