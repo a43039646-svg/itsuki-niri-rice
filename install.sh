@@ -357,6 +357,14 @@ def update_section(layout_body, name, flag, settings):
         closing = matching_brace(layout_body, opening)
         block = layout_body[match.start():closing + 1]
         block = update_flag(block, flag)
+        if name == "border":
+            # Niri gradients override the solid color properties. Remove old
+            # user gradients so the wallpaper-matched coral border is visible.
+            block = re.sub(
+                r"(?m)^[ \\t]*(?:active|inactive|urgent)-gradient\\b[^\\n]*(?:\\n|$)",
+                "",
+                block,
+            )
         for key, value in settings.items():
             block = update_value(block, key, value)
         return layout_body[:match.start()] + block + layout_body[closing + 1:]
