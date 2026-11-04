@@ -235,4 +235,3 @@ fi
 
 echo "Installed Itsuki Niri Rice (universal rose profile). Backups: $BACKUP"
 echo "Your existing wallpaper setup was left untouched."
-echo "LightDM was not modified."
