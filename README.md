@@ -27,11 +27,11 @@ bash install.sh
 
 The installer has no interactive choices. It backs up the existing rice files under `~/.config/itsuki-niri-backup/<timestamp>/`, patches your existing `~/.config/niri/config.kdl`, and installs the shared rose profile. It does not replace your full Niri config.
 
-The wallpaper `wallpapers/itsuki.png` is copied to `~/.local/share/itsuki-niri-rice/wallpapers/itsuki.png` and started automatically with `swaybg` in fill mode every time Niri starts. The installer replaces older Niri startup lines for Waybar, Dunst, and common wallpaper tools that it manages, and keeps one marked startup block so running the installer again does not duplicate entries. The separate `lightdm-itsuki.png` image is not installed or applied.
+The desktop wallpaper `wallpapers/itsuki.png` is copied to `~/.local/share/itsuki-niri-rice/wallpapers/itsuki.png` and started automatically with `swaybg` in fill mode every time Niri starts. The login-screen wallpaper `wallpapers/lightdm-itsuki.png` is also installed automatically when LightDM with GTK Greeter or Slick Greeter is already present. The installer detects the greeter, backs up its configuration, and updates only its background setting. It does not install or switch display managers, and it does not restart LightDM.
 
 ## Included
 
-- **Wallpaper:** bundled Itsuki background, automatically installed and started by Niri.
+- **Wallpapers:** one Itsuki background for the Niri desktop and a separate Itsuki background for the LightDM login screen.
 - **Waybar Minimal Rail:** transparent top rail, thin rose underline, underlined active workspace, centered clock, and unboxed system indicators.
 - **Kitty:** coordinated colors, JetBrains Mono, translucent background, and Niri blur integration on Niri 26.04 or newer.
 - **Fuzzel:** matching application launcher and menus.
@@ -73,6 +73,6 @@ The validation script checks the shared Waybar JSON, wallpaper asset, required f
 
 - `configs/` — the single universal rose profile.
 - `wallpapers/itsuki.png` — default desktop wallpaper installed by the installer.
-- `wallpapers/lightdm-itsuki.png` — separate image, currently not configured by this installer.
+- `wallpapers/lightdm-itsuki.png` — LightDM login-screen background, automatically configured for supported greeters when LightDM is installed.
 - `scripts/` — power, Wi-Fi, slider, reload, and blur helpers.
 - `install.sh` — universal installer with no interactive selection.
