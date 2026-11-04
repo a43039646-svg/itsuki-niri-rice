@@ -1,8 +1,8 @@
 {
   "layer": "top",
   "position": "top",
-  "height": 42,
-  "spacing": 3,
+  "height": 34,
+  "spacing": 10,
   "modules-left": [
     "custom/distro",
     "niri/workspaces"
@@ -33,8 +33,8 @@
     }
   },
   "clock": {
-    "format": "{:%a %d %b  %H:%M}",
-    "tooltip-format": "{:%A, %d %B %Y}\n{:%H:%M:%S}"
+    "format": " {:%H:%M  ·  %a %d %b}",
+    "tooltip-format": "{:%A, %d %B %Y}\\n{:%H:%M:%S}"
   },
   "pulseaudio": {
     "format": " {volume}%",
@@ -64,5 +64,5 @@
     "show-passive-items": true,
     "tooltip": true
   },
-  "margin": "8px 12px 0px 12px"
+  "margin": "8px 18px 0px 18px"
 }
