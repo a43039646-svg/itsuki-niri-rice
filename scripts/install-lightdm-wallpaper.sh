@@ -138,7 +138,6 @@ except OSError as exc:
     raise SystemExit(1)
 
 header = re.compile(r"^\s*\[([^]]+)\]\s*(?:[#;].*)?$")
-key = re.compile(r"^\s*background\s*=", re.IGNORECASE)
 start = None
 for i, line in enumerate(lines):
     match = header.match(line)
@@ -149,21 +148,34 @@ for i, line in enumerate(lines):
 if start is None:
     if lines and lines[-1].strip():
         lines.append("")
-    lines.extend([f"[{sys.argv[3]}]", f"background={wallpaper}"])
-else:
-    end = len(lines)
+    lines.append(f"[{sys.argv[3]}]")
+    start = len(lines) - 1
+
+def section_end():
     for i in range(start + 1, len(lines)):
         if header.match(lines[i]):
-            end = i
-            break
+            return i
+    return len(lines)
+
+def set_section_value(name, value):
+    end = section_end()
+    setting_re = re.compile(r"^\s*" + re.escape(name) + r"\s*=", re.IGNORECASE)
     matches = [i for i in range(start + 1, end)
-               if key.match(lines[i]) and not lines[i].lstrip().startswith(("#", ";"))]
+               if setting_re.match(lines[i]) and not lines[i].lstrip().startswith(("#", ";"))]
     if matches:
-        lines[matches[0]] = f"background={wallpaper}"
+        lines[matches[0]] = f"{name}={value}"
         for i in reversed(matches[1:]):
             del lines[i]
     else:
-        lines.insert(end, f"background={wallpaper}")
+        lines.insert(end, f"{name}={value}")
+
+set_section_value("background", wallpaper)
+
+# LightDM GTK Greeter supports centering the login window with position.
+# Keep the selected Itsuki background instead of using per-user wallpapers.
+if section_name == "greeter":
+    set_section_value("position", "50% 50%")
+    set_section_value("user-background", "false")
 
 target.write_text("\n".join(lines).rstrip() + "\n")
 PYLIGHTDM
