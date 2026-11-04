@@ -4,10 +4,11 @@ set -euo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG="$ROOT/configs"
 
-printf '[Files] checking the universal Itsuki profile... '
+printf '[Files] checking the universal Itsuki profile and wallpaper... '
 for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do
   [[ -f "$CONFIG/$rel" ]] || { echo "MISSING: $CONFIG/$rel"; exit 1; }
 done
+[[ -f "$ROOT/wallpapers/itsuki.png" ]] || { echo "MISSING: $ROOT/wallpapers/itsuki.png"; exit 1; }
 echo OK
 
 printf '[Waybar] checking JSON and module layout... '
@@ -42,6 +43,9 @@ printf '[Shell] checking installer and helper syntax... '
 for script in "$ROOT/install.sh" "$ROOT/scripts/itsuki-reload-rice" "$ROOT/scripts/niri-power-menu"; do
   bash -n "$script"
 done
+grep -q 'WALLPAPER_SOURCE="$ROOT/wallpapers/itsuki.png"' "$ROOT/install.sh"
+grep -q 'swaybg is required to set the Niri wallpaper' "$ROOT/install.sh"
+grep -q 'BEGIN ITSUKI RICE STARTUP' "$ROOT/install.sh"
 echo OK
 
 printf '[Python] checking helper syntax... '
