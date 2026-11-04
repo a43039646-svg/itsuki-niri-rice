@@ -45,6 +45,12 @@ if ! command -v swaybg >/dev/null 2>&1; then
   echo "swaybg is required to set the Niri wallpaper. Install swaybg and run the installer again." >&2
   exit 1
 fi
+for command_name in swaync swaync-client; do
+  if ! command -v "$command_name" >/dev/null 2>&1; then
+    echo "SwayNotificationCenter is required. On Debian install it with: sudo apt install sway-notification-center" >&2
+    exit 1
+  fi
+done
 SWAYBG_BIN="$(command -v swaybg)"
 WALLPAPER_DIR="$HOME/.local/share/itsuki-niri-rice/wallpapers"
 WALLPAPER_DEST="$WALLPAPER_DIR/itsuki.png"
@@ -56,7 +62,7 @@ DISTRO_ICON=""
 DISTRO_LABEL="Itsuki"
 CONFIG_SOURCE="$ROOT/configs"
 
-for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do
+for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini swaync/config.json swaync/style.css fetch/config xdg-desktop-portal/niri-portals.conf; do
   if [[ ! -f "$CONFIG_SOURCE/$rel" ]]; then
     echo "Required config file is missing: $CONFIG_SOURCE/$rel" >&2
     exit 1
@@ -98,7 +104,7 @@ then
 fi
 
 BACKUP="$CONFIG_HOME/itsuki-niri-backup/$STAMP"
-mkdir -p "$BACKUP" "$HOME/.local/bin" "$CONFIG_HOME/waybar" "$CONFIG_HOME/kitty" "$CONFIG_HOME/fuzzel" "$CONFIG_HOME/dunst" "$CONFIG_HOME/fetch" "$CONFIG_HOME/xdg-desktop-portal" "$CONFIG_HOME/niri"
+mkdir -p "$BACKUP" "$HOME/.local/bin" "$CONFIG_HOME/waybar" "$CONFIG_HOME/kitty" "$CONFIG_HOME/fuzzel" "$CONFIG_HOME/swaync" "$CONFIG_HOME/fetch" "$CONFIG_HOME/xdg-desktop-portal" "$CONFIG_HOME/niri"
 backup() {
   local path="$1" rel="$2"
   if [[ -f "$path" || -L "$path" ]]; then
@@ -106,7 +112,7 @@ backup() {
     cp -a "$path" "$BACKUP/$rel"
   fi
 }
-for rel in niri/config.kdl waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do
+for rel in niri/config.kdl waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini swaync/config.json swaync/style.css fetch/config xdg-desktop-portal/niri-portals.conf; do
   backup "$CONFIG_HOME/$rel" "$rel"
 done
 backup "$WALLPAPER_DEST" "wallpapers/itsuki.png"
@@ -122,7 +128,10 @@ done
 rm -f "$CONFIG_HOME/waybar/config.json" "$CONFIG_HOME/waybar/config.jsonc"
 mkdir -p "$WALLPAPER_DIR"
 install -m 0644 "$WALLPAPER_SOURCE" "$WALLPAPER_DEST"
-for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do cp "$CONFIG_SOURCE/$rel" "$CONFIG_HOME/$rel"; done
+for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini swaync/config.json swaync/style.css fetch/config xdg-desktop-portal/niri-portals.conf; do
+  mkdir -p "$CONFIG_HOME/$(dirname "$rel")"
+  cp "$CONFIG_SOURCE/$rel" "$CONFIG_HOME/$rel"
+done
 install -m 755 "$ROOT/scripts/niri-power-menu" "$HOME/.local/bin/niri-power-menu"
 install -m 755 "$ROOT/scripts/itsuki-reload-rice" "$HOME/.local/bin/itsuki-reload-rice"
 # Retire the stale Miku reload helper after backing it up; its old shortcut reset miku.png.
@@ -134,42 +143,60 @@ install -m 755 "$ROOT/scripts/itsuki-wifi-menu.py" "$HOME/.local/bin/itsuki-wifi
 SHELL_NAME="$(basename "${SHELL:-bash}")"
 case "$SHELL_NAME" in bash) SHELL_RC="$HOME/.bashrc" ;; zsh) SHELL_RC="$HOME/.zshrc" ;; *) SHELL_RC="" ;; esac
 if [[ -n "$SHELL_RC" ]]; then
-  # Back up the shell startup file before creating or updating our managed block.
   backup "$SHELL_RC" "$(basename "$SHELL_RC")"
-  python3 - "$SHELL_RC" <<'PYFETCHRC'
+  FETCH_COMMAND=""
+  if command -v fastfetch >/dev/null 2>&1; then
+    FETCH_COMMAND="fastfetch"
+  elif command -v fetch >/dev/null 2>&1; then
+    FETCH_COMMAND="fetch --box --shading-mode sextants"
+  fi
+  python3 - "$SHELL_RC" "$FETCH_COMMAND" <<'PYFETCHRC'
 from pathlib import Path
 import re
 import sys
 
 path = Path(sys.argv[1])
+command = sys.argv[2]
 marker = "# ITSUKI_FETCH_AUTOSTART:"
-block = """# ITSUKI_FETCH_AUTOSTART: show animated system info in interactive terminals.
-if [[ $- == *i* ]] && command -v fetch >/dev/null 2>&1; then
-    fetch --box --shading-mode sextants
-fi"""
+
 try:
     text = path.read_text() if path.exists() else ""
 except OSError as exc:
     print(f"Could not read {path}: {exc}", file=sys.stderr)
     raise SystemExit(1)
 
-pattern = re.compile(r"(?ms)^# ITSUKI_FETCH_AUTOSTART:[^\n]*\n.*?^fi[ \t]*(?:\n|$)")
 if marker in text:
-    match = pattern.search(text)
-    if match is None:
-        print(f"Found {marker} in {path}, but could not safely update its block.", file=sys.stderr)
-        raise SystemExit(1)
-    text = text[:match.start()] + block + "\n" + text[match.end():]
-else:
-    if text and not text.endswith("\n"):
-        text += "\n"
-    if text and not text.endswith("\n\n"):
-        text += "\n"
-    text += block + "\n"
+    print("Itsuki Fetch autostart already exists; leaving it unchanged.")
+    raise SystemExit(0)
 
-path.write_text(text)
+active_text = "\n".join(
+    line for line in text.splitlines()
+    if not line.lstrip().startswith("#")
+)
+if re.search(r"\b(?:fastfetch|fetch)\b", active_text, re.IGNORECASE):
+    print("Existing Fetch/Fastfetch autostart detected; not adding another one.")
+    raise SystemExit(0)
+
+if not command:
+    print("Neither fastfetch nor fetch is installed; no terminal autostart was added.")
+    raise SystemExit(0)
+
+binary = "fastfetch" if command == "fastfetch" else "fetch"
+block = (
+    marker + " run only in interactive shells.\n"
+    "if [[ $- == *i* ]] && command -v " + binary + " >/dev/null 2>&1; then\n"
+    "    " + command + "\n"
+    "fi"
+)
+if text and not text.endswith("\n"):
+    text += "\n"
+if text and not text.endswith("\n\n"):
+    text += "\n"
+path.write_text(text + block + "\n")
+print(f"Added terminal autostart for {command}.")
 PYFETCHRC
 fi
+
 python3 - "$CONFIG_HOME/waybar/config" "$HOME/.local/bin" "$DISTRO_ICON" "$DISTRO_LABEL" <<'PYWAYBAR'
 import json,sys
 from pathlib import Path
@@ -213,7 +240,7 @@ text = re.sub(
 )
 # Remove old panel/background startup lines that this rice now manages itself.
 text = re.sub(
-    r'(?m)^[ \t]*(?:spawn-at-startup|spawn-sh-at-startup)\b[^\n]*(?:\bwaybar\b|\bdunst\b|\bswaybg\b|\bswww\b|\bawww\b|\bmpvpaper\b|\bhyprpaper\b)[^\n]*(?:\n|$)',
+    r'(?m)^[ \t]*(?:spawn-at-startup|spawn-sh-at-startup)\b[^\n]*(?:\bwaybar\b|\bdunst\b|\bswaync\b|\bswaybg\b|\bswww\b|\bawww\b|\bmpvpaper\b|\bhyprpaper\b)[^\n]*(?:\n|$)',
     "",
     text,
 )
@@ -223,7 +250,7 @@ def kdl_string(value):
 
 startup = (
     "// BEGIN ITSUKI RICE STARTUP\n"
-    f"spawn-at-startup {kdl_string('dunst')}\n"
+    f"spawn-at-startup {kdl_string('swaync')}\n"
     f"spawn-at-startup {kdl_string('waybar')}\n"
     f"spawn-at-startup {kdl_string(sys.argv[3])} \"-i\" {kdl_string(sys.argv[4])} \"-m\" \"fill\"\n"
     "// END ITSUKI RICE STARTUP\n"
@@ -266,6 +293,9 @@ if command -v niri >/dev/null 2>&1; then niri validate; fi
 if [[ -n "${NIRI_SOCKET:-}" && -n "${WAYLAND_DISPLAY:-}" ]]; then
   pkill -x waybar >/dev/null 2>&1 || true
   nohup waybar >/dev/null 2>&1 </dev/null &
+  pkill -x dunst >/dev/null 2>&1 || true
+  pkill -x swaync >/dev/null 2>&1 || true
+  nohup swaync >/dev/null 2>&1 </dev/null &
 fi
 
 # Niri is the single source of Waybar startup. Remove the old systemd dependency
