@@ -31,7 +31,8 @@ restart_service() {
 }
 
 restart_service waybar waybar
-restart_service dunst dunst
+pkill -x dunst >/dev/null 2>&1 || true
+restart_service swaync swaync
 
 # Always restore the wallpaper shipped by Itsuki. This also removes any
 # stale Miku swaybg process left by an older Niri rice installation.
@@ -47,5 +48,5 @@ fi
 # Kitty watches its config file for changes by default, so avoid closing terminals.
 sleep 0.5
 if command -v notify-send >/dev/null 2>&1; then
-  notify-send "Itsuki Niri Rice" "Niri config reloaded; Waybar and Dunst restarted." >>"$LOG_FILE" 2>&1 || true
+  notify-send "Itsuki Niri Rice" "Niri config reloaded; Waybar and SwayNC restarted." >>"$LOG_FILE" 2>&1 || true
 fi
