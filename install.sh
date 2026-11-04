@@ -233,6 +233,14 @@ else:
 
 p.write_text(text)
 PYNIRI
+
+# Apply the desktop wallpaper immediately when installing from the active Niri session.
+# The startup entry above keeps the same wallpaper after future logins.
+if [[ -n "${NIRI_SOCKET:-}" && -n "${WAYLAND_DISPLAY:-}" ]]; then
+  pkill -x swaybg >/dev/null 2>&1 || true
+  nohup "$SWAYBG_BIN" -i "$WALLPAPER_DEST" -m fill >/dev/null 2>&1 </dev/null &
+fi
+
 # Apply the optional Kitty transparency and Niri 26.04+ blur profile.
 python3 "$ROOT/scripts/enable-kitty-blur.py" "$CONFIG_HOME/niri/config.kdl" "$CONFIG_HOME/kitty/kitty.conf"
 python3 -m json.tool "$CONFIG_HOME/waybar/config" >/dev/null
