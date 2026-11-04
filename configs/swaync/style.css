@@ -79,7 +79,7 @@ blankwindow {
 
 .summary,
 .time {
-  color: #F4EBDА;
+  color: #F4EBDD;
 }
 
 .body {
@@ -96,7 +96,7 @@ blankwindow {
 }
 
 .widget-title {
-  color: #F4EBDА;
+  color: #F4EBDD;
 }
 
 .widget-title > label {
@@ -108,7 +108,7 @@ blankwindow {
 .widget-dnd button,
 .widget-buttons-grid button {
   background: #1D4658;
-  color: #F4EBDА;
+  color: #F4EBDD;
   border: 1px solid #D95F58;
   border-radius: 10px;
 }
@@ -136,7 +136,7 @@ progressbar > trough > progress {
 
 tooltip {
   background: #0D2430;
-  color: #F4EBDА;
+  color: #F4EBDD;
   border: 1px solid #D95F58;
   border-radius: 8px;
 }
