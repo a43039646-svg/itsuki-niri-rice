@@ -31,6 +31,19 @@ if [[ ! -d "$ROOT/configs" || ! -d "$ROOT/scripts" ]]; then
   echo "The Itsuki Niri Rice repository is incomplete: configs/ or scripts/ is missing." >&2
   exit 1
 fi
+WALLPAPER_SOURCE="$ROOT/wallpapers/itsuki.png"
+if [[ ! -f "$WALLPAPER_SOURCE" ]]; then
+  echo "Bundled wallpaper is missing: $WALLPAPER_SOURCE" >&2
+  exit 1
+fi
+if ! command -v swaybg >/dev/null 2>&1; then
+  echo "swaybg is required to set the Niri wallpaper. Install swaybg and run the installer again." >&2
+  exit 1
+fi
+SWAYBG_BIN="$(command -v swaybg)"
+WALLPAPER_DIR="$HOME/.local/share/itsuki-niri-rice/wallpapers"
+WALLPAPER_DEST="$WALLPAPER_DIR/itsuki.png"
+
 CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 DISTRO="universal"
@@ -91,6 +104,7 @@ backup() {
 for rel in niri/config.kdl waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do
   backup "$CONFIG_HOME/$rel" "$rel"
 done
+backup "$WALLPAPER_DEST" "wallpapers/itsuki.png"
 
 # Waybar can use config.json/config.jsonc instead of config. Back them up too,
 # then remove only those known competing filenames so the selected config wins.
@@ -100,6 +114,8 @@ done
 
 # Remove competing Waybar config aliases only after they have been backed up.
 rm -f "$CONFIG_HOME/waybar/config.json" "$CONFIG_HOME/waybar/config.jsonc"
+mkdir -p "$WALLPAPER_DIR"
+install -m 0644 "$WALLPAPER_SOURCE" "$WALLPAPER_DEST"
 for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dunst/dunstrc fetch/config xdg-desktop-portal/niri-portals.conf; do cp "$CONFIG_SOURCE/$rel" "$CONFIG_HOME/$rel"; done
 install -m 755 "$ROOT/scripts/niri-power-menu" "$HOME/.local/bin/niri-power-menu"
 install -m 755 "$ROOT/scripts/itsuki-reload-rice" "$HOME/.local/bin/itsuki-reload-rice"
@@ -173,28 +189,37 @@ p.write_text(json.dumps(cfg,indent=2,ensure_ascii=False)+'\n')
 PYWAYBAR
 
 cp "$CONFIG_HOME/niri/config.kdl" "$BACKUP/niri-config.pre-patch.kdl"
-python3 - "$CONFIG_HOME/niri/config.kdl" "$HOME" <<'PYNIRI'
+python3 - "$CONFIG_HOME/niri/config.kdl" "$HOME" "$SWAYBG_BIN" "$WALLPAPER_DEST" <<'PYNIRI'
 from pathlib import Path
 import re,sys
 p=Path(sys.argv[1]); home=sys.argv[2]; text=p.read_text()
-# Remove previous Niri startup entries for rice-managed apps, including legacy
-# shell wrappers that launch Waybar. Otherwise a stale wrapper can race with
-# the single Waybar instance added below.
-text=re.sub(
-    r'(?m)^[ \t]*(?:spawn-at-startup|spawn-sh-at-startup)\b[^\n]*\b(?:waybar|dunst)\b[^\n]*(?:\n|$)',
-    '',
+# Replace the rice-managed startup block on every run so installs stay idempotent.
+text = re.sub(
+    r"(?ms)^// BEGIN ITSUKI RICE STARTUP\\n.*?^// END ITSUKI RICE STARTUP[ \\t]*(?:\\n|$)",
+    "",
     text,
 )
-# Remove only the old rice-managed wallpaper command; preserve the user's own wallpaper setup.
-text=re.sub(
-    r'(?m)^[ \t]*(?:spawn-at-startup|spawn-sh-at-startup)\b[^\n]*swaybg[^\n]*Pictures/Wallpapers/itsuki\.png[^\n]*(?:\n|$)',
-    '',
+# Remove legacy panel and wallpaper autostart entries that this rice now owns.
+text = re.sub(
+    r'(?m)^[ \\t]*(?:spawn-at-startup|spawn-sh-at-startup)\\b[^\\n]*(?:\\bwaybar\\b|\\bdunst\\b|\\bswaybg\\b|\\bswww\\b|\\bawww\\b|\\bmpvpaper\\b|\\bhyprpaper\\b)[^\\n]*(?:\\n|$)',
+    "",
     text,
 )
-startup='\n'.join(['spawn-at-startup "dunst"','spawn-at-startup "waybar"'])+'\n'
-m=re.search(r'(?m)^[ \t]*binds\s*\{',text)
-if m: text=text[:m.start()]+startup+'\n'+text[m.start():]
-else: text=startup+'\n'+text
+def kdl_string(value):
+    return json.dumps(str(value), ensure_ascii=False)
+
+startup = (
+    "// BEGIN ITSUKI RICE STARTUP\\n"
+    f"spawn-at-startup {kdl_string('dunst')}\\n"
+    f"spawn-at-startup {kdl_string('waybar')}\\n"
+    f"spawn-at-startup {kdl_string(sys.argv[3])} \"-i\" {kdl_string(sys.argv[4])} \"-m\" \"fill\"\\n"
+    "// END ITSUKI RICE STARTUP\\n"
+)
+m = re.search(r"(?m)^[ \\t]*binds\\s*\\{", text)
+if m:
+    text = text[:m.start()] + startup + "\\n" + text[m.start():]
+else:
+    text = startup + "\\n" + text
 lines=text.splitlines(); out=[]
 for line in lines:
     s=line.strip()
