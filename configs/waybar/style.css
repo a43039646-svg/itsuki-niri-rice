@@ -88,3 +88,13 @@ tooltip {
     border: 1px solid #D95F58;
     border-top: 2px solid #D95F58;
 }
+
+#custom-notification {
+    color: #D95F58;
+    padding: 0 8px;
+    margin: 0 4px;
+}
+
+#custom-notification:hover {
+    color: #F4EBDD;
+}
