@@ -32,6 +32,11 @@ if [[ ! -d "$ROOT/configs" || ! -d "$ROOT/scripts" ]]; then
   exit 1
 fi
 WALLPAPER_SOURCE="$ROOT/wallpapers/itsuki.png"
+LIGHTDM_WALLPAPER_SOURCE="$ROOT/wallpapers/lightdm-itsuki.png"
+if [[ ! -f "$LIGHTDM_WALLPAPER_SOURCE" ]]; then
+  echo "LightDM wallpaper is missing: $LIGHTDM_WALLPAPER_SOURCE" >&2
+  exit 1
+fi
 if [[ ! -f "$WALLPAPER_SOURCE" ]]; then
   echo "Bundled wallpaper is missing: $WALLPAPER_SOURCE" >&2
   exit 1
@@ -57,7 +62,7 @@ for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini dun
     exit 1
   fi
 done
-for rel in scripts/niri-power-menu scripts/itsuki-wifi-menu.py scripts/itsuki-reload-rice scripts/enable-kitty-blur.py; do
+for rel in scripts/niri-power-menu scripts/itsuki-wifi-menu.py scripts/itsuki-reload-rice scripts/enable-kitty-blur.py scripts/install-lightdm-wallpaper.sh; do
   if [[ ! -f "$ROOT/$rel" ]]; then
     echo "Required helper script is missing: $ROOT/$rel" >&2
     exit 1
@@ -246,5 +251,7 @@ if command -v systemctl >/dev/null 2>&1; then
   systemctl --user daemon-reload >/dev/null 2>&1 || true
 fi
 
+bash "$ROOT/scripts/install-lightdm-wallpaper.sh" "$LIGHTDM_WALLPAPER_SOURCE"
+
 echo "Installed Itsuki Niri Rice (universal rose profile). Backups: $BACKUP"
-echo "Your existing wallpaper setup was left untouched."
+echo "Desktop wallpaper is configured for Niri; LightDM login wallpaper was configured when a supported greeter was detected."
