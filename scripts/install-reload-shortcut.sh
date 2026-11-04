@@ -62,5 +62,5 @@ if ! NIRI_CONFIG="$CONFIG" niri validate; then
 fi
 
 echo "Done. Backup: $BACKUP"
-echo "Win+Shift+B now reloads Niri config and restarts Waybar, Dunst and swaybg."
+echo "Win+Shift+B now reloads Niri config and restarts Waybar and Dunst."
 echo "Logs: ${XDG_CACHE_HOME:-$HOME/.cache}/itsuki-niri-rice/reload.log"
