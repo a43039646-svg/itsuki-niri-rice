@@ -2,7 +2,7 @@
 
 A lightweight, universal Niri desktop rice with a rose-and-cream palette and the **Minimal Rail** Waybar layout.
 
-This repository contains **one shared configuration** for every distribution. It does not bundle wallpapers, distro-specific editions, or LightDM themes. The installer leaves your existing wallpaper setup untouched.
+This repository contains **one shared configuration** for every distribution. It does not bundle wallpapers or distro-specific editions. The installer leaves your existing wallpaper setup untouched.
 
 ## Requirements
 
