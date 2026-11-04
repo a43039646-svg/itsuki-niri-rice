@@ -1,3 +1,4 @@
+/* Itsuki Floating HUD — Gentoo violet profile */
 * {
     border: none;
     border-radius: 0;
@@ -5,67 +6,22 @@
     font-size: 12px;
     min-height: 0;
 }
-
-window#waybar {
-    background: rgba(12, 8, 28, 0.86);
-    color: #f5edf6;
-    border-bottom: 1px solid rgba(181, 138, 255, 0.32);
+window#waybar { background: transparent; color: #F2EAF5; }
+#custom-distro, #custom-debian {
+    font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", "Symbols Nerd Font", "Symbols Nerd Font Mono", "ForkAwesome", "FontAwesome", sans-serif;
+    font-size: 17px; color: #D8BCFF; padding: 0 14px; margin: 8px 3px 0 12px;
+    background: rgba(24, 15, 42, 0.95); border: 1px solid rgba(181, 138, 255, 0.62); border-left: 2px solid #B58AFF;
 }
-
-#custom-distro {
-    font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", "Symbols Nerd Font", "Symbols Nerd Font Mono", "ForkAwesome", "FontAwesome", "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif;
-    font-size: 19px;
-    color: #b58aff;
-    padding: 0 12px;
-    margin: 5px 3px 5px 8px;
-    background: rgba(181, 138, 255, 0.13);
-    border: 1px solid rgba(181, 138, 255, 0.32);
-    border-radius: 9px;
-}
-
-#custom-distro:hover { color: #ffffff; background: rgba(181, 138, 255, 0.28); }
-
-#workspaces { margin-left: 8px; }
-#workspaces button {
-    padding: 0 9px;
-    margin: 5px 2px;
-    color: #aaa8bd;
-    background: rgba(255, 255, 255, 0.035);
-    border-radius: 8px;
-    transition: background 120ms ease, color 120ms ease;
-}
-#workspaces button:hover { background: rgba(181, 138, 255, 0.12); color: #ffffff; }
-#workspaces button.focused, #workspaces button.active {
-    color: #d8bcff;
-    background: rgba(181, 138, 255, 0.19);
-    box-shadow: inset 0 -2px #b58aff;
-}
-#workspaces button.urgent { color: #ffffff; background: rgba(255, 35, 80, 0.35); }
-
-#clock, #pulseaudio, #network, #battery, #backlight, #tray {
-    padding: 0 10px;
-    margin: 5px 3px;
-    background: rgba(24, 15, 42, 0.90);
-    border: 1px solid rgba(181, 138, 255, 0.22);
-    border-radius: 9px;
-}
-#clock { color: #d8bcff; font-weight: bold; }
-#pulseaudio { color: #cfb2ff; }
-#pulseaudio.muted { color: #9b91a7; }
-#network { color: #c4a0ff; }
-#network.disconnected { color: #b58aff; }
-#backlight { color: #d8bcff; }
-#battery { color: #f5edf6; }
-#battery.warning { color: #ffd27f; }
-#battery.critical:not(.charging) { color: #ff5478; }
-#tray { padding: 0 8px; margin-right: 8px; }
-#tray > .passive { opacity: 0.72; }
-#tray > .active { opacity: 1; }
-#tray > .needs-attention { background: rgba(181, 138, 255, 0.20); border-radius: 6px; }
-
-tooltip {
-    background: rgba(14, 8, 31, 0.97);
-    color: #f5edf6;
-    border: 1px solid #63408c;
-    border-radius: 8px;
-}
+#custom-distro:hover, #custom-debian:hover { color: #FFFFFF; background: rgba(54, 32, 82, 0.98); }
+#workspaces { padding: 0 8px; margin: 8px 3px 0; background: rgba(24, 15, 42, 0.95); border: 1px solid rgba(181, 138, 255, 0.48); }
+#workspaces button { padding: 0 9px; margin: 5px 2px; color: #AAA0B9; background: transparent; border-bottom: 2px solid transparent; }
+#workspaces button:hover { color: #FFFFFF; background: rgba(181, 138, 255, 0.16); }
+#workspaces button.focused, #workspaces button.active { color: #F2EAF5; background: rgba(181, 138, 255, 0.20); border-bottom: 2px solid #B58AFF; }
+#workspaces button.urgent { color: #FFFFFF; background: rgba(255, 35, 80, 0.38); }
+#clock { min-width: 190px; padding: 0 20px; margin: 8px 3px 0; color: #EDE2FF; background: rgba(24, 15, 42, 0.98); border: 1px solid rgba(216, 188, 255, 0.62); border-top: 2px solid #B58AFF; font-size: 13px; font-weight: bold; }
+#network, #pulseaudio, #battery, #backlight, #tray { padding: 0 11px; margin: 8px 3px 0; color: #F2EAF5; background: rgba(24, 15, 42, 0.95); border: 1px solid rgba(181, 138, 255, 0.48); }
+#network { color: #C4A0FF; } #network.disconnected { color: #B58AFF; }
+#pulseaudio { color: #CFB2FF; } #pulseaudio.muted { color: #9B91A7; }
+#backlight { color: #D8BCFF; } #battery.warning { color: #FFD27F; } #battery.critical:not(.charging) { color: #FF5478; }
+#tray { padding: 0 9px; margin-right: 12px; } #tray > .passive { opacity: 0.72; } #tray > .active { opacity: 1; }
+tooltip { background: rgba(14, 8, 31, 0.98); color: #F2EAF5; border: 1px solid #63408C; }
