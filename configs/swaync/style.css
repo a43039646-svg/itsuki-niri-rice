@@ -1,0 +1,142 @@
+/* Itsuki Niri Rice — sky blue, deep ocean and coral */
+:root {
+  --cc-bg: rgba(13, 36, 48, 0.97);
+
+  --noti-border-color: #D95F58;
+  --noti-bg: 22, 53, 68;
+  --noti-bg-alpha: 0.98;
+  --noti-bg-darker: rgb(12, 32, 43);
+  --noti-bg-hover: rgb(35, 76, 91);
+  --noti-bg-focus: rgba(217, 95, 88, 0.20);
+  --noti-close-bg: rgb(48, 83, 96);
+  --noti-close-bg-hover: rgb(217, 95, 88);
+
+  --text-color: rgb(244, 235, 218);
+  --text-color-disabled: rgb(158, 184, 190);
+  --bg-selected: rgb(217, 95, 88);
+
+  --notification-icon-size: 64px;
+  --notification-app-icon-size: calc(var(--notification-icon-size) / 3);
+  --notification-group-icon-size: 32px;
+
+  --border: 1px solid var(--noti-border-color);
+  --border-radius: 14px;
+  --notification-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
+  --font-size-body: 14px;
+  --font-size-summary: 15px;
+}
+
+* {
+  font-family: "JetBrains Mono", monospace;
+}
+
+notificationwindow,
+blankwindow {
+  background: transparent;
+}
+
+.control-center {
+  background: var(--cc-bg);
+  color: var(--text-color);
+  border: 2px solid #D95F58;
+  border-radius: 16px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.38);
+}
+
+.control-center-list {
+  background: transparent;
+}
+
+.notification-row {
+  background: transparent;
+  outline: none;
+}
+
+.notification-row .notification {
+  background: rgba(22, 53, 68, 0.98);
+  color: var(--text-color);
+  border: 1px solid rgba(217, 95, 88, 0.82);
+  border-radius: 13px;
+  box-shadow: var(--notification-shadow);
+}
+
+.notification-row .notification.critical {
+  border: 2px solid #F07868;
+}
+
+.notification-default-action,
+.notification-action button {
+  background: transparent;
+  color: var(--text-color);
+  border: none;
+  border-radius: 10px;
+}
+
+.notification-default-action:hover,
+.notification-action button:hover {
+  background: rgba(217, 95, 88, 0.18);
+}
+
+.summary,
+.time {
+  color: #F4EBDА;
+}
+
+.body {
+  color: #D7E6E5;
+}
+
+.widget {
+  margin: 8px;
+  padding: 10px;
+  background: rgba(20, 49, 63, 0.94);
+  color: var(--text-color);
+  border: 1px solid rgba(111, 190, 207, 0.38);
+  border-radius: 13px;
+}
+
+.widget-title {
+  color: #F4EBDА;
+}
+
+.widget-title > label {
+  font-size: 1.15rem;
+  font-weight: bold;
+}
+
+.widget-title > button,
+.widget-dnd button,
+.widget-buttons-grid button {
+  background: #1D4658;
+  color: #F4EBDА;
+  border: 1px solid #D95F58;
+  border-radius: 10px;
+}
+
+.widget-title > button:hover,
+.widget-dnd button:hover,
+.widget-buttons-grid button:hover {
+  background: #D95F58;
+  color: #102B38;
+}
+
+.widget-dnd switch:checked {
+  background: #D95F58;
+}
+
+progressbar > trough {
+  background: #244A5B;
+  border-radius: 8px;
+}
+
+progressbar > trough > progress {
+  background: #72BFD0;
+  border-radius: 8px;
+}
+
+tooltip {
+  background: #0D2430;
+  color: #F4EBDА;
+  border: 1px solid #D95F58;
+  border-radius: 8px;
+}
