@@ -14,20 +14,6 @@ window#waybar {
     border-bottom: 1px solid rgba(185, 75, 85, 0.66);
 }
 
-#custom-distro,
-#custom-debian {
-    font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", "Symbols Nerd Font", "Symbols Nerd Font Mono", "ForkAwesome", "FontAwesome", sans-serif;
-    font-size: 16px;
-    color: #B94B55;
-    padding: 0 8px 0 0;
-    margin: 0 5px 0 0;
-}
-
-#custom-distro:hover,
-#custom-debian:hover {
-    color: #F2E5D5;
-}
-
 #workspaces {
     padding: 0 4px;
     margin: 0 5px;
