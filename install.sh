@@ -245,6 +245,13 @@ fi
 python3 "$ROOT/scripts/enable-kitty-blur.py" "$CONFIG_HOME/niri/config.kdl" "$CONFIG_HOME/kitty/kitty.conf"
 python3 -m json.tool "$CONFIG_HOME/waybar/config" >/dev/null
 if command -v niri >/dev/null 2>&1; then niri validate; fi
+
+# Reload Waybar in the active Niri session so the new opaque stylesheet is visible immediately.
+if [[ -n "${NIRI_SOCKET:-}" && -n "${WAYLAND_DISPLAY:-}" ]]; then
+  pkill -x waybar >/dev/null 2>&1 || true
+  nohup waybar >/dev/null 2>&1 </dev/null &
+fi
+
 # Niri is the single source of Waybar startup. Remove the old systemd dependency
 # written by earlier versions of this installer, plus any enabled user Waybar unit.
 if command -v systemctl >/dev/null 2>&1; then
