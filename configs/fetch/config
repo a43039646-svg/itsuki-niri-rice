@@ -9,7 +9,7 @@ memory
 swap
 colors
 
-label_color=magenta
+label_color=red
 separator=─
 box=0
 
