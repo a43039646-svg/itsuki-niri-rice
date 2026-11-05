@@ -394,7 +394,7 @@ else:
     layout_open = layout_close = -1
     body = ""
 
-body = update_value(body, "background-color", '"#0D2430"')
+# Leave the user's layout background untouched; only patch window-border colors.
 body = update_section(
     body,
     "focus-ring",
