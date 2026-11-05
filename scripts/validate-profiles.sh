@@ -8,8 +8,7 @@ printf '[Files] checking the universal Itsuki profile and wallpaper... '
 for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini swaync/config.json swaync/style.css fetch/config xdg-desktop-portal/niri-portals.conf; do
   [[ -f "$CONFIG/$rel" ]] || { echo "MISSING: $CONFIG/$rel"; exit 1; }
 done
-[[ -f "$ROOT/wallpapers/itsuki.png" ]] || { echo "MISSING: $ROOT/wallpapers/itsuki.png"; exit 1; }
-[[ -f "$ROOT/wallpapers/lightdm-itsuki.png" ]] || { echo "MISSING: $ROOT/wallpapers/lightdm-itsuki.png"; exit 1; }
+[[ -d "$ROOT/wallpapers" && -f "$ROOT/wallpapers/README.md" ]] || { echo "MISSING: wallpapers/README.md"; exit 1; }
 [[ -f "$ROOT/scripts/install-lightdm-wallpaper.sh" ]] || { echo "MISSING: LightDM wallpaper helper"; exit 1; }
 echo OK
 
@@ -46,7 +45,8 @@ for script in "$ROOT/install.sh" "$ROOT/scripts/itsuki-reload-rice" "$ROOT/scrip
   bash -n "$script"
 done
 grep -q 'WALLPAPER_SOURCE="$ROOT/wallpapers/itsuki.png"' "$ROOT/install.sh"
-grep -q 'swaybg is required to set the Niri wallpaper' "$ROOT/install.sh"
+grep -q 'WALLPAPER_AVAILABLE=0' "$ROOT/install.sh"
+grep -q 'No desktop PNG is bundled yet' "$ROOT/install.sh"
 grep -q 'BEGIN ITSUKI RICE STARTUP' "$ROOT/install.sh"
 grep -q 'install-lightdm-wallpaper.sh' "$ROOT/install.sh"
 echo OK
@@ -64,9 +64,12 @@ echo OK
 grep -q 'border-bottom: 2px solid #D95F58' "$CONFIG/waybar/style.css"
 grep -q 'background: #102B38' "$CONFIG/waybar/style.css"
 grep -q 'D95F58' "$CONFIG/fuzzel/fuzzel.ini"
-grep -q 'Itsuki Minimal Rail' "$CONFIG/waybar/style.css"
+grep -q 'Itsuki Island Waybar' "$CONFIG/waybar/style.css"
+grep -q 'color: #FFFFFF' "$CONFIG/waybar/style.css"
 python3 -m json.tool "$CONFIG/swaync/config.json" >/dev/null
 grep -q 'D95F58' "$CONFIG/swaync/style.css"
+grep -q 'Itsuki quick settings' "$CONFIG/swaync/config.json"
+grep -q '#FFFFFF' "$CONFIG/swaync/style.css"
 grep -q 'swaync' "$ROOT/install.sh"
 grep -q 'Existing Fetch/Fastfetch autostart detected' "$ROOT/install.sh"
 grep -q 'active-color.*D95F58' "$ROOT/install.sh"
