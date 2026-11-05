@@ -394,6 +394,21 @@ else:
     layout_open = layout_close = -1
     body = ""
 
+# Older Itsuki installer builds accidentally placed their own background-color
+# line inside the final nested layout block (commonly struts). Remove only that
+# exact generated value there, keeping any real layout-level background setting.
+struts_match = re.search(r"(?m)^([ \\t]*)struts[ \\t]*\\{", body)
+if struts_match:
+    struts_open = body.find("{", struts_match.start())
+    struts_close = matching_brace(body, struts_open)
+    struts_block = body[struts_match.start():struts_close + 1]
+    struts_block = re.sub(
+        r'(?m)^[ \\t]*background-color[ \\t]+"#0D2430"[ \\t]*(?:\\n|$)',
+        "",
+        struts_block,
+    )
+    body = body[:struts_match.start()] + struts_block + body[struts_close + 1:]
+
 # Leave the user's layout background untouched; only patch window-border colors.
 body = update_section(
     body,
@@ -422,6 +437,16 @@ else:
 
 path.write_text(text)
 PYCOLORS
+
+# Validate the Niri config before changing blur/Kitty settings. If the rice
+# patch is rejected, restore the exact pre-install config created above.
+if command -v niri >/dev/null 2>&1; then
+  if ! niri validate; then
+    cp -a "$BACKUP/niri-config.pre-patch.kdl" "$CONFIG_HOME/niri/config.kdl"
+    echo "Niri validation failed after applying Itsuki window borders; restored the pre-install config from $BACKUP." >&2
+    exit 1
+  fi
+fi
 
 # Apply the desktop wallpaper immediately when installing from the active Niri session.
 # The startup entry above keeps the same wallpaper after future logins.
