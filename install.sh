@@ -394,21 +394,6 @@ else:
     layout_open = layout_close = -1
     body = ""
 
-# Older Itsuki installer builds accidentally placed their own background-color
-# line inside the final nested layout block (commonly struts). Remove only that
-# exact generated value there, keeping any real layout-level background setting.
-struts_match = re.search(r"(?m)^([ \\t]*)struts[ \\t]*\\{", body)
-if struts_match:
-    struts_open = body.find("{", struts_match.start())
-    struts_close = matching_brace(body, struts_open)
-    struts_block = body[struts_match.start():struts_close + 1]
-    struts_block = re.sub(
-        r'(?m)^[ \\t]*background-color[ \\t]+"#0D2430"[ \\t]*(?:\\n|$)',
-        "",
-        struts_block,
-    )
-    body = body[:struts_match.start()] + struts_block + body[struts_close + 1:]
-
 # Leave the user's layout background untouched; only patch window-border colors.
 body = update_section(
     body,
@@ -435,6 +420,13 @@ else:
     new_block = "layout {\n" + body + "}\n\n"
     text = text[:marker.start()] + new_block + text[marker.start():] if marker else new_block + text
 
+# Remove the one exact invalid setting introduced by the earlier Itsuki installer.
+# It may be nested in any KDL block, so do not assume it is under layout/struts.
+text = re.sub(
+    r'(?m)^[ \t]*background-color[ \t]+"#0D2430"[ \t]*(?:\n|$)',
+    "",
+    text,
+)
 path.write_text(text)
 PYCOLORS
 
