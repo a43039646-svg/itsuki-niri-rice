@@ -36,12 +36,14 @@ restart_service swaync swaync
 
 # Always restore the wallpaper shipped by Itsuki. This also removes any
 # stale Miku swaybg process left by an older Niri rice installation.
-WALLPAPER="$HOME/.local/share/itsuki-niri-rice/wallpapers/itsuki.png"
-pkill -x swaybg >/dev/null 2>&1 || true
-if [[ -r "$WALLPAPER" ]] && command -v swaybg >/dev/null 2>&1; then
+WALLPAPER_DIR="$HOME/.local/share/itsuki-niri-rice/wallpapers"
+WALLPAPER="$WALLPAPER_DIR/itsuki.png"
+WALLPAPER_STATE="$WALLPAPER_DIR/.wallpaper-enabled"
+if [[ -f "$WALLPAPER_STATE" && -r "$WALLPAPER" ]] && command -v swaybg >/dev/null 2>&1; then
+  pkill -x swaybg >/dev/null 2>&1 || true
   swaybg -i "$WALLPAPER" -m fill >>"$LOG_FILE" 2>&1 &
 else
-  echo "Itsuki wallpaper not found or swaybg unavailable: $WALLPAPER" >>"$LOG_FILE"
+  echo "No bundled Itsuki wallpaper is enabled; leaving the current background alone." >>"$LOG_FILE"
 fi
 
 # Fuzzel is launched on demand; its config is read next time it opens.
