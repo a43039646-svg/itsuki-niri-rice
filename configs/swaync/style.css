@@ -1,153 +1,106 @@
-/* Itsuki Niri Rice — sky blue, deep ocean and coral */
-:root {
-  --cc-bg: rgba(13, 36, 48, 0.97);
-
-  --noti-border-color: #D95F58;
-  --noti-bg: 22, 53, 68;
-  --noti-bg-alpha: 0.98;
-  --noti-bg-darker: rgb(12, 32, 43);
-  --noti-bg-hover: rgb(35, 76, 91);
-  --noti-bg-focus: rgba(217, 95, 88, 0.20);
-  --noti-close-bg: rgb(48, 83, 96);
-  --noti-close-bg-hover: rgb(217, 95, 88);
-
-  --text-color: rgb(244, 235, 218);
-  --text-color-disabled: rgb(158, 184, 190);
-  --bg-selected: rgb(217, 95, 88);
-
-  --notification-icon-size: 64px;
-  --notification-app-icon-size: calc(var(--notification-icon-size) / 3);
-  --notification-group-icon-size: 32px;
-
-  --border: 1px solid var(--noti-border-color);
-  --border-radius: 14px;
-  --notification-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
-  --font-size-body: 14px;
-  --font-size-summary: 15px;
-}
+/* Itsuki — Miku-style SwayNC quick settings, deep ocean and coral */
+@define-color itsuki_bg #0D2430;
+@define-color itsuki_panel #102B38;
+@define-color itsuki_panel_alt #173B4C;
+@define-color itsuki_border #D95F58;
+@define-color itsuki_accent #D95F58;
+@define-color itsuki_accent_light #78BFD0;
+@define-color itsuki_text #FFFFFF;
+@define-color itsuki_muted #D4E0E3;
 
 * {
-  font-family: "JetBrains Mono", monospace;
-}
-
-notificationwindow,
-blankwindow {
-  background: transparent;
+  color: @itsuki_text;
 }
 
 .control-center {
-  background: var(--cc-bg);
-  color: var(--text-color);
-  border: 2px solid #D95F58;
-  border-radius: 16px;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.38);
+  background: alpha(@itsuki_bg, 0.97);
+  color: @itsuki_text;
+  border: 1px solid @itsuki_border;
+  border-radius: 18px;
+  padding: 14px;
 }
 
-.control-center-list {
-  background: transparent;
-}
-
-.notification-row {
-  background: transparent;
-  outline: none;
-}
-
-.notification-row .notification {
-  background: rgba(22, 53, 68, 0.98);
-  color: var(--text-color);
-  border: 1px solid rgba(217, 95, 88, 0.82);
+.widget-title,
+.widget-dnd,
+.widget-buttons-grid,
+.widget-backlight,
+.widget-volume,
+.widget-mpris {
+  background: @itsuki_panel;
+  color: @itsuki_text;
+  border: 1px solid alpha(@itsuki_border, 0.68);
   border-radius: 13px;
-  box-shadow: var(--notification-shadow);
-}
-
-.notification-row .notification.critical {
-  border: 2px solid #F07868;
-}
-
-.notification-default-action,
-.notification-action button {
-  background: transparent;
-  color: var(--text-color);
-  border: none;
-  border-radius: 10px;
-}
-
-.notification-default-action:hover,
-.notification-action button:hover {
-  background: rgba(217, 95, 88, 0.18);
-}
-
-.summary,
-.time {
-  color: #F4EBDD;
-}
-
-.body {
-  color: #D7E6E5;
-}
-
-.widget {
-  margin: 8px;
+  margin: 5px 0;
   padding: 10px;
-  background: rgba(20, 49, 63, 0.94);
-  color: var(--text-color);
-  border: 1px solid rgba(111, 190, 207, 0.38);
-  border-radius: 13px;
 }
 
-.widget-title {
-  color: #F4EBDD;
-}
-
-.widget-title > label {
-  font-size: 1.15rem;
-  font-weight: bold;
-}
+.widget-title { font-weight: 700; }
 
 .widget-title > button,
-.widget-dnd button,
+.widget-dnd > button,
 .widget-buttons-grid button {
-  background: #1D4658;
-  color: #F4EBDD;
-  border: 1px solid #D95F58;
+  background: @itsuki_panel_alt;
+  color: #FFFFFF;
+  border: 1px solid alpha(@itsuki_accent, 0.72);
   border-radius: 10px;
+  padding: 8px 12px;
 }
 
 .widget-title > button:hover,
-.widget-dnd button:hover,
+.widget-dnd > button:hover,
 .widget-buttons-grid button:hover {
-  background: #D95F58;
-  color: #102B38;
+  background: @itsuki_accent;
+  color: #FFFFFF;
 }
 
-.widget-dnd switch {
+.widget-buttons-grid > flowbox > flowboxchild { padding: 4px; }
+.widget-dnd > switch:checked { background: @itsuki_accent; }
+.widget-dnd > switch slider { background: #FFFFFF; }
+
+.widget-backlight trough,
+.widget-volume trough {
   background: #244A5B;
-  border: 1px solid #78BFD0;
-  border-radius: 10px;
+  border-radius: 999px;
+  min-height: 7px;
+}
+.widget-backlight trough highlight,
+.widget-volume trough highlight {
+  background: @itsuki_accent;
+  border-radius: 999px;
+}
+.widget-backlight slider,
+.widget-volume slider {
+  background: #FFFFFF;
+  min-width: 14px;
+  min-height: 14px;
 }
 
-.widget-dnd switch:checked {
-  background: #D95F58;
-}
+.widget-mpris { padding: 12px; }
+.widget-mpris button,
+.widget-mpris image { color: #FFFFFF; }
 
-.widget-dnd switch slider {
-  background: #F4EBDD;
-  border-radius: 10px;
+.notification-row .notification-background,
+.notification-row .notification {
+  background: @itsuki_panel;
+  color: @itsuki_text;
+  border: 1px solid alpha(@itsuki_accent, 0.78);
+  box-shadow: 0 4px 18px alpha(#000000, 0.35);
+  border-radius: 12px;
+  margin: 5px 8px;
+  padding: 2px;
 }
-
-progressbar > trough {
-  background: #244A5B;
+.notification-row .notification-content { color: #FFFFFF; }
+.notification-row .summary { color: #FFFFFF; font-weight: 700; }
+.notification-row .time { color: @itsuki_muted; }
+.notification-row .close-button {
+  background: @itsuki_panel_alt;
+  color: #FFFFFF;
+  border: 1px solid alpha(@itsuki_border, 0.5);
   border-radius: 8px;
 }
+.notification-row image,
+.widget image,
+.widget button image { color: #FFFFFF; }
 
-progressbar > trough > progress {
-  background: #72BFD0;
-  border-radius: 8px;
-}
-
-tooltip {
-  background: #0D2430;
-  color: #F4EBDD;
-  border: 1px solid #D95F58;
-  border-radius: 8px;
-}
+.widget-notifications { background: transparent; }
+.widget-notifications .notification { margin: 4px 0; }
