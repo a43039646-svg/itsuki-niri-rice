@@ -6,17 +6,14 @@ The profile uses the **Minimal Rail** Waybar, Fuzzel launcher and **SwayNotifica
 
 ## Wallpapers
 
-### Desktop wallpaper
+The `wallpapers/` directory is intentionally kept in the repository, but its PNG files have been removed while new artwork is being prepared.
 
-![Itsuki Niri desktop wallpaper](wallpapers/itsuki.png)
+When the new images are ready, add them with these filenames:
 
-### LightDM login-screen wallpaper
+- `wallpapers/itsuki.png` — Niri desktop wallpaper.
+- `wallpapers/lightdm-itsuki.png` — LightDM login-screen wallpaper.
 
-![Itsuki LightDM login wallpaper](wallpapers/lightdm-itsuki.png)
-
-The installer copies `wallpapers/itsuki.png` to `~/.local/share/itsuki-niri-rice/wallpapers/itsuki.png` and starts it with `swaybg` whenever Niri starts.
-
-When LightDM with **LightDM GTK Greeter** or **Slick Greeter** is already installed, the installer also installs `wallpapers/lightdm-itsuki.png` under `/usr/share/backgrounds/itsuki-lightdm/` and updates only the active greeter's background. With LightDM GTK Greeter, the login form is centered using `position=50%,center 50%,center`, and per-user backgrounds are disabled so the selected Itsuki image remains in use. The installer backs up the previous greeter configuration and wallpaper. It does not install or switch display managers, and it does not restart LightDM. Slick Greeter keeps its own layout defaults.
+The installer detects each image independently. If either file is absent, it skips only that wallpaper setup and continues installing the rest of the rice. LightDM configuration is not touched until its image is present.
 
 ## Color palette
 
@@ -39,7 +36,7 @@ Install and configure Niri before using this rice. The installer configures the 
 
 ```bash
 sudo apt update
-sudo apt install git waybar kitty fuzzel sway-notification-center swaybg brightnessctl python3 python3-tk wireplumber pipewire-pulse xdg-desktop-portal xdg-desktop-portal-gtk fonts-jetbrains-mono fonts-font-awesome fonts-fork-awesome
+sudo apt install git waybar kitty fuzzel sway-notification-center brightnessctl python3 python3-tk wireplumber pipewire-pulse xdg-desktop-portal xdg-desktop-portal-gtk fonts-jetbrains-mono fonts-font-awesome fonts-fork-awesome
 ```
 
 | Package / tool | Purpose |
@@ -48,7 +45,6 @@ sudo apt install git waybar kitty fuzzel sway-notification-center swaybg brightn
 | `kitty` | Terminal used by the keybinding and Wi-Fi helper |
 | `fuzzel` | Application launcher, power menu and Wi-Fi picker |
 | `sway-notification-center` | SwayNC notification daemon and control center |
-| `swaybg` | Desktop wallpaper |
 | `brightnessctl` | Brightness module and slider |
 | `python3`, `python3-tk` | Installer helpers, Wi-Fi menu and slider windows |
 | `wireplumber`, `pipewire-pulse` | `wpctl` volume controls and Waybar's PulseAudio-compatible module |
@@ -71,6 +67,7 @@ sudo apt install network-manager libnotify-bin swaylock
 - **NetworkManager (`nmcli`):** required by the optional Wi-Fi picker at `~/.local/bin/itsuki-wifi-menu.py`.
 - **`libnotify-bin` (`notify-send`):** notifications from the Wi-Fi helper and reload shortcut.
 - **`swaylock`:** used for the lock-screen action in the power menu. Without it, the helper falls back to `loginctl lock-session`.
+- **`swaybg`:** required only when you add `wallpapers/itsuki.png`.
 - **Fetch / Fastfetch:** neither program is bundled. During installation, the installer checks the active Bash or Zsh startup file for an existing `fetch` or `fastfetch` command. If one is already configured, it leaves that startup file unchanged. If no autostart exists and one of the commands is installed, it adds one guarded interactive-shell entry. If neither command is installed, it skips this step.
 - **LightDM:** to use the login-screen wallpaper, LightDM and one supported greeter must already be installed. On Debian, the GTK option is:
   ```bash
@@ -95,8 +92,8 @@ The installer:
 2. Backs up the existing rice-related configuration under `~/.config/itsuki-niri-backup/<timestamp>/`.
 3. Installs the Itsuki color profile for Waybar, Kitty, Fuzzel and SwayNC.
 4. Patches your existing `~/.config/niri/config.kdl` with the coral window border and managed startup/reload entries; it does not replace your whole Niri configuration.
-5. Installs and applies the desktop wallpaper.
-6. Configures the LightDM login wallpaper when a supported LightDM greeter is detected.
+5. Applies the desktop wallpaper only when `wallpapers/itsuki.png` exists.
+6. Configures the LightDM login wallpaper only when `wallpapers/lightdm-itsuki.png` exists and a supported greeter is detected.
 7. Adds Fetch/Fastfetch autostart only when no existing invocation is found.
 
 If LightDM is not installed, or its greeter is not supported, the login-screen wallpaper step is skipped. The Niri rice installation can still be used normally.
@@ -108,7 +105,7 @@ If LightDM is not installed, or its greeter is not supported, the login-screen w
 - **Kitty:** matching colors, JetBrains Mono, translucent background and Niri blur integration on Niri 26.04 or newer.
 - **Fuzzel:** matching dark-blue launcher with coral selection and outline.
 - **SwayNC:** matching notifications and control center with coral outlines and sky-blue details.
-- **Wallpapers:** separate Itsuki images for the Niri desktop and LightDM login screen.
+- **Wallpapers:** reserved `wallpapers/` directory. Add the two PNGs listed above when the new artwork is ready.
 - **Helpers:** power menu, Wi-Fi menu, volume/brightness sliders, blur setup and reload shortcut.
 - **Fetch config:** optional terminal system information; Fetch and Fastfetch themselves are not bundled.
 
@@ -142,7 +139,7 @@ bash scripts/validate-profiles.sh
 bash install.sh
 ```
 
-The validation script checks the Waybar and SwayNC JSON, theme files, wallpaper assets and helper syntax. It does not replace testing in a live Niri session.
+The validation script checks the Waybar and SwayNC JSON, theme files and helper syntax. Wallpaper PNGs are optional and are not required while new artwork is being prepared. It does not replace testing in a live Niri session.
 
 ## Repository layout
 
@@ -151,7 +148,6 @@ The validation script checks the Waybar and SwayNC JSON, theme files, wallpaper 
 - `configs/fuzzel/` — Fuzzel launcher colors.
 - `configs/swaync/` — SwayNC settings and style.
 - `configs/fetch/` — optional Fetch config.
-- `wallpapers/itsuki.png` — default Niri desktop wallpaper.
-- `wallpapers/lightdm-itsuki.png` — LightDM login-screen wallpaper.
+- `wallpapers/` — reserved for the future desktop and LightDM PNGs.
 - `scripts/` — power, Wi-Fi, slider, reload, blur and LightDM helpers.
 - `install.sh` — universal installer with no interactive selection.
