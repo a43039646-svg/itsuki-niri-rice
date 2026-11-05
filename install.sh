@@ -33,17 +33,23 @@ if [[ ! -d "$ROOT/configs" || ! -d "$ROOT/scripts" ]]; then
 fi
 WALLPAPER_SOURCE="$ROOT/wallpapers/itsuki.png"
 LIGHTDM_WALLPAPER_SOURCE="$ROOT/wallpapers/lightdm-itsuki.png"
-if [[ ! -f "$LIGHTDM_WALLPAPER_SOURCE" ]]; then
-  echo "LightDM wallpaper is missing: $LIGHTDM_WALLPAPER_SOURCE" >&2
-  exit 1
+WALLPAPER_AVAILABLE=0
+LIGHTDM_WALLPAPER_AVAILABLE=0
+SWAYBG_BIN=""
+if [[ -f "$WALLPAPER_SOURCE" ]]; then
+  WALLPAPER_AVAILABLE=1
+  if ! command -v swaybg >/dev/null 2>&1; then
+    echo "swaybg is required when wallpapers/itsuki.png is present. Install swaybg and run the installer again." >&2
+    exit 1
+  fi
+  SWAYBG_BIN="$(command -v swaybg)"
+else
+  echo "No desktop PNG is bundled yet; skipping the desktop wallpaper setup."
 fi
-if [[ ! -f "$WALLPAPER_SOURCE" ]]; then
-  echo "Bundled wallpaper is missing: $WALLPAPER_SOURCE" >&2
-  exit 1
-fi
-if ! command -v swaybg >/dev/null 2>&1; then
-  echo "swaybg is required to set the Niri wallpaper. Install swaybg and run the installer again." >&2
-  exit 1
+if [[ -f "$LIGHTDM_WALLPAPER_SOURCE" ]]; then
+  LIGHTDM_WALLPAPER_AVAILABLE=1
+else
+  echo "No LightDM PNG is bundled yet; skipping the LightDM wallpaper setup."
 fi
 for command_name in swaync swaync-client; do
   if ! command -v "$command_name" >/dev/null 2>&1; then
@@ -51,9 +57,9 @@ for command_name in swaync swaync-client; do
     exit 1
   fi
 done
-SWAYBG_BIN="$(command -v swaybg)"
 WALLPAPER_DIR="$HOME/.local/share/itsuki-niri-rice/wallpapers"
 WALLPAPER_DEST="$WALLPAPER_DIR/itsuki.png"
+WALLPAPER_STATE="$WALLPAPER_DIR/.wallpaper-enabled"
 
 CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
@@ -127,11 +133,35 @@ done
 # Remove competing Waybar config aliases only after they have been backed up.
 rm -f "$CONFIG_HOME/waybar/config.json" "$CONFIG_HOME/waybar/config.jsonc"
 mkdir -p "$WALLPAPER_DIR"
-install -m 0644 "$WALLPAPER_SOURCE" "$WALLPAPER_DEST"
+if [[ "$WALLPAPER_AVAILABLE" == "1" ]]; then
+  install -m 0644 "$WALLPAPER_SOURCE" "$WALLPAPER_DEST"
+  : > "$WALLPAPER_STATE"
+else
+  rm -f "$WALLPAPER_STATE"
+fi
 for rel in waybar/config waybar/style.css kitty/kitty.conf fuzzel/fuzzel.ini swaync/config.json swaync/style.css fetch/config xdg-desktop-portal/niri-portals.conf; do
   mkdir -p "$CONFIG_HOME/$(dirname "$rel")"
   cp "$CONFIG_SOURCE/$rel" "$CONFIG_HOME/$rel"
 done
+python3 - "$CONFIG_HOME/swaync/config.json" <<'PYSWAYNC'
+import json
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+config = json.loads(path.read_text())
+backlight_root = Path("/sys/class/backlight")
+devices = sorted(item.name for item in backlight_root.iterdir()) if backlight_root.is_dir() else []
+widgets = config.setdefault("widgets", [])
+if devices:
+    config.setdefault("widget-config", {}).setdefault("backlight", {})["device"] = devices[0]
+    config["widget-config"]["backlight"].setdefault("subsystem", "backlight")
+    if "backlight" not in widgets:
+        widgets.insert(1, "backlight")
+else:
+    config["widgets"] = [widget for widget in widgets if widget != "backlight"]
+path.write_text(json.dumps(config, ensure_ascii=False, indent=2) + "\n")
+PYSWAYNC
 install -m 755 "$ROOT/scripts/niri-power-menu" "$HOME/.local/bin/niri-power-menu"
 install -m 755 "$ROOT/scripts/itsuki-reload-rice" "$HOME/.local/bin/itsuki-reload-rice"
 # Retire the stale Miku reload helper after backing it up; its old shortcut reset miku.png.
@@ -240,8 +270,10 @@ right=cfg.setdefault('modules-right',[])
 if 'tray' not in right: right.append('tray')
 backlight=Path('/sys/class/backlight')
 if backlight.is_dir() and any(backlight.iterdir()):
-    if 'backlight' not in right: right.insert(0,'backlight')
-    cfg['backlight']={'format':' {percent}%','tooltip':True,'on-click':f'python3 {bin / "itsuki-slider.py"} brightness','on-scroll-up':'brightnessctl -c backlight set +5%','on-scroll-down':'brightnessctl -c backlight set 5%-'}
+    if 'backlight' not in right:
+        position = right.index('battery') if 'battery' in right else len(right)
+        right.insert(position, 'backlight')
+    cfg['backlight']={'format':'  {percent}%','tooltip':True,'on-click':f'python3 {bin / "itsuki-slider.py"} brightness','on-scroll-up':'brightnessctl -c backlight set +5%','on-scroll-down':'brightnessctl -c backlight set 5%-'}
 network=cfg.setdefault('network',{}); network.update({'format-wifi':' {signalStrength}%','format-ethernet':' LAN','format-disconnected':' offline'})
 sound=cfg.setdefault('pulseaudio',{}); sound.update({'format':' {volume}%','format-muted':' muted','on-click':f'python3 {bin / "itsuki-slider.py"} volume','on-click-right':'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle','scroll-step':5})
 tray=cfg.setdefault('tray',{}); tray.update({'icon-size':18,'spacing':8,'show-passive-items':True,'tooltip':True})
@@ -249,7 +281,7 @@ p.write_text(json.dumps(cfg,indent=2,ensure_ascii=False)+'\n')
 PYWAYBAR
 
 cp "$CONFIG_HOME/niri/config.kdl" "$BACKUP/niri-config.pre-patch.kdl"
-python3 - "$CONFIG_HOME/niri/config.kdl" "$HOME" "$SWAYBG_BIN" "$WALLPAPER_DEST" <<'PYNIRI'
+python3 - "$CONFIG_HOME/niri/config.kdl" "$HOME" "$SWAYBG_BIN" "$WALLPAPER_DEST" "$WALLPAPER_AVAILABLE" <<'PYNIRI'
 from pathlib import Path
 import json,re,sys
 
@@ -273,11 +305,16 @@ text = re.sub(
 def kdl_string(value):
     return json.dumps(str(value), ensure_ascii=False)
 
+wallpaper_startup = ""
+if sys.argv[5] == "1":
+    wallpaper_startup = (
+        f"spawn-at-startup {kdl_string(sys.argv[3])} \"-i\" {kdl_string(sys.argv[4])} \"-m\" \"fill\"\n"
+    )
 startup = (
     "// BEGIN ITSUKI RICE STARTUP\n"
     f"spawn-at-startup {kdl_string('swaync')}\n"
     f"spawn-at-startup {kdl_string('waybar')}\n"
-    f"spawn-at-startup {kdl_string(sys.argv[3])} \"-i\" {kdl_string(sys.argv[4])} \"-m\" \"fill\"\n"
+    + wallpaper_startup +
     "// END ITSUKI RICE STARTUP\n"
 )
 # Replace any Miku/previous rice Meta+Shift+B binding with the Itsuki reload helper.
@@ -442,7 +479,7 @@ fi
 
 # Apply the desktop wallpaper immediately when installing from the active Niri session.
 # The startup entry above keeps the same wallpaper after future logins.
-if [[ -n "${NIRI_SOCKET:-}" && -n "${WAYLAND_DISPLAY:-}" ]]; then
+if [[ "$WALLPAPER_AVAILABLE" == "1" && -n "${NIRI_SOCKET:-}" && -n "${WAYLAND_DISPLAY:-}" ]]; then
   pkill -x swaybg >/dev/null 2>&1 || true
   nohup "$SWAYBG_BIN" -i "$WALLPAPER_DEST" -m fill >/dev/null 2>&1 </dev/null &
 fi
@@ -476,7 +513,14 @@ if command -v systemctl >/dev/null 2>&1; then
   systemctl --user daemon-reload >/dev/null 2>&1 || true
 fi
 
-bash "$ROOT/scripts/install-lightdm-wallpaper.sh" "$LIGHTDM_WALLPAPER_SOURCE"
+if [[ "$LIGHTDM_WALLPAPER_AVAILABLE" == "1" ]]; then
+  bash "$ROOT/scripts/install-lightdm-wallpaper.sh" "$LIGHTDM_WALLPAPER_SOURCE"
+fi
 
-echo "Installed Itsuki Niri Rice (universal rose profile). Backups: $BACKUP"
-echo "Desktop wallpaper is configured for Niri; LightDM login wallpaper was configured when a supported greeter was detected."
+echo "Installed Itsuki Niri Rice (universal profile). Backups: $BACKUP"
+if [[ "$WALLPAPER_AVAILABLE" != "1" ]]; then
+  echo "Desktop wallpaper skipped: add wallpapers/itsuki.png when your new image is ready."
+fi
+if [[ "$LIGHTDM_WALLPAPER_AVAILABLE" != "1" ]]; then
+  echo "LightDM wallpaper skipped: add wallpapers/lightdm-itsuki.png when your new image is ready."
+fi
