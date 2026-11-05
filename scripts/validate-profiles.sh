@@ -61,14 +61,18 @@ for filename in sys.argv[1:]:
 PY
 echo OK
 
-grep -q 'background: rgba(13, 36, 48, 0.96)' "$CONFIG/waybar/style.css"
-grep -q 'border: 1px solid rgba(217, 95, 88, 0.56)' "$CONFIG/waybar/style.css"
+grep -q 'Itsuki Minimal Rail' "$CONFIG/waybar/style.css"
+grep -q 'background: #102B38' "$CONFIG/waybar/style.css"
+grep -q 'border: 1px solid #D95F58' "$CONFIG/waybar/style.css"
 grep -q 'D95F58' "$CONFIG/fuzzel/fuzzel.ini"
-grep -q 'Itsuki Island Waybar' "$CONFIG/waybar/style.css"
+grep -q 'Itsuki Minimal Rail' "$CONFIG/waybar/style.css"
 grep -q 'color: #FFFFFF' "$CONFIG/waybar/style.css"
 python3 -m json.tool "$CONFIG/swaync/config.json" >/dev/null
 grep -q 'D95F58' "$CONFIG/swaync/style.css"
 grep -q 'Itsuki quick settings' "$CONFIG/swaync/config.json"
+grep -q 'widget-mpris' "$CONFIG/swaync/style.css"
+grep -q 'widget-backlight' "$CONFIG/swaync/style.css"
+grep -q 'widget-volume' "$CONFIG/swaync/style.css"
 grep -q '#FFFFFF' "$CONFIG/swaync/style.css"
 grep -q 'swaync' "$ROOT/install.sh"
 grep -q 'Existing Fetch/Fastfetch autostart detected' "$ROOT/install.sh"
