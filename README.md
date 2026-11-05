@@ -1,8 +1,8 @@
 # Itsuki Niri Rice
 
-A lightweight, universal Niri desktop rice inspired by the colors of the bundled Itsuki wallpaper: deep ocean blue, clear sky blue, warm ivory and coral red.
+A lightweight, universal Niri desktop rice with a deep-ocean and coral palette, Miku-style Island Waybar capsules, and Miku-style SwayNC quick settings.
 
-The profile uses the **Minimal Rail** Waybar, Fuzzel launcher and **SwayNotificationCenter (SwayNC)**. It provides one shared configuration for all distributions, an Itsuki desktop wallpaper and a separate LightDM login-screen wallpaper.
+The profile uses a floating **Island Waybar**, Fuzzel launcher and **SwayNotificationCenter (SwayNC)**. It provides one shared configuration for all distributions, an Itsuki desktop wallpaper and a separate LightDM login-screen wallpaper.
 
 ## Wallpapers
 
@@ -41,10 +41,10 @@ sudo apt install git waybar kitty fuzzel sway-notification-center brightnessctl 
 
 | Package / tool | Purpose |
 | --- | --- |
-| `waybar` | Minimal Rail panel, workspaces, clock, network, audio, battery and tray |
+| `waybar` | Island capsules, workspaces, clock, network, audio, battery and tray |
 | `kitty` | Terminal used by the keybinding and Wi-Fi helper |
 | `fuzzel` | Application launcher, power menu and Wi-Fi picker |
-| `sway-notification-center` | SwayNC notification daemon and control center |
+| `sway-notification-center` | SwayNC notification daemon, quick settings and control center |
 | `brightnessctl` | Brightness module and slider |
 | `python3`, `python3-tk` | Installer helpers, Wi-Fi menu and slider windows |
 | `wireplumber`, `pipewire-pulse` | `wpctl` volume controls and Waybar's PulseAudio-compatible module |
@@ -67,6 +67,7 @@ sudo apt install network-manager libnotify-bin swaylock
 - **NetworkManager (`nmcli`):** required by the optional Wi-Fi picker at `~/.local/bin/itsuki-wifi-menu.py`.
 - **`libnotify-bin` (`notify-send`):** notifications from the Wi-Fi helper and reload shortcut.
 - **`swaylock`:** used for the lock-screen action in the power menu. Without it, the helper falls back to `loginctl lock-session`.
+- **`swaybg`:** required only when you add `wallpapers/itsuki.png`.
 - **`swaybg`:** required only when you add `wallpapers/itsuki.png`.
 - **Fetch / Fastfetch:** neither program is bundled. During installation, the installer checks the active Bash or Zsh startup file for an existing `fetch` or `fastfetch` command. If one is already configured, it leaves that startup file unchanged. If no autostart exists and one of the commands is installed, it adds one guarded interactive-shell entry. If neither command is installed, it skips this step.
 - **LightDM:** to use the login-screen wallpaper, LightDM and one supported greeter must already be installed. On Debian, the GTK option is:
@@ -100,11 +101,11 @@ If LightDM is not installed, or its greeter is not supported, the login-screen w
 
 ## Included
 
-- **Waybar Minimal Rail:** dark ocean panel with a coral-red outline, coral active-workspace underline, centered clock, sky-blue indicators and a SwayNC bell (left-click opens the control center; right-click toggles Do Not Disturb).
+- **Waybar Island:** separate floating dark-ocean capsules inspired by Miku Niri Rice, with white icons, coral borders, centered clock and a SwayNC bell (left-click opens the control center; right-click toggles Do Not Disturb).
 - **Niri window borders:** coral focused border, muted blue inactive border and coral urgent border.
 - **Kitty:** matching colors, JetBrains Mono, translucent background and Niri blur integration on Niri 26.04 or newer.
 - **Fuzzel:** matching dark-blue launcher with coral selection and outline.
-- **SwayNC:** matching notifications and control center with coral outlines and sky-blue details.
+- **SwayNC:** Miku-style quick-settings layout with Wi-Fi action, brightness and volume sliders, MPRIS media widget, Do Not Disturb and notifications; icons are white with Itsuki coral borders.
 - **Wallpapers:** reserved `wallpapers/` directory. Add the two PNGs listed above when the new artwork is ready.
 - **Helpers:** power menu, Wi-Fi menu, volume/brightness sliders, blur setup and reload shortcut.
 - **Fetch config:** optional terminal system information; Fetch and Fastfetch themselves are not bundled.
