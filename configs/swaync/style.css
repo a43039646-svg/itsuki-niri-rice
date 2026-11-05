@@ -1,17 +1,17 @@
-/* Itsuki deep-ocean and coral SwayNC theme */
-@define-color #0D2430 #0b1020;
-@define-color #102B38 #111a2e;
-@define-color #102B38_alt #1c2034;
-@define-color #426B7A #4d628a;
-@define-color #D95F58 #7896c9;
-@define-color #D95F58_light #b4c7e8;
-@define-color #FFFFFF #e7ebf5;
-@define-color #D4E0E3 #a8b1c8;
+/* Miku Nakano navy and indigo SwayNC theme */
+@define-color itsuki_bg #0D2430;
+@define-color itsuki_panel #102B38;
+@define-color itsuki_panel_alt #173B4C;
+@define-color itsuki_border #426B7A;
+@define-color itsuki_accent #D95F58;
+@define-color itsuki_accent_light #78BFD0;
+@define-color itsuki_text #FFFFFF;
+@define-color itsuki_muted #D4E0E3;
 
 .control-center {
-  background: alpha(#0D2430, 0.97);
-  color: @#FFFFFF;
-  border: 1px solid @#426B7A;
+  background: alpha(@itsuki_bg, 0.97);
+  color: @itsuki_text;
+  border: 1px solid @itsuki_border;
   border-radius: 18px;
   padding: 14px;
 }
@@ -22,9 +22,9 @@
 .widget-backlight,
 .widget-volume,
 .widget-mpris {
-  background: @#102B38;
-  color: @#FFFFFF;
-  border: 1px solid alpha(@#426B7A, 0.65);
+  background: @itsuki_panel;
+  color: @itsuki_text;
+  border: 1px solid alpha(@itsuki_border, 0.65);
   border-radius: 13px;
   margin: 5px 0;
   padding: 10px;
@@ -34,51 +34,51 @@
 .widget-title > button,
 .widget-dnd > button,
 .widget-buttons-grid button {
-  background: @#102B38_alt;
-  color: @#FFFFFF;
-  border: 1px solid alpha(@#D95F58, 0.45);
+  background: @itsuki_panel_alt;
+  color: @itsuki_text;
+  border: 1px solid alpha(@itsuki_accent, 0.45);
   border-radius: 10px;
   padding: 8px 12px;
 }
 .widget-title > button:hover,
 .widget-dnd > button:hover,
 .widget-buttons-grid button:hover {
-  background: @#D95F58;
-  color: #0D2430;
+  background: @itsuki_accent;
+  color: #FFFFFF;
 }
 .widget-buttons-grid > flowbox > flowboxchild { padding: 4px; }
-.widget-dnd > switch:checked { background: @#D95F58; }
+.widget-dnd > switch:checked { background: @itsuki_accent; }
 
 .widget-backlight trough,
 .widget-volume trough { background: #26324b; border-radius: 999px; min-height: 7px; }
 .widget-backlight trough highlight,
-.widget-volume trough highlight { background: @#D95F58; border-radius: 999px; }
+.widget-volume trough highlight { background: @itsuki_accent; border-radius: 999px; }
 .widget-backlight slider,
-.widget-volume slider { background: @#D95F58_light; min-width: 14px; min-height: 14px; }
+.widget-volume slider { background: @itsuki_accent_light; min-width: 14px; min-height: 14px; }
 
 .widget-mpris { padding: 12px; }
-.widget-mpris button { color: @#D95F58_light; }
+.widget-mpris button { color: #FFFFFF; }
 
 .notification-row .notification-background,
 .notification-row .notification {
-  background: @#102B38;
-  color: @#FFFFFF;
-  border: 1px solid alpha(@#D95F58, 0.72);
+  background: @itsuki_panel;
+  color: @itsuki_text;
+  border: 1px solid alpha(@itsuki_accent, 0.72);
   box-shadow: 0 4px 18px alpha(#000000, 0.35);
   border-radius: 12px;
   margin: 5px 8px;
   padding: 2px;
 }
-.notification-row .notification-content { color: @#FFFFFF; }
-.notification-row .summary { color: @#D95F58_light; font-weight: 700; }
-.notification-row .time { color: @#D4E0E3; }
-.notification-row .close-button { background: @#102B38_alt; color: @#FFFFFF; border-radius: 8px; }
+.notification-row .notification-content { color: @itsuki_text; }
+.notification-row .summary { color: #FFFFFF; font-weight: 700; }
+.notification-row .time { color: @itsuki_muted; }
+.notification-row .close-button { background: @itsuki_panel_alt; color: @itsuki_text; border-radius: 8px; }
 
 .widget-notifications { background: transparent; }
 .widget-notifications .notification { margin: 4px 0; }
 
 
-/* Keep every symbolic control and logo white, including inherited GTK icons. */
+/* Keep all SwayNC symbolic logos and controls white. */
 .control-center,
 .control-center *,
 .notification-row,
