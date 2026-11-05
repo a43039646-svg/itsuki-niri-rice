@@ -61,8 +61,8 @@ for filename in sys.argv[1:]:
 PY
 echo OK
 
-grep -q 'border-bottom: 2px solid #D95F58' "$CONFIG/waybar/style.css"
-grep -q 'background: #102B38' "$CONFIG/waybar/style.css"
+grep -q 'background: rgba(13, 36, 48, 0.96)' "$CONFIG/waybar/style.css"
+grep -q 'border: 1px solid rgba(217, 95, 88, 0.56)' "$CONFIG/waybar/style.css"
 grep -q 'D95F58' "$CONFIG/fuzzel/fuzzel.ini"
 grep -q 'Itsuki Island Waybar' "$CONFIG/waybar/style.css"
 grep -q 'color: #FFFFFF' "$CONFIG/waybar/style.css"
