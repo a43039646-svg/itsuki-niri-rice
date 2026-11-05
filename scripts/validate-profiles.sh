@@ -66,7 +66,7 @@ grep -q 'background: #102B38' "$CONFIG/waybar/style.css"
 grep -q 'border: 1px solid #D95F58' "$CONFIG/waybar/style.css"
 grep -q 'D95F58' "$CONFIG/fuzzel/fuzzel.ini"
 grep -q 'Itsuki Minimal Rail' "$CONFIG/waybar/style.css"
-grep -q 'color: #FFFFFF' "$CONFIG/waybar/style.css"
+grep -q 'color: #F4EBDD' "$CONFIG/waybar/style.css"
 python3 -m json.tool "$CONFIG/swaync/config.json" >/dev/null
 grep -q 'D95F58' "$CONFIG/swaync/style.css"
 grep -q 'Itsuki quick settings' "$CONFIG/swaync/config.json"
