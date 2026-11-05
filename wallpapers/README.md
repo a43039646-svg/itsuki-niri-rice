@@ -1,6 +1,10 @@
 # Itsuki wallpapers
 
-- `itsuki.png` is the default Niri desktop wallpaper. The installer copies it into `~/.local/share/itsuki-niri-rice/wallpapers/` and starts it automatically with `swaybg`.
-- `lightdm-itsuki.png` is the LightDM login-screen background. The main installer automatically applies it when LightDM with GTK Greeter or Slick Greeter is installed.
+This directory is intentionally kept in Git while its PNG files are being replaced.
 
-Replace `itsuki.png` with your preferred image using the same filename to change the default wallpaper.
+Add these files when the new artwork is ready:
+
+- `itsuki.png` — Niri desktop wallpaper.
+- `lightdm-itsuki.png` — LightDM login-screen wallpaper.
+
+The installer checks each file independently. Missing images do not block the rice installation; the corresponding wallpaper step is skipped until the image is added.
